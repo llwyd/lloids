@@ -31,7 +31,10 @@ fn window_event(app: &App, model: &mut Model, event: WindowEvent)
 
 fn event(_app: &App, _model: &mut Model, _event: Event) { }
 
-fn update(app: &App, model: &mut Model, update: Update) { }
+fn update(app: &App, model: &mut Model, update: Update) { 
+    let win = app.window_rect();
+    model.bird.update(&win);
+}
 
 fn view(app: &App, model: &Model, frame: Frame){
     let win = app.window_rect();

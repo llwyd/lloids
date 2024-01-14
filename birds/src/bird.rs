@@ -23,8 +23,9 @@ impl Bird{
             .color(WHITE);
     }
 
-    pub fn update(&self)
+    pub fn update(&mut self, win: &Rect<f32>)
     {
+        //self.xy.y =
     }
 
     pub fn position(&self) -> Point2{
