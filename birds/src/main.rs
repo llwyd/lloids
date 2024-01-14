@@ -1,6 +1,10 @@
 use nannou::prelude::*;
 
+mod bird;
+pub use crate::bird::Bird;
+
 struct Model {
+    bird:Bird,
 }
 
 fn model(app: &App) -> Model {
@@ -15,6 +19,7 @@ fn model(app: &App) -> Model {
         .unwrap();
     
     let mut model = Model {
+        bird: Bird::new(),
     };
 
     model
