@@ -36,6 +36,9 @@ fn update(app: &App, model: &mut Model, update: Update) { }
 fn view(app: &App, model: &Model, frame: Frame){
     let win = app.window_rect();
     let draw = app.draw();
+
+    model.bird.draw(&draw);
+
     draw.background().color(BLACK);
     draw.to_frame(app, &frame).unwrap();
 }
