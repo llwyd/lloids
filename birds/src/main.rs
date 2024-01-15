@@ -40,6 +40,7 @@ fn view(app: &App, model: &Model, frame: Frame){
     let win = app.window_rect();
     let draw = app.draw();
 
+    model.bird.draw_region(&draw);
     model.bird.draw(&draw);
 
     draw.background().color(BLACK);
