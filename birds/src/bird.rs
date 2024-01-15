@@ -29,9 +29,19 @@ impl Bird{
         self.xy.x += Self::MOV_INC * self.angle.sin();
         self.xy.y += Self::MOV_INC * self.angle.cos();
 
-        self.xy.x %= win.right() as f32;
-        self.xy.y %= win.top() as f32;
-
+        if self.xy.x >= win.right() as f32{
+            self.xy.x -= win.xy().x;
+        }
+        else if self.xy.x <= win.left() as f32{
+            self.xy.x -= win.xy().x;
+        }
+        
+        if self.xy.y >= win.top() as f32{
+            self.xy.y -= win.wh().y;
+        }
+        else if self.xy.y <= win.bottom() as f32{
+            self.xy.y -= win.wh().y;
+        } 
     }
 
     pub fn position(&self) -> Point2{
