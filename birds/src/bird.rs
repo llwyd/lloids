@@ -7,6 +7,7 @@ pub struct Bird{
 }
 
 impl Bird{
+    const MOV_INC:f32 = 1.0;
     pub fn new() -> Bird{
         Bird{
             xy: pt2(0.0, 0.0),
@@ -25,7 +26,12 @@ impl Bird{
 
     pub fn update(&mut self, win: &Rect<f32>)
     {
-        //self.xy.y =
+        self.xy.x += Self::MOV_INC * self.angle.sin();
+        self.xy.y += Self::MOV_INC * self.angle.cos();
+
+        self.xy.x %= win.right() as f32;
+        self.xy.y %= win.top() as f32;
+
     }
 
     pub fn position(&self) -> Point2{
