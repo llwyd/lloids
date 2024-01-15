@@ -4,7 +4,7 @@ mod bird;
 pub use crate::bird::Bird;
 
 struct Model {
-    bird:Bird,
+    bird:Vec<Bird>,
 }
 
 fn model(app: &App) -> Model {
@@ -19,9 +19,13 @@ fn model(app: &App) -> Model {
         .unwrap();
     
     let mut model = Model {
-        bird: Bird::new(),
+        bird: Vec::new(),
     };
 
+    model.bird.push(Bird::new(pt2(0.0, 0.0)));
+    model.bird.push(Bird::new(pt2(0.0, 50.0)));
+    model.bird.push(Bird::new(pt2(0.0, -50.0)));
+    
     model
 }
 
@@ -33,15 +37,23 @@ fn event(_app: &App, _model: &mut Model, _event: Event) { }
 
 fn update(app: &App, model: &mut Model, update: Update) { 
     let win = app.window_rect();
-    model.bird.update(&win);
+
+    for bird in &mut model.bird{
+        bird.update(&win);
+    }
 }
 
 fn view(app: &App, model: &Model, frame: Frame){
     let win = app.window_rect();
     let draw = app.draw();
 
-    model.bird.draw_region(&draw);
-    model.bird.draw(&draw);
+    for bird in &model.bird{
+        bird.draw_region(&draw);
+    }
+    
+    for bird in &model.bird{
+        bird.draw(&draw);
+    }
 
     draw.background().color(BLACK);
     draw.to_frame(app, &frame).unwrap();

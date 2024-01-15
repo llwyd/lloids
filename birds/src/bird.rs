@@ -10,11 +10,11 @@ impl Bird{
     const MOV_INC:f32 = 2.0;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
-    const BIRD_REGION_RADIUS:f32 = 60.0;
+    const BIRD_REGION_RADIUS:f32 = 180.0;
 
-    pub fn new() -> Bird{
+    pub fn new(position:Point2) -> Bird{
         Bird{
-            xy: pt2(0.0, 0.0),
+            xy: position,
             angle: deg_to_rad(90.0),
         }
     }
@@ -61,3 +61,4 @@ impl Bird{
         self.xy
     }
 }
+
