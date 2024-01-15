@@ -7,18 +7,21 @@ pub struct Bird{
 }
 
 impl Bird{
-    const MOV_INC:f32 = 1.0;
+    const MOV_INC:f32 = 2.0;
+    const BIRD_HEIGHT:f32 = 30.0;
+    const BIRD_WIDTH_2:f32 = 10.0;
+
     pub fn new() -> Bird{
         Bird{
             xy: pt2(0.0, 0.0),
-            angle: 0.0,
+            angle: deg_to_rad(90.0),
         }
     }
 
     pub fn draw(&self, draw: &Draw)
     {
         draw.tri()
-            .points(pt2(0.0,36.0),pt2(-15.0,0.0),pt2(15.0,0.0))
+            .points(pt2(0.0,Self::BIRD_HEIGHT),pt2(-Self::BIRD_WIDTH_2,0.0),pt2(Self::BIRD_WIDTH_2,0.0))
             .x_y(self.xy.x, self.xy.y)
             .rotate(self.angle)
             .color(WHITE);
@@ -26,21 +29,21 @@ impl Bird{
 
     pub fn update(&mut self, win: &Rect<f32>)
     {
-        self.xy.x += Self::MOV_INC * self.angle.sin();
+        self.xy.x += -Self::MOV_INC * self.angle.sin();
         self.xy.y += Self::MOV_INC * self.angle.cos();
 
         if self.xy.x >= win.right() as f32{
-            self.xy.x -= win.xy().x;
+            self.xy.x -= win.wh().x;
         }
         else if self.xy.x <= win.left() as f32{
-            self.xy.x -= win.xy().x;
+            self.xy.x += win.wh().x;
         }
         
         if self.xy.y >= win.top() as f32{
             self.xy.y -= win.wh().y;
         }
         else if self.xy.y <= win.bottom() as f32{
-            self.xy.y -= win.wh().y;
+            self.xy.y += win.wh().y;
         } 
     }
 
