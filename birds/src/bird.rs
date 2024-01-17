@@ -19,6 +19,10 @@ impl Bird{
         }
     }
 
+    pub fn radius(&self) -> f32{
+        Self::BIRD_REGION_RADIUS
+    }
+
     pub fn draw_region(&self, draw: &Draw)
     {
         draw.ellipse()

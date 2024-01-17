@@ -35,8 +35,40 @@ fn window_event(app: &App, model: &mut Model, event: WindowEvent)
 
 fn event(_app: &App, _model: &mut Model, _event: Event) { }
 
+fn is_bird_nearby(bird: &Bird, other_bird: &Bird) -> bool{
+    let bird_radius = bird.radius();
+
+    let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
+    let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
+    let other_bird_radius = (dx_2 + dy_2).sqrt();
+
+    (other_bird_radius <= bird_radius)
+}
+
 fn update(app: &App, model: &mut Model, update: Update) { 
     let win = app.window_rect();
+
+    let num_bird = model.bird.len();
+    for i in 0..num_bird{
+
+        /* Collect nearby birds */
+        let mut nearby:Vec<Bird> = Vec::new();
+        for j in 0..num_bird{
+            if(i != j)
+            {
+                if is_bird_nearby(&model.bird[i], &model.bird[j])
+                {
+                    println!("{},{}", i, j);
+                    println!("Bird is within influence range");
+                    nearby.push(model.bird[j]);
+                }
+            }
+        }
+        /* Handle Separation */
+        /* Handle Alignment */
+        /* Handle Cohesion */
+    }
+
 
     for bird in &mut model.bird{
         bird.update(&win);
