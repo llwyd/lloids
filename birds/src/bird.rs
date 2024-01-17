@@ -10,7 +10,7 @@ impl Bird{
     const MOV_INC:f32 = 2.0;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
-    const BIRD_REGION_RADIUS:f32 = 180.0;
+    const BIRD_REGION_RADIUS:f32 = 90.0;
 
     pub fn new(position:Point2) -> Bird{
         Bird{
@@ -28,8 +28,8 @@ impl Bird{
         draw.ellipse()
             .color(GREY)
             .x_y(self.xy.x, self.xy.y)
-            .w(Self::BIRD_REGION_RADIUS)
-            .h(Self::BIRD_REGION_RADIUS);
+            .w(Self::BIRD_REGION_RADIUS * 2.0)
+            .h(Self::BIRD_REGION_RADIUS * 2.0);
     }
 
     pub fn draw(&self, draw: &Draw)

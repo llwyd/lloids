@@ -41,7 +41,7 @@ fn is_bird_nearby(bird: &Bird, other_bird: &Bird) -> bool{
     let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
     let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
     let other_bird_radius = (dx_2 + dy_2).sqrt();
-
+    println!("r:{},{}",bird_radius, other_bird_radius);
     (other_bird_radius <= bird_radius)
 }
 
@@ -59,7 +59,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
                 if is_bird_nearby(&model.bird[i], &model.bird[j])
                 {
                     println!("{},{}", i, j);
-                    println!("Bird is within influence range");
+                    println!("Bird is within influence range\n");
                     nearby.push(model.bird[j]);
                 }
             }
@@ -80,9 +80,10 @@ fn view(app: &App, model: &Model, frame: Frame){
     let draw = app.draw();
 
     for bird in &model.bird{
-        bird.draw_region(&draw);
+        //bird.draw_region(&draw);
     }
-    
+    model.bird[1].draw_region(&draw);
+
     for bird in &model.bird{
         bird.draw(&draw);
     }
