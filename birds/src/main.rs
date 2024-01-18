@@ -25,6 +25,7 @@ fn model(app: &App) -> Model {
     model.bird.push(Bird::new(pt2(0.0, 0.0)));
     model.bird.push(Bird::new(pt2(0.0, 50.0)));
     model.bird.push(Bird::new(pt2(0.0, -50.0)));
+    model.bird.push(Bird::new(pt2(0.0, 75.0)));
     
     model
 }
@@ -41,8 +42,66 @@ fn is_bird_nearby(bird: &Bird, other_bird: &Bird) -> bool{
     let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
     let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
     let other_bird_radius = (dx_2 + dy_2).sqrt();
-    println!("r:{},{}",bird_radius, other_bird_radius);
     (other_bird_radius <= bird_radius)
+}
+
+fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
+
+    /* Calculate angles */
+    let num_bird = other_birds.len();
+
+    let mut average = pt2(0.0, 0.0);
+
+    for i in 0..num_bird{
+        average.x += other_birds[i].position().x;
+        average.y += other_birds[i].position().y;
+    }
+
+    average.x /= num_bird as f32;
+    average.y /= num_bird as f32;
+
+    let angle = average.y.atan2(average.x);
+
+    //println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
+
+    angle - std::f32::consts::PI
+}
+
+fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
+
+    /* Calculate angles */
+    let num_bird = other_birds.len();
+
+    let mut average = 0.0;
+
+    for i in 0..num_bird{
+        average += other_birds[i].angle();
+    }
+
+    average /= num_bird as f32;
+    average
+}
+
+fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
+    
+    /* Calculate angles */
+    let num_bird = other_birds.len();
+
+    let mut average = pt2(0.0, 0.0);
+
+    for i in 0..num_bird{
+        average.x += other_birds[i].position().x;
+        average.y += other_birds[i].position().y;
+    }
+
+    average.x /= num_bird as f32;
+    average.y /= num_bird as f32;
+
+    let angle = average.y.atan2(average.x);
+
+    //println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
+
+    angle
 }
 
 fn update(app: &App, model: &mut Model, update: Update) { 
@@ -58,15 +117,18 @@ fn update(app: &App, model: &mut Model, update: Update) {
             {
                 if is_bird_nearby(&model.bird[i], &model.bird[j])
                 {
-                    println!("{},{}", i, j);
-                    println!("Bird is within influence range\n");
                     nearby.push(model.bird[j]);
                 }
             }
         }
         /* Handle Separation */
+        let sep_angle = separation(&mut model.bird[i], &nearby);
+    
         /* Handle Alignment */
+        let align_angle = alignment(&mut model.bird[i], &nearby);
+
         /* Handle Cohesion */
+        let coh_angle = cohesion(&mut model.bird[i], &nearby);
     }
 
 

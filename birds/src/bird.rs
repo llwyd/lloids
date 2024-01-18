@@ -4,6 +4,9 @@ use nannou::prelude::*;
 pub struct Bird{
     xy: Point2,
     angle: f32,
+    sep_angle: f32,
+    align_angle: f32,
+    coh_angle: f32,
 }
 
 impl Bird{
@@ -16,7 +19,18 @@ impl Bird{
         Bird{
             xy: position,
             angle: deg_to_rad(90.0),
+            sep_angle: deg_to_rad(90.0),
+            align_angle: deg_to_rad(90.0),
+            coh_angle: deg_to_rad(90.0),
         }
+    }
+
+    pub fn angle(&self) -> f32{
+        self.angle
+    }
+
+    pub fn set_rotation(&mut self, new_rotation:f32){
+        self.angle = new_rotation;
     }
 
     pub fn radius(&self) -> f32{
