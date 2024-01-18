@@ -45,6 +45,15 @@ fn is_bird_nearby(bird: &Bird, other_bird: &Bird) -> bool{
     (other_bird_radius <= bird_radius)
 }
 
+fn is_bird_really_nearby(bird: &Bird, other_bird: &Bird) -> bool{
+    let bird_radius = bird.separation_radius();
+
+    let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
+    let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
+    let other_bird_radius = (dx_2 + dy_2).sqrt();
+    (other_bird_radius <= bird_radius)
+}
+
 fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     /* Calculate angles */
@@ -112,9 +121,15 @@ fn update(app: &App, model: &mut Model, update: Update) {
 
         /* Collect nearby birds */
         let mut nearby:Vec<Bird> = Vec::new();
+        let mut nearby_sep:Vec<Bird> = Vec::new();
         for j in 0..num_bird{
             if(i != j)
             {
+                if is_bird_really_nearby(&model.bird[i], &model.bird[j])
+                {
+                    nearby_sep.push(model.bird[j]);
+                }
+                
                 if is_bird_nearby(&model.bird[i], &model.bird[j])
                 {
                     nearby.push(model.bird[j]);
@@ -122,13 +137,16 @@ fn update(app: &App, model: &mut Model, update: Update) {
             }
         }
         /* Handle Separation */
-        let sep_angle = separation(&mut model.bird[i], &nearby);
-    
+        let sep_angle = separation(&mut model.bird[i], &nearby_sep);
+        //model.bird[i].set_separation(sep_angle); 
+        
         /* Handle Alignment */
         let align_angle = alignment(&mut model.bird[i], &nearby);
+        //model.bird[i].set_alignment(align_angle); 
 
         /* Handle Cohesion */
         let coh_angle = cohesion(&mut model.bird[i], &nearby);
+        //model.bird[i].set_cohesion(coh_angle); 
     }
 
 

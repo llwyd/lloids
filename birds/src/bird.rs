@@ -10,10 +10,12 @@ pub struct Bird{
 }
 
 impl Bird{
-    const MOV_INC:f32 = 2.0;
+    const MOV_INC:f32 = 0.02;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
     const BIRD_REGION_RADIUS:f32 = 90.0;
+    
+    const BIRD_SEPARATION_RADIUS:f32 = 45.0;
 
     pub fn new(position:Point2) -> Bird{
         Bird{
@@ -32,9 +34,25 @@ impl Bird{
     pub fn set_rotation(&mut self, new_rotation:f32){
         self.angle = new_rotation;
     }
+    
+    pub fn set_separation(&mut self, new_rotation:f32){
+        self.sep_angle = new_rotation;
+    }
+    
+    pub fn set_alignment(&mut self, new_rotation:f32){
+        self.align_angle = new_rotation;
+    }
+    
+    pub fn set_cohesion(&mut self, new_rotation:f32){
+        self.coh_angle = new_rotation;
+    }
 
     pub fn radius(&self) -> f32{
         Self::BIRD_REGION_RADIUS
+    }
+    
+    pub fn separation_radius(&self) -> f32{
+        Self::BIRD_SEPARATION_RADIUS
     }
 
     pub fn draw_region(&self, draw: &Draw)
@@ -57,8 +75,17 @@ impl Bird{
 
     pub fn update(&mut self, win: &Rect<f32>)
     {
-        self.xy.x += -Self::MOV_INC * self.angle.sin();
-        self.xy.y += Self::MOV_INC * self.angle.cos();
+        let sep = pt2(-Self::MOV_INC * self.sep_angle.sin(), Self::MOV_INC * self.sep_angle.cos());
+        let align = pt2(-Self::MOV_INC * self.align_angle.sin(), Self::MOV_INC * self.align_angle.cos());
+        let coh = pt2(-Self::MOV_INC * self.coh_angle.sin(), Self::MOV_INC * self.coh_angle.cos());
+
+        self.angle = (self.sep_angle + self.align_angle + self.coh_angle) / 3.0;
+
+        self.xy.x += sep.x + align.x + coh.x;
+        self.xy.y += sep.y + align.y + coh.y;
+
+        //self.xy.x += -Self::MOV_INC * self.angle.sin();
+        //self.xy.y += Self::MOV_INC * self.angle.cos();
 
         if self.xy.x >= win.right() as f32{
             self.xy.x -= win.wh().x;
