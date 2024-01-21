@@ -63,6 +63,15 @@ impl Bird{
             .w(Self::BIRD_REGION_RADIUS * 2.0)
             .h(Self::BIRD_REGION_RADIUS * 2.0);
     }
+    
+    pub fn draw_sep_region(&self, draw: &Draw)
+    {
+        draw.ellipse()
+            .color(CYAN)
+            .x_y(self.xy.x, self.xy.y)
+            .w(Self::BIRD_SEPARATION_RADIUS * 2.0)
+            .h(Self::BIRD_SEPARATION_RADIUS * 2.0);
+    }
 
     pub fn draw(&self, draw: &Draw)
     {
@@ -79,11 +88,21 @@ impl Bird{
         let align = pt2(-Self::MOV_INC * self.align_angle.sin(), Self::MOV_INC * self.align_angle.cos());
         let coh = pt2(-Self::MOV_INC * self.coh_angle.sin(), Self::MOV_INC * self.coh_angle.cos());
 
-        self.angle = (self.sep_angle + self.align_angle + self.coh_angle) / 3.0;
 
-        self.xy.x += sep.x + align.x + coh.x;
-        self.xy.y += sep.y + align.y + coh.y;
+        /* Add new vectors */
+        let mut new_xy = pt2(0.0, 0.0);
+        new_xy.x = self.xy.x + sep.x + align.x + coh.x;
+        new_xy.y = self.xy.y + sep.y + align.y + coh.y;
 
+
+        self.angle = new_xy.y.atan2(new_xy.x) - self.xy.y.atan2(self.xy.x);
+
+//        self.angle = (self.sep_angle + self.align_angle + self.coh_angle) / 1.0;
+
+        self.xy = new_xy;
+//        self.xy.x += sep.x + align.x + coh.x;
+//        self.xy.y += sep.y + align.y + coh.y;
+        println!("{:?}", self.xy);
         //self.xy.x += -Self::MOV_INC * self.angle.sin();
         //self.xy.y += Self::MOV_INC * self.angle.cos();
 

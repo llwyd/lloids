@@ -26,6 +26,8 @@ fn model(app: &App) -> Model {
     model.bird.push(Bird::new(pt2(0.0, 50.0)));
     model.bird.push(Bird::new(pt2(0.0, -50.0)));
     model.bird.push(Bird::new(pt2(0.0, 75.0)));
+    model.bird.push(Bird::new(pt2(20.0, 75.0)));
+    model.bird.push(Bird::new(pt2(20.0, -75.0)));
     
     model
 }
@@ -69,11 +71,12 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     average.x /= num_bird as f32;
     average.y /= num_bird as f32;
 
-    let angle = average.y.atan2(average.x);
+    let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
 
-    //println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
+    println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    angle - std::f32::consts::PI
+    //angle - std::f32::consts::PI
+    angle - deg_to_rad(0.1)
 }
 
 fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
@@ -106,7 +109,8 @@ fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     average.x /= num_bird as f32;
     average.y /= num_bird as f32;
 
-    let angle = average.y.atan2(average.x);
+    //let angle = average.y.atan2(average.x);
+    let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
 
     //println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
 
@@ -137,16 +141,20 @@ fn update(app: &App, model: &mut Model, update: Update) {
             }
         }
         /* Handle Separation */
-        let sep_angle = separation(&mut model.bird[i], &nearby_sep);
-        //model.bird[i].set_separation(sep_angle); 
-        
+        if nearby_sep.len() > 0{
+            let sep_angle = separation(&mut model.bird[i], &nearby_sep);
+            model.bird[i].set_separation(sep_angle); 
+        }
         /* Handle Alignment */
-        let align_angle = alignment(&mut model.bird[i], &nearby);
-        //model.bird[i].set_alignment(align_angle); 
+        if nearby.len() > 0 {
 
-        /* Handle Cohesion */
-        let coh_angle = cohesion(&mut model.bird[i], &nearby);
-        //model.bird[i].set_cohesion(coh_angle); 
+            let align_angle = alignment(&mut model.bird[i], &nearby);
+            model.bird[i].set_alignment(align_angle); 
+
+            /* Handle Cohesion */
+            let coh_angle = cohesion(&mut model.bird[i], &nearby);
+            model.bird[i].set_cohesion(coh_angle); 
+        }
     }
 
 
@@ -160,9 +168,12 @@ fn view(app: &App, model: &Model, frame: Frame){
     let draw = app.draw();
 
     for bird in &model.bird{
-        //bird.draw_region(&draw);
+        bird.draw_region(&draw);
     }
-    model.bird[1].draw_region(&draw);
+    
+    for bird in &model.bird{
+        bird.draw_sep_region(&draw);
+    }
 
     for bird in &model.bird{
         bird.draw(&draw);
