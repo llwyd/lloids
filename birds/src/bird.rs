@@ -17,13 +17,13 @@ impl Bird{
     
     const BIRD_SEPARATION_RADIUS:f32 = 45.0;
 
-    pub fn new(position:Point2) -> Bird{
+    pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
             xy: position,
-            angle: deg_to_rad(90.0),
-            sep_angle: deg_to_rad(90.0),
-            align_angle: deg_to_rad(90.0),
-            coh_angle: deg_to_rad(90.0),
+            angle: angle,
+            sep_angle: 0.0,
+            align_angle: 0.0,
+            coh_angle: 0.0,
         }
     }
 
@@ -96,15 +96,18 @@ impl Bird{
 
 
         self.angle = new_xy.y.atan2(new_xy.x) - self.xy.y.atan2(self.xy.x);
+        if self.angle < 0.0{
+            self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
+        }
 
 //        self.angle = (self.sep_angle + self.align_angle + self.coh_angle) / 1.0;
 
-        self.xy = new_xy;
+//        self.xy = new_xy;
 //        self.xy.x += sep.x + align.x + coh.x;
 //        self.xy.y += sep.y + align.y + coh.y;
-        println!("{:?}", self.xy);
-        //self.xy.x += -Self::MOV_INC * self.angle.sin();
-        //self.xy.y += Self::MOV_INC * self.angle.cos();
+        println!("{:?},{:?}", self.xy, self.angle);
+        self.xy.x += -Self::MOV_INC * self.angle.sin();
+        self.xy.y += Self::MOV_INC * self.angle.cos();
 
         if self.xy.x >= win.right() as f32{
             self.xy.x -= win.wh().x;
