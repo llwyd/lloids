@@ -10,7 +10,7 @@ pub struct Bird{
 }
 
 impl Bird{
-    const MOV_INC:f32 = 0.02;
+    const MOV_INC:f32 = 0.2;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
     const BIRD_REGION_RADIUS:f32 = 90.0;
@@ -95,7 +95,9 @@ impl Bird{
         new_xy.y = self.xy.y + sep.y + align.y + coh.y;
 
 
-        self.angle = new_xy.y.atan2(new_xy.x) - self.xy.y.atan2(self.xy.x);
+        //self.angle = new_xy.y.atan2(new_xy.x) - self.xy.y.atan2(self.xy.x);
+        self.angle = (new_xy.y - self.xy.y).atan2(new_xy.x - self.xy.x);
+        
         if self.angle < 0.0{
             self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
         }

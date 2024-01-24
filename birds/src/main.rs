@@ -25,11 +25,12 @@ fn model(app: &App) -> Model {
     model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)));
     model.bird.push(Bird::new(pt2(0.0, 50.0), deg_to_rad(45.0)));
     model.bird.push(Bird::new(pt2(0.0, -50.0), deg_to_rad(90.0)));
+/*
     model.bird.push(Bird::new(pt2(0.0, 75.0), deg_to_rad(135.0)));
     model.bird.push(Bird::new(pt2(20.0, 75.0), deg_to_rad(180.0)));
     model.bird.push(Bird::new(pt2(20.0, -75.0), deg_to_rad(225.0)));
     model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
-    
+ */   
     model
 }
 
@@ -72,12 +73,14 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     average.x /= num_bird as f32;
     average.y /= num_bird as f32;
 
-    let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
+//    let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
+    let angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+    
 
     println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    angle - std::f32::consts::PI
-    //angle - deg_to_rad(0.001)
+    //angle - std::f32::consts::PI
+    angle - deg_to_rad(0.1)
 }
 
 fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
@@ -92,6 +95,7 @@ fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     }
 
     average /= num_bird as f32;
+    println!("Align: {:?}", average);
     average
 }
 
@@ -111,7 +115,8 @@ fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     average.y /= num_bird as f32;
 
     //let angle = average.y.atan2(average.x);
-    let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
+    //let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
+    let angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
 
     println!("Cohesion:{:?} Angle:{}", average, rad_to_deg(angle));
 
