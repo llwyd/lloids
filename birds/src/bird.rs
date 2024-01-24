@@ -13,7 +13,7 @@ impl Bird{
     const MOV_INC:f32 = 0.2;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
-    const BIRD_REGION_RADIUS:f32 = 90.0;
+    const BIRD_REGION_RADIUS:f32 = 150.0;
     
     const BIRD_SEPARATION_RADIUS:f32 = 45.0;
 

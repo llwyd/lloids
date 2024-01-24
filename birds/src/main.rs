@@ -25,12 +25,11 @@ fn model(app: &App) -> Model {
     model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)));
     model.bird.push(Bird::new(pt2(0.0, 50.0), deg_to_rad(45.0)));
     model.bird.push(Bird::new(pt2(0.0, -50.0), deg_to_rad(90.0)));
-/*
     model.bird.push(Bird::new(pt2(0.0, 75.0), deg_to_rad(135.0)));
     model.bird.push(Bird::new(pt2(20.0, 75.0), deg_to_rad(180.0)));
     model.bird.push(Bird::new(pt2(20.0, -75.0), deg_to_rad(225.0)));
     model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
- */   
+
     model
 }
 
@@ -79,8 +78,8 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    //angle - std::f32::consts::PI
-    angle - deg_to_rad(0.1)
+    (angle - std::f32::consts::PI)* 0.1
+ //   angle - deg_to_rad(0.1)
 }
 
 fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
@@ -120,7 +119,7 @@ fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     println!("Cohesion:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    angle
+    angle * 0.2
 }
 
 fn update(app: &App, model: &mut Model, update: Update) { 
