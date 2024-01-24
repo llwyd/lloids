@@ -11,6 +11,8 @@ pub struct Bird{
 
 impl Bird{
     const MOV_INC:f32 = 0.2;
+    const MOV_INC_MAX:f32 = 0.1;
+    const MOV_INC_MIN:f32 = 2.0;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
     const BIRD_REGION_RADIUS:f32 = 150.0;
@@ -84,9 +86,11 @@ impl Bird{
 
     pub fn update(&mut self, win: &Rect<f32>)
     {
-        let sep = pt2(-Self::MOV_INC * self.sep_angle.sin(), Self::MOV_INC * self.sep_angle.cos());
-        let align = pt2(-Self::MOV_INC * self.align_angle.sin(), Self::MOV_INC * self.align_angle.cos());
-        let coh = pt2(-Self::MOV_INC * self.coh_angle.sin(), Self::MOV_INC * self.coh_angle.cos());
+        let mov_inc = random_range(Self::MOV_INC_MIN, Self::MOV_INC_MAX); 
+
+        let sep = pt2(-mov_inc * self.sep_angle.sin(), mov_inc * self.sep_angle.cos());
+        let align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
+        let coh = pt2(-mov_inc * self.coh_angle.sin(), mov_inc * self.coh_angle.cos());
 
 
         /* Add new vectors */
@@ -108,8 +112,8 @@ impl Bird{
 //        self.xy.x += sep.x + align.x + coh.x;
 //        self.xy.y += sep.y + align.y + coh.y;
         println!("{:?},{:?}", self.xy, self.angle);
-        self.xy.x += -Self::MOV_INC * self.angle.sin();
-        self.xy.y += Self::MOV_INC * self.angle.cos();
+        self.xy.x += -mov_inc * self.angle.sin();
+        self.xy.y += mov_inc * self.angle.cos();
 
         if self.xy.x >= win.right() as f32{
             self.xy.x -= win.wh().x;
