@@ -95,13 +95,6 @@ impl Bird{
 
         /* Add new vectors */
         let mut new_xy = pt2(0.0, 0.0);
-        let sep_w = 0.1;
-        let align_w = 0.1;
-        let coh_w = 0.1;
-
-        sep *= sep_w;
-        align *= align_w;
-        coh *= coh_w;
 
         new_xy.x = self.xy.x + sep.x + align.x + coh.x;
         new_xy.y = self.xy.y + sep.y + align.y + coh.y;
