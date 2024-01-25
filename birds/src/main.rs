@@ -23,11 +23,11 @@ fn model(app: &App) -> Model {
     };
 
     model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)));
-    model.bird.push(Bird::new(pt2(0.0, 50.0), deg_to_rad(45.0)));
-    model.bird.push(Bird::new(pt2(0.0, -50.0), deg_to_rad(90.0)));
-    model.bird.push(Bird::new(pt2(0.0, 75.0), deg_to_rad(135.0)));
-    model.bird.push(Bird::new(pt2(20.0, 75.0), deg_to_rad(180.0)));
-    model.bird.push(Bird::new(pt2(20.0, -75.0), deg_to_rad(225.0)));
+    model.bird.push(Bird::new(pt2(0.0, 20.0), deg_to_rad(45.0)));
+    model.bird.push(Bird::new(pt2(0.0, -20.0), deg_to_rad(90.0)));
+    model.bird.push(Bird::new(pt2(0.0, 35.0), deg_to_rad(135.0)));
+    model.bird.push(Bird::new(pt2(20.0, 35.0), deg_to_rad(180.0)));
+    model.bird.push(Bird::new(pt2(20.0, -35.0), deg_to_rad(225.0)));
     model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
 
     model
@@ -78,7 +78,7 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    (angle - std::f32::consts::PI)* 0.1
+    (angle - std::f32::consts::PI)
  //   angle - deg_to_rad(0.1)
 }
 
@@ -119,7 +119,7 @@ fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     println!("Cohesion:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    angle * 0.2
+    angle
 }
 
 fn update(app: &App, model: &mut Model, update: Update) { 
@@ -160,12 +160,15 @@ fn update(app: &App, model: &mut Model, update: Update) {
             let coh_angle = cohesion(&mut model.bird[i], &nearby);
             model.bird[i].set_cohesion(coh_angle); 
         }
+
+        model.bird[i].update(&win);
     }
 
-
+/*
     for bird in &mut model.bird{
         bird.update(&win);
     }
+*/
 }
 
 fn view(app: &App, model: &Model, frame: Frame){

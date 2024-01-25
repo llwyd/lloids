@@ -11,13 +11,13 @@ pub struct Bird{
 
 impl Bird{
     const MOV_INC:f32 = 0.2;
-    const MOV_INC_MAX:f32 = 0.1;
-    const MOV_INC_MIN:f32 = 2.0;
+    const MOV_INC_MAX:f32 = 1.0;
+    const MOV_INC_MIN:f32 = 0.1;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
-    const BIRD_REGION_RADIUS:f32 = 150.0;
+    const BIRD_REGION_RADIUS:f32 = 80.0;
     
-    const BIRD_SEPARATION_RADIUS:f32 = 45.0;
+    const BIRD_SEPARATION_RADIUS:f32 = 35.0;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -88,13 +88,21 @@ impl Bird{
     {
         let mov_inc = random_range(Self::MOV_INC_MIN, Self::MOV_INC_MAX); 
 
-        let sep = pt2(-mov_inc * self.sep_angle.sin(), mov_inc * self.sep_angle.cos());
-        let align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
-        let coh = pt2(-mov_inc * self.coh_angle.sin(), mov_inc * self.coh_angle.cos());
+        let mut sep = pt2(-mov_inc * self.sep_angle.sin(), mov_inc * self.sep_angle.cos());
+        let mut align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
+        let mut coh = pt2(-mov_inc * self.coh_angle.sin(), mov_inc * self.coh_angle.cos());
 
 
         /* Add new vectors */
         let mut new_xy = pt2(0.0, 0.0);
+        let sep_w = 0.1;
+        let align_w = 0.1;
+        let coh_w = 0.1;
+
+        sep *= sep_w;
+        align *= align_w;
+        coh *= coh_w;
+
         new_xy.x = self.xy.x + sep.x + align.x + coh.x;
         new_xy.y = self.xy.y + sep.y + align.y + coh.y;
 
