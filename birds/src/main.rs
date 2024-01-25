@@ -22,14 +22,16 @@ fn model(app: &App) -> Model {
         bird: Vec::new(),
     };
 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)));
-    model.bird.push(Bird::new(pt2(0.0, 20.0), deg_to_rad(45.0)));
+    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+    model.bird.push(Bird::new(pt2(20.0, 20.0), deg_to_rad(0.0)));
+
+  /*
     model.bird.push(Bird::new(pt2(0.0, -20.0), deg_to_rad(90.0)));
     model.bird.push(Bird::new(pt2(0.0, 35.0), deg_to_rad(135.0)));
     model.bird.push(Bird::new(pt2(20.0, 35.0), deg_to_rad(180.0)));
     model.bird.push(Bird::new(pt2(20.0, -35.0), deg_to_rad(225.0)));
     model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
-
+*/
     model
 }
 
@@ -73,10 +75,14 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     average.y /= num_bird as f32;
 
 //    let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
-    let angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+    let mut angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+
+    if angle < 0.0{
+        angle = angle + ( 2.0 * std::f32::consts::PI );
+    }
     
 
-    println!("Avg:{:?} Angle:{}", average, rad_to_deg(angle));
+    println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
 
     (angle - std::f32::consts::PI)
  //   angle - deg_to_rad(0.1)
@@ -94,8 +100,14 @@ fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     }
 
     average /= num_bird as f32;
-    println!("Align: {:?}", average);
-    average
+    let mut delta = bird.angle() - average;
+    
+    if delta < 0.0{
+        delta = delta + ( 2.0 * std::f32::consts::PI );
+    }
+
+    println!("Align: {:?}, Delta{:?}", average, delta);
+    delta
 }
 
 fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
@@ -131,6 +143,9 @@ fn update(app: &App, model: &mut Model, update: Update) {
         /* Collect nearby birds */
         let mut nearby:Vec<Bird> = Vec::new();
         let mut nearby_sep:Vec<Bird> = Vec::new();
+
+        println!("bird: {}", i);
+
         for j in 0..num_bird{
             if(i != j)
             {
