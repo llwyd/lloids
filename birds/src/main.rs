@@ -183,10 +183,8 @@ fn update(app: &App, model: &mut Model, update: Update) {
         }
         else
         {
-            /*
             model.bird[i].set_alignment(0.0); 
-            model.bird[i].set_cohesion(0.0);
-            */
+            //model.bird[i].set_cohesion(0.0);
         }
 
         model.bird[i].update(&win);

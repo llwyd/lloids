@@ -7,6 +7,8 @@ pub struct Bird{
     sep_angle: f32,
     align_angle: f32,
     coh_angle: f32,
+    sep: bool,
+    coh: bool,
 }
 
 impl Bird{
@@ -23,9 +25,11 @@ impl Bird{
         Bird{
             xy: position,
             angle: angle,
-            sep_angle: 0.0,
+            sep_angle: angle,
             align_angle: 0.0,
-            coh_angle: 0.0,
+            coh_angle: angle,
+            sep: false,
+            coh: false,
         }
     }
 
@@ -39,6 +43,7 @@ impl Bird{
     
     pub fn set_separation(&mut self, new_rotation:f32){
         self.sep_angle = new_rotation;
+        self.sep = true;
     }
     
     pub fn set_alignment(&mut self, new_rotation:f32){
@@ -47,6 +52,7 @@ impl Bird{
     
     pub fn set_cohesion(&mut self, new_rotation:f32){
         self.coh_angle = new_rotation;
+        self.coh = true;
     }
 
     pub fn radius(&self) -> f32{
@@ -87,29 +93,39 @@ impl Bird{
     pub fn update(&mut self, win: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
-        let sep_angle = self.sep_angle * 0.25;
-        let coh_angle = self.coh_angle * 0.25;
+        let sep_angle = self.sep_angle * 1.7;
+        let coh_angle = self.coh_angle * 0.5;
 
-        let mov_inc = random_range(1.0, 5.0); 
+        let mov_inc = random_range(0.01, 1.0); 
 
-        let mut sep = pt2(-mov_inc * sep_angle.sin(), mov_inc * sep_angle.cos());
+//        let mut sep = pt2(-mov_inc * sep_angle.sin(), mov_inc * sep_angle.cos());
 //        let mut align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
-        let mov_inc = random_range(Self::MOV_INC_MIN, 4.0); 
-        let mut coh = pt2(-mov_inc * coh_angle.sin(), mov_inc * coh_angle.cos());
+//        let mov_inc = random_range(Self::MOV_INC_MIN, 4.0); 
+  //      let mut coh = pt2(-mov_inc * coh_angle.sin(), mov_inc * coh_angle.cos());
 
-
+        if self.sep{
+            self.xy.x += -mov_inc * sep_angle.sin();
+            self.xy.y += mov_inc * sep_angle.cos();
+            self.sep = false;
+        }
+        let mov_inc = random_range(0.01, 1.0); 
+        if self.coh{
+            self.xy.x += -mov_inc * coh_angle.sin();
+            self.xy.y += mov_inc * coh_angle.cos();
+            self.coh = false;
+        }
         /* Add new vectors */
         let mut new_xy = pt2(0.0, 0.0);
-
+/*
         new_xy.x = self.xy.x + sep.x  + coh.x;
         new_xy.y = self.xy.y + sep.y  + coh.y;
-
-        self.angle += self.align_angle;
+*/
+        self.angle += self.align_angle * 0.085;
         println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
         //self.angle = new_xy.y.atan2(new_xy.x) - self.xy.y.atan2(self.xy.x);
-        self.angle = (new_xy.y - self.xy.y).atan2(new_xy.x - self.xy.x);
+//        self.angle = (new_xy.y - self.xy.y).atan2(new_xy.x - self.xy.x);
         
         if self.angle < 0.0{
             self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
@@ -124,6 +140,7 @@ impl Bird{
 //        self.xy.x += sep.x + align.x + coh.x;
 //        self.xy.y += sep.y + align.y + coh.y;
         println!("New Angle: {:?}", rad_to_deg(self.angle));
+        let mov_inc = random_range(1.0, 2.0); 
         self.xy.x += -mov_inc * self.angle.sin();
         self.xy.y += mov_inc * self.angle.cos();
 
