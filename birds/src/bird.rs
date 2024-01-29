@@ -11,13 +11,13 @@ pub struct Bird{
 
 impl Bird{
     const MOV_INC:f32 = 0.2;
-    const MOV_INC_MAX:f32 = 10.0;
-    const MOV_INC_MIN:f32 = 0.1;
+    const MOV_INC_MAX:f32 = 1.0;
+    const MOV_INC_MIN:f32 = 0.01;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
 
-    const BIRD_REGION_RADIUS:f32 = 80.0; 
-    const BIRD_SEPARATION_RADIUS:f32 = 45.0;
+    const BIRD_REGION_RADIUS:f32 = 140.0; 
+    const BIRD_SEPARATION_RADIUS:f32 = 50.0;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -87,12 +87,15 @@ impl Bird{
     pub fn update(&mut self, win: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
-        let mov_inc = random_range(Self::MOV_INC_MIN, Self::MOV_INC_MAX); 
+        let sep_angle = self.sep_angle * 0.5;
+        let coh_angle = self.coh_angle * 0.25;
 
-        let mut sep = pt2(-mov_inc * self.sep_angle.sin(), mov_inc * self.sep_angle.cos());
+        let mov_inc = random_range(Self::MOV_INC_MIN, 10.0); 
+
+        let mut sep = pt2(-mov_inc * sep_angle.sin(), mov_inc * sep_angle.cos());
 //        let mut align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
         let mov_inc = random_range(Self::MOV_INC_MIN, Self::MOV_INC_MAX); 
-        let mut coh = pt2(-mov_inc * self.coh_angle.sin(), mov_inc * self.coh_angle.cos());
+        let mut coh = pt2(-mov_inc * coh_angle.sin(), mov_inc * coh_angle.cos());
 
 
         /* Add new vectors */
@@ -106,7 +109,7 @@ impl Bird{
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
         //self.angle = new_xy.y.atan2(new_xy.x) - self.xy.y.atan2(self.xy.x);
-//        self.angle = (new_xy.y - self.xy.y).atan2(new_xy.x - self.xy.x);
+        self.angle = (new_xy.y - self.xy.y).atan2(new_xy.x - self.xy.x);
         
         if self.angle < 0.0{
             self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
