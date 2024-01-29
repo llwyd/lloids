@@ -165,6 +165,12 @@ fn update(app: &App, model: &mut Model, update: Update) {
             let sep_angle = separation(&mut model.bird[i], &nearby_sep);
             model.bird[i].set_separation(sep_angle); 
         }
+        else
+        {
+            /*
+            model.bird[i].set_separation(0.0);
+            */
+        }
         /* Handle Alignment */
         if nearby.len() > 0 {
 
@@ -174,6 +180,13 @@ fn update(app: &App, model: &mut Model, update: Update) {
             /* Handle Cohesion */
             let coh_angle = cohesion(&mut model.bird[i], &nearby);
             model.bird[i].set_cohesion(coh_angle); 
+        }
+        else
+        {
+            /*
+            model.bird[i].set_alignment(0.0); 
+            model.bird[i].set_cohesion(0.0);
+            */
         }
 
         model.bird[i].update(&win);

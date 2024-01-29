@@ -11,7 +11,7 @@ pub struct Bird{
 
 impl Bird{
     const MOV_INC:f32 = 0.2;
-    const MOV_INC_MAX:f32 = 1.0;
+    const MOV_INC_MAX:f32 = 10.0;
     const MOV_INC_MIN:f32 = 0.01;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
@@ -87,14 +87,14 @@ impl Bird{
     pub fn update(&mut self, win: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
-        let sep_angle = self.sep_angle * 0.5;
+        let sep_angle = self.sep_angle * 0.25;
         let coh_angle = self.coh_angle * 0.25;
 
-        let mov_inc = random_range(Self::MOV_INC_MIN, 10.0); 
+        let mov_inc = random_range(1.0, 5.0); 
 
         let mut sep = pt2(-mov_inc * sep_angle.sin(), mov_inc * sep_angle.cos());
 //        let mut align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
-        let mov_inc = random_range(Self::MOV_INC_MIN, Self::MOV_INC_MAX); 
+        let mov_inc = random_range(Self::MOV_INC_MIN, 4.0); 
         let mut coh = pt2(-mov_inc * coh_angle.sin(), mov_inc * coh_angle.cos());
 
 
