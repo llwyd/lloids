@@ -11,13 +11,13 @@ pub struct Bird{
 
 impl Bird{
     const MOV_INC:f32 = 0.2;
-    const MOV_INC_MAX:f32 = 1.0;
+    const MOV_INC_MAX:f32 = 10.0;
     const MOV_INC_MIN:f32 = 0.1;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
-    const BIRD_REGION_RADIUS:f32 = 80.0;
-    
-    const BIRD_SEPARATION_RADIUS:f32 = 35.0;
+
+    const BIRD_REGION_RADIUS:f32 = 80.0; 
+    const BIRD_SEPARATION_RADIUS:f32 = 45.0;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -86,25 +86,33 @@ impl Bird{
 
     pub fn update(&mut self, win: &Rect<f32>)
     {
+        println!("Old Angle: {:?}", rad_to_deg(self.angle));
         let mov_inc = random_range(Self::MOV_INC_MIN, Self::MOV_INC_MAX); 
 
         let mut sep = pt2(-mov_inc * self.sep_angle.sin(), mov_inc * self.sep_angle.cos());
-        let mut align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
+//        let mut align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
+        let mov_inc = random_range(Self::MOV_INC_MIN, Self::MOV_INC_MAX); 
         let mut coh = pt2(-mov_inc * self.coh_angle.sin(), mov_inc * self.coh_angle.cos());
 
 
         /* Add new vectors */
         let mut new_xy = pt2(0.0, 0.0);
 
-        new_xy.x = self.xy.x + sep.x + align.x + coh.x;
-        new_xy.y = self.xy.y + sep.y + align.y + coh.y;
+        new_xy.x = self.xy.x + sep.x  + coh.x;
+        new_xy.y = self.xy.y + sep.y  + coh.y;
 
-
+        self.angle += self.align_angle;
+        println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
+        assert!(self.angle != std::f32::INFINITY);
+        assert!(self.angle != std::f32::NEG_INFINITY);
         //self.angle = new_xy.y.atan2(new_xy.x) - self.xy.y.atan2(self.xy.x);
-        self.angle = (new_xy.y - self.xy.y).atan2(new_xy.x - self.xy.x);
+//        self.angle = (new_xy.y - self.xy.y).atan2(new_xy.x - self.xy.x);
         
         if self.angle < 0.0{
             self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
+        }
+        else if self.angle >= ( 2.0 * std::f32::consts::PI ){
+            self.angle = self.angle - ( 2.0 * std::f32::consts::PI ); 
         }
 
 //        self.angle = (self.sep_angle + self.align_angle + self.coh_angle) / 1.0;
@@ -112,7 +120,7 @@ impl Bird{
 //        self.xy = new_xy;
 //        self.xy.x += sep.x + align.x + coh.x;
 //        self.xy.y += sep.y + align.y + coh.y;
-        println!("{:?},{:?}", self.xy, self.angle);
+        println!("New Angle: {:?}", rad_to_deg(self.angle));
         self.xy.x += -mov_inc * self.angle.sin();
         self.xy.y += mov_inc * self.angle.cos();
 

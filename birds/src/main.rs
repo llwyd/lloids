@@ -25,13 +25,11 @@ fn model(app: &App) -> Model {
     model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
     model.bird.push(Bird::new(pt2(20.0, 20.0), deg_to_rad(0.0)));
 
-  /*
     model.bird.push(Bird::new(pt2(0.0, -20.0), deg_to_rad(90.0)));
     model.bird.push(Bird::new(pt2(0.0, 35.0), deg_to_rad(135.0)));
     model.bird.push(Bird::new(pt2(20.0, 35.0), deg_to_rad(180.0)));
     model.bird.push(Bird::new(pt2(20.0, -35.0), deg_to_rad(225.0)));
     model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
-*/
     model
 }
 
@@ -97,16 +95,18 @@ fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     for i in 0..num_bird{
         average += other_birds[i].angle();
+        println!("b_avg: {:?}", other_birds[i].angle());    
     }
-
+    
     average /= num_bird as f32;
+    println!("BirdAngle:{:?}, Average:{:?}, Num:{:?}", bird.angle(), average, num_bird);
     let mut delta = bird.angle() - average;
     
-    if delta < 0.0{
-        delta = delta + ( 2.0 * std::f32::consts::PI );
-    }
-
+    
     println!("Align: {:?}, Delta{:?}", average, delta);
+    assert!(delta != std::f32::INFINITY);
+    assert!(delta != std::f32::NEG_INFINITY);
+
     delta
 }
 
