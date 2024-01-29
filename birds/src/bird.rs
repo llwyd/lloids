@@ -93,8 +93,8 @@ impl Bird{
     pub fn update(&mut self, win: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
-        let sep_angle = self.sep_angle * 1.7;
-        let coh_angle = self.coh_angle * 0.5;
+        let sep_angle = self.sep_angle * 1.2;
+        let coh_angle = self.coh_angle * 0.8;
 
         let mov_inc = random_range(0.01, 1.0); 
 
