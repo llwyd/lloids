@@ -18,8 +18,8 @@ impl Bird{
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
 
-    const BIRD_REGION_RADIUS:f32 = 140.0; 
-    const BIRD_SEPARATION_RADIUS:f32 = 50.0;
+    const BIRD_REGION_RADIUS:f32 = 180.0; 
+    const BIRD_SEPARATION_RADIUS:f32 = 45.0;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
