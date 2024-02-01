@@ -82,8 +82,11 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    (-angle)
- //   angle - deg_to_rad(0.1)
+    angle -= (std::f32::consts::PI);
+    if angle < 0.0{
+        angle = angle + ( 2.0 * std::f32::consts::PI );
+    }
+    angle
 }
 
 fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
