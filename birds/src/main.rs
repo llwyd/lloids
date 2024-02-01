@@ -82,7 +82,7 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    (-angle)
+    (angle)
  //   angle - deg_to_rad(0.1)
 }
 
@@ -95,11 +95,9 @@ fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     for i in 0..num_bird{
         average += other_birds[i].angle();
-        println!("b_avg: {:?}", other_birds[i].angle());    
     }
     
     average /= num_bird as f32;
-    println!("BirdAngle:{:?}, Average:{:?}, Num:{:?}", bird.angle(), average, num_bird);
     let mut delta = bird.angle() - average;
     
     
@@ -127,7 +125,10 @@ fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     //let angle = average.y.atan2(average.x);
     //let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
-    let angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+    let mut angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+    if angle < 0.0{
+        angle = angle + ( 2.0 * std::f32::consts::PI );
+    }
 
     println!("Cohesion:{:?} Angle:{}", average, rad_to_deg(angle));
 

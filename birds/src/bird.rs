@@ -93,10 +93,10 @@ impl Bird{
     pub fn update(&mut self, win: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
-        let sep_angle = self.sep_angle * 1.2;
-        let coh_angle = self.coh_angle * 0.8;
+        let sep_angle = self.sep_angle * 1.0;
+        let coh_angle = self.coh_angle * 1.0;
 
-        let mov_inc = random_range(0.01, 1.0); 
+        let mov_inc = random_range(0.5, 2.0); 
 
 //        let mut sep = pt2(-mov_inc * sep_angle.sin(), mov_inc * sep_angle.cos());
 //        let mut align = pt2(-mov_inc * self.align_angle.sin(), mov_inc * self.align_angle.cos());
@@ -108,7 +108,7 @@ impl Bird{
             self.xy.y += mov_inc * sep_angle.cos();
             self.sep = false;
         }
-        let mov_inc = random_range(0.01, 1.0); 
+        let mov_inc = random_range(0.01, 0.2); 
         if self.coh{
             self.xy.x += -mov_inc * coh_angle.sin();
             self.xy.y += mov_inc * coh_angle.cos();
@@ -120,7 +120,7 @@ impl Bird{
         new_xy.x = self.xy.x + sep.x  + coh.x;
         new_xy.y = self.xy.y + sep.y  + coh.y;
 */
-        self.angle += self.align_angle * 0.085;
+        self.angle += self.align_angle * 0.05;
         println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
