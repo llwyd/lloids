@@ -96,7 +96,7 @@ impl Bird{
         let sep_angle = self.sep_angle * 1.0;
         let coh_angle = self.coh_angle * 1.0;
 
-        let mov_inc = random_range(2.0, 3.0); 
+        let mov_inc = random_range(0.5, 2.0); 
 
 
         if self.sep{
@@ -104,7 +104,7 @@ impl Bird{
             self.xy.y += mov_inc * sep_angle.cos();
             self.sep = false;
         }
-        let mov_inc = random_range(0.1, 1.0); 
+        let mov_inc = random_range(0.1, 0.5); 
         if self.coh{
             self.xy.x += -mov_inc * coh_angle.sin();
             self.xy.y += mov_inc * coh_angle.cos();
