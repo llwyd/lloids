@@ -82,7 +82,7 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    (angle)
+    (-angle)
  //   angle - deg_to_rad(0.1)
 }
 
