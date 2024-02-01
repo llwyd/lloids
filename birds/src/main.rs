@@ -128,7 +128,8 @@ fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     //let angle = average.y.atan2(average.x);
     //let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
-    let mut angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+    //let mut angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+    let mut angle = (bird.position().y - average.y).atan2(bird.position().x - average.x);
     if angle < 0.0{
         angle = angle + ( 2.0 * std::f32::consts::PI );
     }
