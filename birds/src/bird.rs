@@ -112,16 +112,11 @@ impl Bird{
         }
         /* Add new vectors */
         let mut new_xy = pt2(0.0, 0.0);
-/*
-        new_xy.x = self.xy.x + sep.x  + coh.x;
-        new_xy.y = self.xy.y + sep.y  + coh.y;
-*/
         self.angle -= self.align_angle * 0.15;
+
         println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
-        //self.angle = new_xy.y.atan2(new_xy.x) - self.xy.y.atan2(self.xy.x);
-//        self.angle = (new_xy.y - self.xy.y).atan2(new_xy.x - self.xy.x);
         
         if self.angle < 0.0{
             self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
@@ -130,11 +125,6 @@ impl Bird{
             self.angle = self.angle - ( 2.0 * std::f32::consts::PI ); 
         }
 
-//        self.angle = (self.sep_angle + self.align_angle + self.coh_angle) / 1.0;
-
-//        self.xy = new_xy;
-//        self.xy.x += sep.x + align.x + coh.x;
-//        self.xy.y += sep.y + align.y + coh.y;
         println!("New Angle: {:?}", rad_to_deg(self.angle));
         let mov_inc = random_range(1.0, 2.0); 
         self.xy.x += -mov_inc * self.angle.sin();
