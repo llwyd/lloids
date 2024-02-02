@@ -1,4 +1,5 @@
 use nannou::prelude::*;
+use nannou::geom::Range;
 
 mod bird;
 pub use crate::bird::Bird;
@@ -22,7 +23,8 @@ fn model(app: &App) -> Model {
         bird: Vec::new(),
     };
 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(10.0))); 
+    
     model.bird.push(Bird::new(pt2(20.0, 20.0), deg_to_rad(0.0)));
 
     model.bird.push(Bird::new(pt2(0.0, -20.0), deg_to_rad(90.0)));
@@ -30,6 +32,7 @@ fn model(app: &App) -> Model {
     model.bird.push(Bird::new(pt2(20.0, 35.0), deg_to_rad(180.0)));
     model.bird.push(Bird::new(pt2(20.0, -35.0), deg_to_rad(225.0)));
     model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
+    
     model
 }
 
@@ -140,14 +143,18 @@ fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 fn update(app: &App, model: &mut Model, update: Update) { 
     let win = app.window_rect();
 
+    let inner = Rect{
+        x: Range{start: -320.0 + 60.0, end: 320.0 - 60.0},
+        y: Range{start: -240.0 + 60.0, end: 240.0 - 60.0},
+    };
+
+
     let num_bird = model.bird.len();
     for i in 0..num_bird{
 
         /* Collect nearby birds */
         let mut nearby:Vec<Bird> = Vec::new();
         let mut nearby_sep:Vec<Bird> = Vec::new();
-
-        println!("bird: {}", i);
 
         for j in 0..num_bird{
             if(i != j)
@@ -168,12 +175,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
             let sep_angle = separation(&mut model.bird[i], &nearby_sep);
             model.bird[i].set_separation(sep_angle); 
         }
-        else
-        {
-            /*
-            model.bird[i].set_separation(0.0);
-            */
-        }
+        
         /* Handle Alignment */
         if nearby.len() > 0 {
 
@@ -187,17 +189,11 @@ fn update(app: &App, model: &mut Model, update: Update) {
         else
         {
             model.bird[i].set_alignment(0.0); 
-            //model.bird[i].set_cohesion(0.0);
         }
 
-        model.bird[i].update(&win);
+        model.bird[i].update(&win, &inner);
     }
 
-/*
-    for bird in &mut model.bird{
-        bird.update(&win);
-    }
-*/
 }
 
 fn view(app: &App, model: &Model, frame: Frame){

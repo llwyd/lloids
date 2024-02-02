@@ -90,7 +90,7 @@ impl Bird{
             .color(WHITE);
     }
 
-    pub fn update(&mut self, win: &Rect<f32>)
+    pub fn update(&mut self, win: &Rect<f32>, inner: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
         let sep_angle = self.sep_angle * 1.0;
@@ -105,7 +105,7 @@ impl Bird{
             self.xy.y += mov_inc * sep_angle.cos();
             self.sep = false;
             let mut delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
-            self.angle -= delta * 0.012;
+//            self.angle -= delta * 0.012;
         }
         let mov_inc = random_range(0.1, 1.0); 
         if self.coh{
@@ -114,8 +114,27 @@ impl Bird{
             self.xy.y += mov_inc * coh_angle.cos();
             self.coh = false;
             let mut delta = (old_xy.y - self.xy.y).atan2(old_xy.x - self.xy.y);
-            self.angle += delta * 0.012;
+  //          self.angle += delta * 0.012;
         }
+
+        /* Handle Screen Edge */
+        let turn_angle = deg_to_rad(2.0);
+        let scaling = 0.0125;
+        if self.xy.x >= inner.right() as f32{
+            self.angle += self.angle * scaling;
+        }
+        else if self.xy.x <= inner.left() as f32{
+            self.angle += self.angle * scaling;
+        }
+        
+        if self.xy.y >= inner.top() as f32{
+            self.angle += self.angle * scaling;
+        }
+        else if self.xy.y <= inner.bottom() as f32{
+            self.angle += self.angle * scaling;
+        } 
+
+
         /* Add new vectors */
         let mut new_xy = pt2(0.0, 0.0);
         self.angle -= self.align_angle * 0.015;
