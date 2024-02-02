@@ -209,7 +209,7 @@ fn view(app: &App, model: &Model, frame: Frame){
         .x_y(0.0, 0.0)
         .w_h(640.0 - 250.0, 480.0 - 250.0)
         .color(DARKGREY);
-/*
+
     for bird in &model.bird{
         bird.draw_region(&draw);
     }
@@ -217,7 +217,6 @@ fn view(app: &App, model: &Model, frame: Frame){
     for bird in &model.bird{
         bird.draw_sep_region(&draw);
     }
-  */  
 
     for bird in &model.bird{
         bird.draw(&draw);
