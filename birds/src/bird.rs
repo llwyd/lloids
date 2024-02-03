@@ -119,19 +119,38 @@ impl Bird{
 
         /* Handle Screen Edge */
         let turn_angle = deg_to_rad(2.0);
-        let scaling = 0.0125;
+        let scaling = 0.0225;
+
+        /* Check if pointing towards centre */
+        let mut centre_angle = self.angle;
+        if centre_angle >= deg_to_rad(180.0){
+            centre_angle -= deg_to_rad(180.0);
+        }
+
         if self.xy.x >= inner.right() as f32{
-            self.angle += self.angle * scaling;
+            if self.angle < deg_to_rad(359.9) || self.angle > deg_to_rad(180.0)
+            {
+                self.angle += self.angle * scaling;
+            }
         }
         else if self.xy.x <= inner.left() as f32{
-            self.angle += self.angle * scaling;
+            if self.angle < deg_to_rad(180.0) && self.angle > deg_to_rad(0.0)
+            {
+                self.angle += self.angle * scaling;
+            }
         }
         
         if self.xy.y >= inner.top() as f32{
-            self.angle += self.angle * scaling;
+            if self.angle < deg_to_rad(90.0) || self.angle > deg_to_rad(270.0)
+            {
+                self.angle += self.angle * scaling;
+            }
         }
         else if self.xy.y <= inner.bottom() as f32{
-            self.angle += self.angle * scaling;
+            if self.angle < deg_to_rad(270.0) && self.angle > deg_to_rad(90.0)
+            {
+                self.angle += self.angle * scaling;
+            }
         } 
 
 

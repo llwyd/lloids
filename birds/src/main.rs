@@ -200,11 +200,12 @@ fn view(app: &App, model: &Model, frame: Frame){
     let win = app.window_rect();
     let draw = app.draw();
 
-     
+/*     
     draw.rect()
         .x_y(0.0, 0.0)
         .w_h(640.0 - 250.0, 480.0 - 250.0)
         .color(DARKGREY);
+*/
 
     for bird in &model.bird{
         bird.draw_region(&draw);
