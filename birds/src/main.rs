@@ -3,6 +3,12 @@ use nannou::geom::Range;
 
 mod bird;
 pub use crate::bird::Bird;
+    
+const SCREEN_W_F32:f32 = 1024.0;
+const SCREEN_H_F32:f32 = 768.0;
+
+const SCREEN_W_U32:u32 = SCREEN_W_F32 as u32;
+const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 
 struct Model {
     bird:Vec<Bird>,
@@ -10,9 +16,9 @@ struct Model {
 
 fn model(app: &App) -> Model {
     app.new_window()
-        .size(640,480)
-        .min_size(640,480)
-        .max_size(640,480)
+        .size(SCREEN_W_U32, SCREEN_H_U32)
+        .min_size(SCREEN_W_U32, SCREEN_H_U32)
+        .max_size(SCREEN_W_U32, SCREEN_H_U32)
         //.decorations(false)
         .resizable(false)
         .event(window_event)
@@ -23,16 +29,15 @@ fn model(app: &App) -> Model {
         bird: Vec::new(),
     };
 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(10.0))); 
+    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(140.0))); 
     
     model.bird.push(Bird::new(pt2(20.0, 20.0), deg_to_rad(0.0)));
-
     model.bird.push(Bird::new(pt2(0.0, -20.0), deg_to_rad(90.0)));
     model.bird.push(Bird::new(pt2(0.0, 35.0), deg_to_rad(135.0)));
     model.bird.push(Bird::new(pt2(20.0, 35.0), deg_to_rad(180.0)));
     model.bird.push(Bird::new(pt2(20.0, -35.0), deg_to_rad(225.0)));
     model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
-    
+   
     model
 }
 
