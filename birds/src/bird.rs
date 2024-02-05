@@ -105,7 +105,7 @@ impl Bird{
             self.xy.y += mov_inc * sep_angle.cos();
             self.sep = false;
             let mut delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
-//            self.angle -= delta * 0.012;
+            self.angle -= delta * 0.002;
         }
         let mov_inc = random_range(0.1, 1.0); 
         if self.coh{
@@ -114,7 +114,7 @@ impl Bird{
             self.xy.y += mov_inc * coh_angle.cos();
             self.coh = false;
             let mut delta = (old_xy.y - self.xy.y).atan2(old_xy.x - self.xy.y);
-  //          self.angle += delta * 0.012;
+            self.angle += delta * 0.002;
         }
 
         /* Handle Screen Edge */
