@@ -18,8 +18,8 @@ impl Bird{
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
 
-    const BIRD_REGION_RADIUS:f32 = 200.0; 
-    const BIRD_SEPARATION_RADIUS:f32 = 45.0;
+    const BIRD_REGION_RADIUS:f32 = 250.0; 
+    const BIRD_SEPARATION_RADIUS:f32 = 50.0;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -105,7 +105,7 @@ impl Bird{
             self.xy.y += mov_inc * sep_angle.cos();
             self.sep = false;
             let mut delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
-            self.angle -= delta * 0.002;
+            self.angle -= delta * 0.008;
         }
         let mov_inc = random_range(0.1, 1.0); 
         if self.coh{
