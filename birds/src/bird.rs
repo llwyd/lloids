@@ -118,8 +118,8 @@ impl Bird{
         }
 
         /* Handle Screen Edge */
-        let turn_angle = deg_to_rad(2.0);
-        let scaling = 0.0225;
+        let turn_angle = deg_to_rad(60.0);
+        let scaling = 0.0825;
 
         /* Check if pointing towards centre */
         let mut centre_angle = self.angle;
@@ -128,29 +128,48 @@ impl Bird{
         }
 
         if self.xy.x >= inner.right() as f32{
-            if self.angle < deg_to_rad(359.9) || self.angle > deg_to_rad(180.0)
-            {
-                self.angle += self.angle * scaling;
+            let mut turn = 1.0;
+            let mut angle = self.angle - (std::f32::consts::PI * 1.5);
+            if angle < 0.0{
+                angle = angle + ( 2.0 * std::f32::consts::PI );
             }
+
+            if rad_to_deg(angle) > 180.0{
+                turn = -1.0;
+            }
+            self.angle += turn * turn_angle * scaling;
         }
         else if self.xy.x <= inner.left() as f32{
-            if self.angle < deg_to_rad(180.0) && self.angle > deg_to_rad(0.0)
-            {
-                self.angle += self.angle * scaling;
+            let mut turn = 1.0;
+            let mut angle = self.angle - (std::f32::consts::PI / 2.0);
+            if angle < 0.0{
+                angle = angle + ( 2.0 * std::f32::consts::PI );
             }
+
+            if rad_to_deg(angle) > 180.0{
+                turn = -1.0;
+            }
+            self.angle += turn * turn_angle * scaling;
         }
         
         if self.xy.y >= inner.top() as f32{
-            if self.angle < deg_to_rad(90.0) || self.angle > deg_to_rad(270.0)
-            {
-                self.angle += self.angle * scaling;
+            let mut turn = 1.0;
+            if rad_to_deg(self.angle) > 180.0{
+                turn = -1.0;
             }
+            self.angle += turn * turn_angle * scaling;
         }
         else if self.xy.y <= inner.bottom() as f32{
-            if self.angle < deg_to_rad(270.0) && self.angle > deg_to_rad(90.0)
-            {
-                self.angle += self.angle * scaling;
+            let mut turn = 1.0;
+            let mut angle = self.angle - std::f32::consts::PI;
+            if angle < 0.0{
+                angle = angle + ( 2.0 * std::f32::consts::PI );
             }
+
+            if rad_to_deg(angle) > 180.0{
+                turn = -1.0;
+            }
+            self.angle += turn * turn_angle * scaling;
         } 
 
 
