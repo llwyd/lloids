@@ -7,6 +7,9 @@ pub use crate::bird::Bird;
 const SCREEN_W_F32:f32 = 1024.0;
 const SCREEN_H_F32:f32 = 768.0;
 
+const SCREEN_W_2:f32 = SCREEN_W_F32 / 2.0;
+const SCREEN_H_2:f32 = SCREEN_H_F32 / 2.0;
+
 const SCREEN_W_U32:u32 = SCREEN_W_F32 as u32;
 const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 
@@ -29,10 +32,10 @@ fn model(app: &App) -> Model {
         bird: Vec::new(),
     };
 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(340.0))); 
+    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
     
     model.bird.push(Bird::new(pt2(20.0, 20.0), deg_to_rad(0.0)));
-    model.bird.push(Bird::new(pt2(0.0, -20.0), deg_to_rad(90.0)));
+    model.bird.push(Bird::new(pt2(0.0, -20.0), deg_to_rad(0.0)));
     model.bird.push(Bird::new(pt2(0.0, 35.0), deg_to_rad(135.0)));
     model.bird.push(Bird::new(pt2(20.0, 35.0), deg_to_rad(180.0)));
     model.bird.push(Bird::new(pt2(20.0, -35.0), deg_to_rad(225.0)));

@@ -121,12 +121,6 @@ impl Bird{
         let turn_angle = deg_to_rad(60.0);
         let scaling = 0.0825;
 
-        /* Check if pointing towards centre */
-        let mut centre_angle = self.angle;
-        if centre_angle >= deg_to_rad(180.0){
-            centre_angle -= deg_to_rad(180.0);
-        }
-
         if self.xy.x >= inner.right() as f32{
             let mut turn = 1.0;
             let mut angle = self.angle - (std::f32::consts::PI * 1.5);
