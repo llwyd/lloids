@@ -13,6 +13,8 @@ const SCREEN_H_2:f32 = SCREEN_H_F32 / 2.0;
 const SCREEN_W_U32:u32 = SCREEN_W_F32 as u32;
 const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 
+const SCREEN_TURN_OFFSET:f32 = 120.0;
+
 struct Model {
     bird:Vec<Bird>,
 }
@@ -152,8 +154,8 @@ fn update(app: &App, model: &mut Model, update: Update) {
     let win = app.window_rect();
 
     let inner = Rect{
-        x: Range{start: -320.0 + 60.0, end: 320.0 - 60.0},
-        y: Range{start: -240.0 + 60.0, end: 240.0 - 60.0},
+        x: Range{start: -SCREEN_W_2 + SCREEN_TURN_OFFSET, end: SCREEN_W_2 - SCREEN_TURN_OFFSET},
+        y: Range{start: -SCREEN_H_2 + SCREEN_TURN_OFFSET, end: SCREEN_H_2 - SCREEN_TURN_OFFSET},
     };
 
 
@@ -207,13 +209,11 @@ fn update(app: &App, model: &mut Model, update: Update) {
 fn view(app: &App, model: &Model, frame: Frame){
     let win = app.window_rect();
     let draw = app.draw();
-
-/*     
+ 
     draw.rect()
         .x_y(0.0, 0.0)
-        .w_h(640.0 - 250.0, 480.0 - 250.0)
+        .w_h(SCREEN_W_F32 - (SCREEN_TURN_OFFSET * 2.0), SCREEN_H_F32 - (SCREEN_TURN_OFFSET * 2.0))
         .color(DARKGREY);
-*/
 
     for bird in &model.bird{
         bird.draw_region(&draw);
