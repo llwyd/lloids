@@ -21,6 +21,10 @@ impl Bird{
     const BIRD_REGION_RADIUS:f32 = 250.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 50.0;
 
+    const SEPARATION_GAIN:f32 = 0.008;
+    const COHESION_GAIN:f32 = 0.002;
+    const ALIGNMENT_GAIN:f32 = 0.015;
+
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
             xy: position,
@@ -96,6 +100,7 @@ impl Bird{
 
     pub fn update(&mut self, win: &Rect<f32>, inner: &Rect<f32>)
     {
+        assert!(self.angle >= 0.0);
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
 
         let near_edge = self.is_near_edge(inner);
@@ -104,14 +109,16 @@ impl Bird{
             /*TODO reduce interaction gains */
         }
 
+        /* Separation */
         if self.sep_changed{
-            let diff = self.spatial_awareness(self.sep_angle, 0.008, 0.1, 1.0);
+            let diff = self.spatial_awareness(self.sep_angle, Self::SEPARATION_GAIN, 0.1, 1.0);
             self.angle -= diff;
             self.sep_changed = false;
         }
         
+        /* Cohesion */
         if self.coh_changed{
-            let diff = self.spatial_awareness(self.coh_angle, 0.002, 0.1, 1.0);
+            let diff = self.spatial_awareness(self.coh_angle, Self::COHESION_GAIN, 0.1, 1.0);
             self.angle += diff;
             self.coh_changed = false;
         }
@@ -125,7 +132,7 @@ impl Bird{
 
         /* Add new vectors */
         let mut new_xy = pt2(0.0, 0.0);
-        self.angle -= self.align_angle * 0.015;
+        self.angle -= self.align_angle * Self::ALIGNMENT_GAIN;
 
         println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
         assert!(self.angle != std::f32::INFINITY);
