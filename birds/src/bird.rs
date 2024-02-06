@@ -103,36 +103,41 @@ impl Bird{
         assert!(self.angle >= 0.0);
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
 
+        let mut sep_gain = Self::SEPARATION_GAIN;
+        let mut coh_gain = Self::COHESION_GAIN;
+        let mut align_gain = Self::ALIGNMENT_GAIN;
+
         let near_edge = self.is_near_edge(inner);
         if near_edge {
             
-            /*TODO reduce interaction gains */
+            sep_gain *= 0.25;
+            coh_gain *= 0.25;
+            align_gain *= 0.25;
         }
 
         /* Separation */
         if self.sep_changed{
-            let diff = self.spatial_awareness(self.sep_angle, Self::SEPARATION_GAIN, 0.1, 1.0);
+            let diff = self.spatial_awareness(self.sep_angle, sep_gain, 0.1, 1.0);
             self.angle -= diff;
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
-            let diff = self.spatial_awareness(self.coh_angle, Self::COHESION_GAIN, 0.1, 1.0);
+            let diff = self.spatial_awareness(self.coh_angle, coh_gain, 0.1, 1.0);
             self.angle += diff;
             self.coh_changed = false;
         }
 
         /* Handle Screen Edge */
         if near_edge{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(60.0), 0.0825);
-            self.angle += self.v_screen_edge(inner, deg_to_rad(60.0), 0.0825);
+            self.angle += self.h_screen_edge(inner, deg_to_rad(60.0), 0.2825);
+            self.angle += self.v_screen_edge(inner, deg_to_rad(60.0), 0.2825);
         }
 
 
         /* Add new vectors */
-        let mut new_xy = pt2(0.0, 0.0);
-        self.angle -= self.align_angle * Self::ALIGNMENT_GAIN;
+        self.angle -= self.align_angle * align_gain;
 
         println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
         assert!(self.angle != std::f32::INFINITY);
