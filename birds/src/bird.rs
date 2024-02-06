@@ -62,6 +62,10 @@ impl Bird{
     pub fn separation_radius(&self) -> f32{
         Self::BIRD_SEPARATION_RADIUS
     }
+    
+    pub fn position(&self) -> Point2{
+        self.xy
+    }
 
     pub fn draw_region(&self, draw: &Draw)
     {
@@ -93,28 +97,19 @@ impl Bird{
     pub fn update(&mut self, win: &Rect<f32>, inner: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
-        let sep_angle = self.sep_angle * 1.0;
-        let coh_angle = self.coh_angle * 1.0;
-
-        let mov_inc = random_range(0.1, 1.0); 
-
+        let mut sep_angle = self.sep_angle * 1.0;
+        let mut coh_angle = self.coh_angle * 1.0;
 
         if self.sep_changed{
-            let old_xy = self.xy;
-            self.xy.x += -mov_inc * sep_angle.sin();
-            self.xy.y += mov_inc * sep_angle.cos();
+            let diff = self.spatial_awareness(self.sep_angle, 0.008, 0.1, 1.0);
+            self.angle -= diff;
             self.sep_changed = false;
-            let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
-            self.angle -= delta * 0.008;
         }
-        let mov_inc = random_range(0.1, 1.0); 
+        
         if self.coh_changed{
-            let old_xy = self.xy;
-            self.xy.x += -mov_inc * coh_angle.sin();
-            self.xy.y += mov_inc * coh_angle.cos();
+            let diff = self.spatial_awareness(self.coh_angle, 0.002, 0.1, 1.0);
+            self.angle += diff;
             self.coh_changed = false;
-            let delta = (old_xy.y - self.xy.y).atan2(old_xy.x - self.xy.y);
-            self.angle += delta * 0.002;
         }
 
         /* Handle Screen Edge */
@@ -202,8 +197,14 @@ impl Bird{
         } 
     }
 
-    pub fn position(&self) -> Point2{
-        self.xy
+    fn spatial_awareness(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32) -> f32{
+        /* Randomise movement */
+        let mov_inc = random_range(lower_speed, upper_speed); 
+        let old_xy = self.xy;
+        self.xy.x += -mov_inc * angle.sin();
+        self.xy.y += mov_inc * angle.cos();
+        let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
+        delta * gain
     }
 }
 
