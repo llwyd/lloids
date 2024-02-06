@@ -28,8 +28,8 @@ impl Bird{
             sep_angle: angle,
             align_angle: 0.0,
             coh_angle: angle,
-            sep: false,
-            coh: false,
+            sep_changed: false,
+            coh_changed: false,
         }
     }
 
@@ -43,7 +43,7 @@ impl Bird{
     
     pub fn set_separation(&mut self, new_rotation:f32){
         self.sep_angle = new_rotation;
-        self.sep = true;
+        self.sep_changed = true;
     }
     
     pub fn set_alignment(&mut self, new_rotation:f32){
@@ -52,7 +52,7 @@ impl Bird{
     
     pub fn set_cohesion(&mut self, new_rotation:f32){
         self.coh_angle = new_rotation;
-        self.coh = true;
+        self.coh_changed = true;
     }
 
     pub fn radius(&self) -> f32{
@@ -103,7 +103,7 @@ impl Bird{
             let old_xy = self.xy;
             self.xy.x += -mov_inc * sep_angle.sin();
             self.xy.y += mov_inc * sep_angle.cos();
-            self.sep = false;
+            self.sep_changed = false;
             let mut delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
             self.angle -= delta * 0.008;
         }
@@ -112,7 +112,7 @@ impl Bird{
             let old_xy = self.xy;
             self.xy.x += -mov_inc * coh_angle.sin();
             self.xy.y += mov_inc * coh_angle.cos();
-            self.coh = false;
+            self.coh_changed = false;
             let mut delta = (old_xy.y - self.xy.y).atan2(old_xy.x - self.xy.y);
             self.angle += delta * 0.002;
         }
