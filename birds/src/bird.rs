@@ -117,11 +117,7 @@ impl Bird{
         }
 
         /* Handle Screen Edge */
-        let turn_angle = deg_to_rad(60.0);
-        let scaling = 0.0825;
-
         if near_edge{
-
             self.angle += self.h_screen_edge(inner, deg_to_rad(60.0), 0.0825);
             self.angle += self.v_screen_edge(inner, deg_to_rad(60.0), 0.0825);
         }
