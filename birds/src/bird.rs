@@ -97,8 +97,12 @@ impl Bird{
     pub fn update(&mut self, win: &Rect<f32>, inner: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
-        let mut sep_angle = self.sep_angle * 1.0;
-        let mut coh_angle = self.coh_angle * 1.0;
+
+        let near_edge = self.is_near_edge(inner);
+        if near_edge {
+            
+            /*TODO reduce interaction gains */
+        }
 
         if self.sep_changed{
             let diff = self.spatial_awareness(self.sep_angle, 0.008, 0.1, 1.0);
@@ -116,50 +120,11 @@ impl Bird{
         let turn_angle = deg_to_rad(60.0);
         let scaling = 0.0825;
 
-        if self.xy.x >= inner.right() as f32{
-            let mut turn = 1.0;
-            let mut angle = self.angle - (std::f32::consts::PI * 1.5);
-            if angle < 0.0{
-                angle = angle + ( 2.0 * std::f32::consts::PI );
-            }
+        if near_edge{
 
-            if rad_to_deg(angle) > 180.0{
-                turn = -1.0;
-            }
-            self.angle += turn * turn_angle * scaling;
+            self.angle += self.h_screen_edge(inner, deg_to_rad(60.0), 0.0825);
+            self.angle += self.v_screen_edge(inner, deg_to_rad(60.0), 0.0825);
         }
-        else if self.xy.x <= inner.left() as f32{
-            let mut turn = 1.0;
-            let mut angle = self.angle - (std::f32::consts::PI / 2.0);
-            if angle < 0.0{
-                angle = angle + ( 2.0 * std::f32::consts::PI );
-            }
-
-            if rad_to_deg(angle) > 180.0{
-                turn = -1.0;
-            }
-            self.angle += turn * turn_angle * scaling;
-        }
-        
-        if self.xy.y >= inner.top() as f32{
-            let mut turn = 1.0;
-            if rad_to_deg(self.angle) > 180.0{
-                turn = -1.0;
-            }
-            self.angle += turn * turn_angle * scaling;
-        }
-        else if self.xy.y <= inner.bottom() as f32{
-            let mut turn = 1.0;
-            let mut angle = self.angle - std::f32::consts::PI;
-            if angle < 0.0{
-                angle = angle + ( 2.0 * std::f32::consts::PI );
-            }
-
-            if rad_to_deg(angle) > 180.0{
-                turn = -1.0;
-            }
-            self.angle += turn * turn_angle * scaling;
-        } 
 
 
         /* Add new vectors */
@@ -205,6 +170,73 @@ impl Bird{
         self.xy.y += mov_inc * angle.cos();
         let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         delta * gain
+    }
+
+    fn is_near_edge(&self, inner: &Rect<f32>) -> bool
+    {
+        let mut near_edge = false;
+        if  self.xy.x >= inner.right() as f32 ||
+            self.xy.x <= inner.left() as f32 ||
+            self.xy.y >= inner.top() as f32 ||
+            self.xy.y <= inner.bottom() as f32 {
+            
+                near_edge = true;
+        }
+        near_edge
+    }
+    fn v_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, gain:f32) -> f32
+    {
+        let mut turn = 1.0;
+        let mut diff = 0.0;
+    
+        if self.xy.y >= inner.top() as f32{
+            if rad_to_deg(self.angle) > 180.0{
+                turn = -1.0;
+            }
+            diff = turn * turn_angle * gain;
+        }
+        else if self.xy.y <= inner.bottom() as f32{
+            let mut angle = self.angle - std::f32::consts::PI;
+            if angle < 0.0{
+                angle = angle + ( 2.0 * std::f32::consts::PI );
+            }
+
+            if rad_to_deg(angle) > 180.0{
+                turn = -1.0;
+            }
+            diff = turn * turn_angle * gain;
+        }
+        diff
+    }
+
+    fn h_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, gain:f32) -> f32
+    {
+        let mut turn = 1.0;
+        let mut diff = 0.0;
+
+        if self.xy.x >= inner.right() as f32{
+            let mut angle = self.angle - (std::f32::consts::PI * 1.5);
+            if angle < 0.0{
+                angle = angle + ( 2.0 * std::f32::consts::PI );
+            }
+
+            if rad_to_deg(angle) > 180.0{
+                turn = -1.0;
+            }
+            diff = turn * turn_angle * gain;
+        }
+        else if self.xy.x <= inner.left() as f32{
+            let mut angle = self.angle - (std::f32::consts::PI / 2.0);
+            if angle < 0.0{
+                angle = angle + ( 2.0 * std::f32::consts::PI );
+            }
+
+            if rad_to_deg(angle) > 180.0{
+                turn = -1.0;
+            }
+            diff= turn * turn_angle * gain;
+        }
+        diff
     }
 }
 
