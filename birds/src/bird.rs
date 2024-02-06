@@ -150,19 +150,7 @@ impl Bird{
         self.xy.x += -mov_inc * self.angle.sin();
         self.xy.y += mov_inc * self.angle.cos();
 
-        if self.xy.x >= win.right() as f32{
-            self.xy.x -= win.wh().x;
-        }
-        else if self.xy.x <= win.left() as f32{
-            self.xy.x += win.wh().x;
-        }
-        
-        if self.xy.y >= win.top() as f32{
-            self.xy.y -= win.wh().y;
-        }
-        else if self.xy.y <= win.bottom() as f32{
-            self.xy.y += win.wh().y;
-        } 
+        self.screen_wrap(win);
     }
 
     fn spatial_awareness(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32) -> f32{
@@ -240,6 +228,22 @@ impl Bird{
             diff= turn * turn_angle * gain;
         }
         diff
+    }
+
+    fn screen_wrap(&mut self, win: &Rect<f32>){
+        if self.xy.x >= win.right() as f32{
+            self.xy.x -= win.wh().x;
+        }
+        else if self.xy.x <= win.left() as f32{
+            self.xy.x += win.wh().x;
+        }
+        
+        if self.xy.y >= win.top() as f32{
+            self.xy.y -= win.wh().y;
+        }
+        else if self.xy.y <= win.bottom() as f32{
+            self.xy.y += win.wh().y;
+        } 
     }
 }
 
