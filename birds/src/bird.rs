@@ -7,8 +7,8 @@ pub struct Bird{
     sep_angle: f32,
     align_angle: f32,
     coh_angle: f32,
-    sep: bool,
-    coh: bool,
+    sep_changed: bool,
+    coh_changed: bool,
 }
 
 impl Bird{
@@ -99,21 +99,21 @@ impl Bird{
         let mov_inc = random_range(0.1, 1.0); 
 
 
-        if self.sep{
+        if self.sep_changed{
             let old_xy = self.xy;
             self.xy.x += -mov_inc * sep_angle.sin();
             self.xy.y += mov_inc * sep_angle.cos();
             self.sep_changed = false;
-            let mut delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
+            let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
             self.angle -= delta * 0.008;
         }
         let mov_inc = random_range(0.1, 1.0); 
-        if self.coh{
+        if self.coh_changed{
             let old_xy = self.xy;
             self.xy.x += -mov_inc * coh_angle.sin();
             self.xy.y += mov_inc * coh_angle.cos();
             self.coh_changed = false;
-            let mut delta = (old_xy.y - self.xy.y).atan2(old_xy.x - self.xy.y);
+            let delta = (old_xy.y - self.xy.y).atan2(old_xy.x - self.xy.y);
             self.angle += delta * 0.002;
         }
 
