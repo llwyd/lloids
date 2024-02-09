@@ -18,9 +18,9 @@ impl Bird{
     const BIRD_REGION_RADIUS:f32 = 250.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 50.0;
 
-    const SEPARATION_GAIN:f32 = 0.008;
-    const COHESION_GAIN:f32 = 0.002;
-    const ALIGNMENT_GAIN:f32 = 0.015;
+    const SEPARATION_GAIN:f32 = 0.016;
+    const COHESION_GAIN:f32 = 0.004;
+    const ALIGNMENT_GAIN:f32 = 0.05;
 
     const SEP_SPEED_MIN:f32 = 0.1;
     const SEP_SPEED_MAX:f32 = 1.0;
@@ -35,8 +35,8 @@ impl Bird{
     const ALIGNMENT_INITIAL:f32 = 0.0;
     const REDUCTION_FACTOR:f32 = 0.25;
 
-    const TURN_ANGLE:f32 = 60.0;
-    const TURN_GAIN:f32 = 0.2;
+    const TURN_ANGLE:f32 = 45.0;
+    const TURN_GAIN:f32 = 0.02;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
