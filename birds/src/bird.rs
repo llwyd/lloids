@@ -113,8 +113,8 @@ impl Bird{
 
     pub fn update(&mut self, win: &Rect<f32>, inner: &Rect<f32>)
     {
-        assert!(self.angle >= 0.0);
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
+        assert!(self.angle >= 0.0);
 
         let mut sep_gain = Self::SEPARATION_GAIN;
         let mut coh_gain = Self::COHESION_GAIN;
@@ -130,14 +130,14 @@ impl Bird{
 
         /* Separation */
         if self.sep_changed{
-            let diff = self.spatial_awareness(self.sep_angle, sep_gain, SEP_SPEED_MIN , SEP_SPEED_MAX);
+            let diff = self.spatial_awareness(self.sep_angle, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX);
             self.angle -= diff;
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
-            let diff = self.spatial_awareness(self.coh_angle, coh_gain, COH_SPEED_MIN, COH_SPEED_MAX);
+            let diff = self.spatial_awareness(self.coh_angle, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX);
             self.angle += diff;
             self.coh_changed = false;
         }
@@ -145,9 +145,15 @@ impl Bird{
         /* Handle Screen Edge */
         if near_edge{
             self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_ANGLE);
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
+            
+            if self.angle < 0.0{
+                self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
+            }
+            else if self.angle >= ( 2.0 * std::f32::consts::PI ){
+                self.angle = self.angle - ( 2.0 * std::f32::consts::PI ); 
+            }
         }
-
 
         /* Add new vectors */
         self.angle -= self.align_angle * align_gain;
@@ -164,7 +170,8 @@ impl Bird{
         }
 
         println!("New Angle: {:?}", rad_to_deg(self.angle));
-        let mov_inc = random_range(BIRD_SPEED_MIN, BIRD_SPEED_MAX); 
+        assert!(self.angle >= 0.0);
+        let mov_inc = random_range(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
         self.xy.x += -mov_inc * self.angle.sin();
         self.xy.y += mov_inc * self.angle.cos();
 

@@ -71,7 +71,7 @@ fn model(app: &App) -> Model {
     model
 }
 
-fn window_event(app: &App, model: &mut Model, event: WindowEvent)
+fn window_event(_app: &App, _model: &mut Model, _event: WindowEvent)
 {
 }
 
@@ -83,7 +83,7 @@ fn is_bird_nearby(bird: &Bird, other_bird: &Bird) -> bool{
     let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
     let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
     let other_bird_radius = (dx_2 + dy_2).sqrt();
-    (other_bird_radius <= bird_radius)
+    other_bird_radius <= bird_radius
 }
 
 fn is_bird_really_nearby(bird: &Bird, other_bird: &Bird) -> bool{
@@ -92,7 +92,7 @@ fn is_bird_really_nearby(bird: &Bird, other_bird: &Bird) -> bool{
     let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
     let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
     let other_bird_radius = (dx_2 + dy_2).sqrt();
-    (other_bird_radius <= bird_radius)
+    other_bird_radius <= bird_radius
 }
 
 fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
@@ -120,7 +120,7 @@ fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    angle -= (std::f32::consts::PI);
+    angle -= std::f32::consts::PI;
     if angle < 0.0{
         angle = angle + ( 2.0 * std::f32::consts::PI );
     }
@@ -139,7 +139,7 @@ fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     }
     
     average /= num_bird as f32;
-    let mut delta = bird.angle() - average;
+    let delta = bird.angle() - average;
     
     
     println!("Align: {:?}, Delta{:?}", average, delta);
@@ -175,7 +175,7 @@ fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     angle
 }
 
-fn update(app: &App, model: &mut Model, update: Update) { 
+fn update(app: &App, model: &mut Model, _update: Update) { 
     let win = app.window_rect();
 
     let inner = Rect{
@@ -192,7 +192,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
         let mut nearby_sep:Vec<Bird> = Vec::new();
 
         for j in 0..num_bird{
-            if(i != j)
+            if i != j
             {
                 if is_bird_really_nearby(&model.bird[i], &model.bird[j])
                 {
@@ -232,7 +232,7 @@ fn update(app: &App, model: &mut Model, update: Update) {
 }
 
 fn view(app: &App, model: &Model, frame: Frame){
-    let win = app.window_rect();
+    //let win = app.window_rect();
     let draw = app.draw();
  
     draw.rect()
