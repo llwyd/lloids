@@ -33,7 +33,7 @@ impl Bird{
     
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
-    const REDUCTION_FACTOR:f32 = 0.25;
+    const REDUCTION_FACTOR:f32 = 0.5;
 
     const TURN_ANGLE:f32 = 45.0;
     const TURN_GAIN:f32 = 0.02;
@@ -156,7 +156,7 @@ impl Bird{
             }
         }
 
-        /* Add new vectors */
+        /* Adjust Alignment */
         self.angle -= self.align_angle * align_gain;
 
         println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
