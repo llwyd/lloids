@@ -25,6 +25,8 @@ impl Bird{
     const COHESION_GAIN:f32 = 0.002;
     const ALIGNMENT_GAIN:f32 = 0.015;
 
+    const REDUCTION_FACTOR:f32 = 0.25;
+
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
             xy: position,
@@ -110,9 +112,9 @@ impl Bird{
         let near_edge = self.is_near_edge(inner);
         if near_edge {
             
-            sep_gain *= 0.25;
-            coh_gain *= 0.25;
-            align_gain *= 0.25;
+            sep_gain *= Self::REDUCTION_FACTOR;
+            coh_gain *= Self::REDUCTION_FACTOR;
+            align_gain *= Self::REDUCTION_FACTOR;
         }
 
         /* Separation */
