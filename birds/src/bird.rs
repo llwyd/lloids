@@ -12,9 +12,6 @@ pub struct Bird{
 }
 
 impl Bird{
-    const MOV_INC:f32 = 0.2;
-    const MOV_INC_MAX:f32 = 10.0;
-    const MOV_INC_MIN:f32 = 0.01;
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
 
@@ -25,14 +22,28 @@ impl Bird{
     const COHESION_GAIN:f32 = 0.002;
     const ALIGNMENT_GAIN:f32 = 0.015;
 
+    const SEP_SPEED_MIN:f32 = 0.1;
+    const SEP_SPEED_MAX:f32 = 1.0;
+    
+    const COH_SPEED_MIN:f32 = 0.1;
+    const COH_SPEED_MAX:f32 = 1.0;
+
+    const BIRD_SPEED_MIN:f32 = 1.0;
+    const BIRD_SPEED_MAX:f32 = 2.0;
+    
+
+    const ALIGNMENT_INITIAL:f32 = 0.0;
     const REDUCTION_FACTOR:f32 = 0.25;
+
+    const TURN_ANGLE:f32 = 60.0;
+    const TURN_GAIN:f32 = 0.2;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
             xy: position,
             angle: angle,
             sep_angle: angle,
-            align_angle: 0.0,
+            align_angle: Self::ALIGNMENT_INITIAL,
             coh_angle: angle,
             sep_changed: false,
             coh_changed: false,
@@ -119,22 +130,22 @@ impl Bird{
 
         /* Separation */
         if self.sep_changed{
-            let diff = self.spatial_awareness(self.sep_angle, sep_gain, 0.1, 1.0);
+            let diff = self.spatial_awareness(self.sep_angle, sep_gain, SEP_SPEED_MIN , SEP_SPEED_MAX);
             self.angle -= diff;
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
-            let diff = self.spatial_awareness(self.coh_angle, coh_gain, 0.1, 1.0);
+            let diff = self.spatial_awareness(self.coh_angle, coh_gain, COH_SPEED_MIN, COH_SPEED_MAX);
             self.angle += diff;
             self.coh_changed = false;
         }
 
         /* Handle Screen Edge */
         if near_edge{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(60.0), 0.2825);
-            self.angle += self.v_screen_edge(inner, deg_to_rad(60.0), 0.2825);
+            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_ANGLE);
         }
 
 
@@ -153,7 +164,7 @@ impl Bird{
         }
 
         println!("New Angle: {:?}", rad_to_deg(self.angle));
-        let mov_inc = random_range(1.0, 2.0); 
+        let mov_inc = random_range(BIRD_SPEED_MIN, BIRD_SPEED_MAX); 
         self.xy.x += -mov_inc * self.angle.sin();
         self.xy.y += mov_inc * self.angle.cos();
 
