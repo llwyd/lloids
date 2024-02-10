@@ -16,7 +16,7 @@ const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 
 const SCREEN_TURN_OFFSET:f32 = 200.0;
 
-const NUM_BIRDS:u32 = 200;
+const NUM_BIRDS:u32 = 16;
 
 struct Model {
     bird:Vec<Bird>,

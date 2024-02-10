@@ -22,14 +22,14 @@ impl Bird{
     const COHESION_GAIN:f32 = 0.005;
     const ALIGNMENT_GAIN:f32 = 0.05;
 
-    const SEP_SPEED_MIN:f32 = 0.1;
-    const SEP_SPEED_MAX:f32 = 1.0;
+    const SEP_SPEED_MIN:f32 = 0.12;
+    const SEP_SPEED_MAX:f32 = 1.2;
     
     const COH_SPEED_MIN:f32 = 0.1;
     const COH_SPEED_MAX:f32 = 1.0;
 
     const BIRD_SPEED_MIN:f32 = 1.0;
-    const BIRD_SPEED_MAX:f32 = 2.0;
+    const BIRD_SPEED_MAX:f32 = 5.0;
     
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
