@@ -147,13 +147,8 @@ impl Bird{
         if near_edge{
             self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
             self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
-            
-            if self.angle < 0.0{
-                self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
-            }
-            else if self.angle >= ( 2.0 * std::f32::consts::PI ){
-                self.angle = self.angle - ( 2.0 * std::f32::consts::PI ); 
-            }
+        
+            self.angle = self.wrap_angle(self.angle);
         }
 
         /* Adjust Alignment */
@@ -163,12 +158,7 @@ impl Bird{
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
         
-        if self.angle < 0.0{
-            self.angle = self.angle + ( 2.0 * std::f32::consts::PI );
-        }
-        else if self.angle >= ( 2.0 * std::f32::consts::PI ){
-            self.angle = self.angle - ( 2.0 * std::f32::consts::PI ); 
-        }
+        self.angle = self.wrap_angle(self.angle);
 
         println!("New Angle: {:?}", rad_to_deg(self.angle));
         assert!(self.angle >= 0.0);
@@ -177,6 +167,17 @@ impl Bird{
         self.xy.y += mov_inc * self.angle.cos();
 
         self.screen_wrap(win);
+    }
+
+    fn wrap_angle(&self, angle: f32) -> f32{
+        let mut wrapped_angle = angle;
+        if angle < 0.0{
+            wrapped_angle = angle + ( 2.0 * std::f32::consts::PI );
+        }
+        else if angle >= ( 2.0 * std::f32::consts::PI ){
+            wrapped_angle = angle - ( 2.0 * std::f32::consts::PI ); 
+        }
+        wrapped_angle
     }
 
     fn spatial_awareness(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32) -> f32{
