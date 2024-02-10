@@ -177,6 +177,8 @@ impl Bird{
         else if angle >= ( 2.0 * std::f32::consts::PI ){
             wrapped_angle = angle - ( 2.0 * std::f32::consts::PI ); 
         }
+
+        assert!(wrapped_angle >= 0.0);
         wrapped_angle
     }
 
@@ -219,9 +221,7 @@ impl Bird{
             let mut delta = inner.bottom() - self.xy.y;
             delta *= Self::DECAY;
             let mut angle = self.angle - std::f32::consts::PI;
-            if angle < 0.0{
-                angle = angle + ( 2.0 * std::f32::consts::PI );
-            }
+            angle = self.wrap_angle(angle);
 
             if rad_to_deg(angle) > 180.0{
                 turn = -1.0;
@@ -240,9 +240,7 @@ impl Bird{
             let mut delta = self.xy.x - inner.right();
             delta *= Self::DECAY;
             let mut angle = self.angle - (std::f32::consts::PI * 1.5);
-            if angle < 0.0{
-                angle = angle + ( 2.0 * std::f32::consts::PI );
-            }
+            angle = self.wrap_angle(angle);
 
             if rad_to_deg(angle) > 180.0{
                 turn = -1.0;
@@ -253,9 +251,7 @@ impl Bird{
             let mut delta = inner.left() - self.xy.x;
             delta *= Self::DECAY;
             let mut angle = self.angle - (std::f32::consts::PI / 2.0);
-            if angle < 0.0{
-                angle = angle + ( 2.0 * std::f32::consts::PI );
-            }
+            angle = self.wrap_angle(angle);
 
             if rad_to_deg(angle) > 180.0{
                 turn = -1.0;
