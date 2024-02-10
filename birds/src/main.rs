@@ -16,6 +16,8 @@ const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 
 const SCREEN_TURN_OFFSET:f32 = 200.0;
 
+const NUM_BIRDS:u32 = 200;
+
 struct Model {
     bird:Vec<Bird>,
     show_radii:bool,
@@ -37,6 +39,14 @@ fn model(app: &App) -> Model {
         show_radii: false,
     };
 
+    for _i in 0..NUM_BIRDS{
+        let x = random_range(-SCREEN_W_2, SCREEN_W_2); 
+        let y = random_range(-SCREEN_H_2, SCREEN_H_2); 
+        let angle = random_range(0.0, 359.0);
+
+        model.bird.push(Bird::new(pt2(x, y), deg_to_rad(angle))); 
+    }
+/*
     model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
     model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
     model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
@@ -70,7 +80,8 @@ fn model(app: &App) -> Model {
     model.bird.push(Bird::new(pt2(20.0, 35.0), deg_to_rad(180.0)));
     model.bird.push(Bird::new(pt2(20.0, -35.0), deg_to_rad(225.0)));
     model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
-   
+    */
+
     model
 }
 
