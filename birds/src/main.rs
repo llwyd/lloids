@@ -17,6 +17,7 @@ const SCREEN_TURN_OFFSET:f32 = 200.0;
 
 struct Model {
     bird:Vec<Bird>,
+    show_radii:bool,
 }
 
 fn model(app: &App) -> Model {
@@ -32,6 +33,7 @@ fn model(app: &App) -> Model {
     
     let mut model = Model {
         bird: Vec::new(),
+        show_radii: false,
     };
 
     model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
@@ -234,18 +236,20 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 fn view(app: &App, model: &Model, frame: Frame){
     //let win = app.window_rect();
     let draw = app.draw();
- 
-    draw.rect()
-        .x_y(0.0, 0.0)
-        .w_h(SCREEN_W_F32 - (SCREEN_TURN_OFFSET * 2.0), SCREEN_H_F32 - (SCREEN_TURN_OFFSET * 2.0))
-        .color(DARKGREY);
 
-    for bird in &model.bird{
-        bird.draw_region(&draw);
-    }
-    
-    for bird in &model.bird{
-        bird.draw_sep_region(&draw);
+    if model.show_radii{
+        draw.rect()
+            .x_y(0.0, 0.0)
+            .w_h(SCREEN_W_F32 - (SCREEN_TURN_OFFSET * 2.0), SCREEN_H_F32 - (SCREEN_TURN_OFFSET * 2.0))
+            .color(DARKGREY);
+
+        for bird in &model.bird{
+            bird.draw_region(&draw);
+        }
+        
+        for bird in &model.bird{
+            bird.draw_sep_region(&draw);
+        }
     }
 
     for bird in &model.bird{
