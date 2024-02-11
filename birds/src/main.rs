@@ -46,41 +46,6 @@ fn model(app: &App) -> Model {
 
         model.bird.push(Bird::new(pt2(x, y), deg_to_rad(angle))); 
     }
-/*
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
-    
-    model.bird.push(Bird::new(pt2(20.0, 20.0), deg_to_rad(0.0)));
-    model.bird.push(Bird::new(pt2(0.0, -20.0), deg_to_rad(0.0)));
-    model.bird.push(Bird::new(pt2(0.0, 35.0), deg_to_rad(135.0)));
-    model.bird.push(Bird::new(pt2(20.0, 35.0), deg_to_rad(180.0)));
-    model.bird.push(Bird::new(pt2(20.0, -35.0), deg_to_rad(225.0)));
-    model.bird.push(Bird::new(pt2(180.0, -180.0), deg_to_rad(180.0)));
-    */
 
     model
 }
