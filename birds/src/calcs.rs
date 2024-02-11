@@ -1,18 +1,7 @@
 pub use crate::bird::Bird;
 use nannou::prelude::*;
 
-pub fn is_bird_nearby(bird: &Bird, other_bird: &Bird) -> bool{
-    let bird_radius = bird.radius();
-
-    let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
-    let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
-    let other_bird_radius = (dx_2 + dy_2).sqrt();
-    other_bird_radius <= bird_radius
-}
-
-pub fn is_bird_really_nearby(bird: &Bird, other_bird: &Bird) -> bool{
-    let bird_radius = bird.separation_radius();
-
+pub fn is_bird_nearby(bird: &Bird, other_bird: &Bird, bird_radius: f32) -> bool{
     let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
     let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
     let other_bird_radius = (dx_2 + dy_2).sqrt();
@@ -96,5 +85,16 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     println!("Cohesion:{:?} Angle:{}", average, rad_to_deg(angle));
 
     angle
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;    
+    
+    #[test]
+    fn test(){
+
+        assert!(true);
+    }
 }
 

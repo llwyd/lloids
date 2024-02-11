@@ -115,12 +115,14 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         for j in 0..num_bird{
             if i != j
             {
-                if calcs::is_bird_really_nearby(&model.bird[i], &model.bird[j])
+                let sep_radius = model.bird[i].separation_radius();
+                let radius = model.bird[i].radius();
+                if calcs::is_bird_nearby(&model.bird[i], &model.bird[j], sep_radius)
                 {
                     nearby_sep.push(model.bird[j]);
                 }
                 
-                if calcs::is_bird_nearby(&model.bird[i], &model.bird[j])
+                if calcs::is_bird_nearby(&model.bird[i], &model.bird[j], radius)
                 {
                     nearby.push(model.bird[j]);
                 }
