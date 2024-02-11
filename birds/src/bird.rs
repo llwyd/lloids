@@ -37,7 +37,7 @@ impl Bird{
 
     const TURN_ANGLE:f32 = 45.0;
     const TURN_GAIN:f32 = 0.02;
-    const DECAY:f32 = 0.025;
+    const DECAY:f32 = 0.045;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -170,14 +170,16 @@ impl Bird{
     }
 
     fn wrap_angle(&self, angle: f32) -> f32{
-        let mut wrapped_angle = angle;
-        if angle < 0.0{
-            wrapped_angle = angle + ( 2.0 * std::f32::consts::PI );
+        let ref_angle = angle % (2.0 * std::f32::consts::PI);
+        let mut wrapped_angle = ref_angle;
+        
+        if ref_angle < 0.0{
+            wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
         }
-        else if angle >= ( 2.0 * std::f32::consts::PI ){
-            wrapped_angle = angle - ( 2.0 * std::f32::consts::PI ); 
+        else if ref_angle >= ( 2.0 * std::f32::consts::PI ){
+            wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
         }
-
+        
         assert!(wrapped_angle >= 0.0);
         wrapped_angle
     }
