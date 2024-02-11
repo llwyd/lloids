@@ -92,9 +92,33 @@ mod tests {
     use super::*;    
     
     #[test]
-    fn test(){
+    fn inside_circle(){
+        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)); 
+        let bird_1 = Bird::new(pt2(0.0, 10.0), deg_to_rad(0.0)); 
 
-        assert!(true);
+        let radius = 15.0;
+        let inside = is_bird_nearby(&bird_0, &bird_1,radius);
+        assert!(inside);
+    }
+    
+    #[test]
+    fn inside_circle_exactly(){
+        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)); 
+        let bird_1 = Bird::new(pt2(0.0, 15.0), deg_to_rad(0.0)); 
+
+        let radius = 15.0;
+        let inside = is_bird_nearby(&bird_0, &bird_1,radius);
+        assert!(inside);
+    }
+    
+    #[test]
+    fn not_inside_circle(){
+        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)); 
+        let bird_1 = Bird::new(pt2(0.0, 15.000001), deg_to_rad(0.0)); 
+
+        let radius = 15.0;
+        let inside = is_bird_nearby(&bird_0, &bird_1,radius);
+        assert!(!inside);
     }
 }
 
