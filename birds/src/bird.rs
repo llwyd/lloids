@@ -20,7 +20,7 @@ impl Bird{
 
     const SEPARATION_GAIN:f32 = 0.024;
     const COHESION_GAIN:f32 = 0.005;
-    const ALIGNMENT_GAIN:f32 = 0.05;
+    const ALIGNMENT_GAIN:f32 = 0.12;
 
     const SEP_SPEED_MIN:f32 = 0.12;
     const SEP_SPEED_MAX:f32 = 1.2;
