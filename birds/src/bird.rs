@@ -132,7 +132,7 @@ impl Bird{
         /* Separation */
         if self.sep_changed{
             let diff = self.spatial_awareness(self.sep_angle, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX);
-            self.angle -= diff;
+            self.angle += diff;
             self.sep_changed = false;
         }
         

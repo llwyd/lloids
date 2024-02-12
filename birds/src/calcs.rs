@@ -23,21 +23,18 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     average.x /= num_bird as f32;
     average.y /= num_bird as f32;
 
-//    let angle = average.y.atan2(average.x) - bird.position().y.atan2(bird.position().x);
     let mut angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
-
     if angle < 0.0{
         angle = angle + ( 2.0 * std::f32::consts::PI );
     }
     
+    let separation_angle = deg_to_rad(90.0) - angle;
 
-    println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
+    
 
-    angle -= std::f32::consts::PI;
-    if angle < 0.0{
-        angle = angle + ( 2.0 * std::f32::consts::PI );
-    }
-    angle
+    println!("Separation:{:?} Angle:{},{}", average, rad_to_deg(angle), rad_to_deg(separation_angle));
+
+    separation_angle
 }
 
 pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
