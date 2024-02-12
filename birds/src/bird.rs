@@ -15,15 +15,15 @@ impl Bird{
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
 
-    const BIRD_REGION_RADIUS:f32 = 250.0; 
-    const BIRD_SEPARATION_RADIUS:f32 = 50.0;
+    const BIRD_REGION_RADIUS:f32 = 180.0; 
+    const BIRD_SEPARATION_RADIUS:f32 = 65.0;
 
     const SEPARATION_GAIN:f32 = 0.024;
     const COHESION_GAIN:f32 = 0.005;
     const ALIGNMENT_GAIN:f32 = 0.12;
 
-    const SEP_SPEED_MIN:f32 = 0.12;
-    const SEP_SPEED_MAX:f32 = 1.2;
+    const SEP_SPEED_MIN:f32 = 1.0;
+    const SEP_SPEED_MAX:f32 = 1.5;
     
     const COH_SPEED_MIN:f32 = 0.1;
     const COH_SPEED_MAX:f32 = 1.0;
@@ -139,7 +139,7 @@ impl Bird{
         /* Cohesion */
         if self.coh_changed{
             let diff = self.spatial_awareness(self.coh_angle, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX);
-            self.angle -= diff;
+            self.angle += diff;
             self.coh_changed = false;
         }
 
