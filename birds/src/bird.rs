@@ -139,7 +139,7 @@ impl Bird{
         /* Cohesion */
         if self.coh_changed{
             let diff = self.spatial_awareness(self.coh_angle, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX);
-            self.angle += diff;
+            self.angle -= diff;
             self.coh_changed = false;
         }
 
