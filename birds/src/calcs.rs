@@ -119,5 +119,49 @@ mod tests {
         let inside = is_bird_nearby(&bird_0, &bird_1,radius);
         assert!(!inside);
     }
+    
+    #[test]
+    fn separation_angle_x_pos(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = separation(&mut bird, &bird_vec);
+        assert_eq!(angle, deg_to_rad(90.0));
+    }
+    
+    #[test]
+    fn separation_angle_x_neg(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = separation(&mut bird, &bird_vec);
+        assert_eq!(angle, deg_to_rad(-90.0));
+    }
+    
+    #[test]
+    fn separation_angle_y_pos(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = separation(&mut bird, &bird_vec);
+        assert_eq!(angle, deg_to_rad(0.0));
+    }
+    
+    #[test]
+    fn separation_angle_y_neg(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = separation(&mut bird, &bird_vec);
+        assert_eq!(angle, -3.1415925);
+    }
 }
 
