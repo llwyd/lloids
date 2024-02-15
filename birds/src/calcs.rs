@@ -30,9 +30,11 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
         angle = angle + ( 2.0 * std::f32::consts::PI );
     }
     
-    let separation_angle = (angle - deg_to_rad(90.0)) * -1.0;
-
+    let mut separation_angle = (angle - deg_to_rad(90.0)) * -1.0;
     
+    if separation_angle <= -std::f32::consts::PI{
+        separation_angle += 2.0 * std::f32::consts::PI;
+    }
 
     println!("Separation:{:?} Angle:{},{}", average, rad_to_deg(angle), rad_to_deg(separation_angle));
 
@@ -61,9 +63,9 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     delta
 }
 
+/*
 pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     
-    /* Calculate angles */
     let num_bird = other_birds.len();
 
     let mut average = pt2(0.0, 0.0);
@@ -85,11 +87,19 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     angle
 }
+*/
 
 #[cfg(test)]
 mod tests {
     use super::*;    
-    
+    const FLOAT_PRECISION:f32 = 0.00001;
+   
+    fn compare_floats(x:f32, y:f32, precision:f32)->bool{
+
+        let delta = (x - y).abs();
+        delta <= precision
+    }
+
     #[test]
     fn inside_circle(){
         let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)); 
@@ -150,7 +160,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(0.0));
+        assert!(compare_floats(angle, deg_to_rad(0.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -161,7 +171,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(-180.0));
+        assert!(compare_floats(angle, deg_to_rad(-180.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -172,7 +182,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(45.0));
+        assert!(compare_floats(angle, deg_to_rad(45.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -183,7 +193,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(-45.0));
+        assert!(compare_floats(angle, deg_to_rad(-45.0), FLOAT_PRECISION));
     }
     #[test]
     fn separation_angle_se(){
@@ -193,7 +203,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(-225.0));
+        assert!(compare_floats(angle, deg_to_rad(135.0), FLOAT_PRECISION));
     }
 
     #[test]
