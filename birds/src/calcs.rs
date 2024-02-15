@@ -30,7 +30,7 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
         angle = angle + ( 2.0 * std::f32::consts::PI );
     }
     
-    let separation_angle = deg_to_rad(90.0) - angle;
+    let separation_angle = (angle - deg_to_rad(90.0)) * -1.0;
 
     
 
@@ -161,7 +161,50 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, -3.1415925);
+        assert_eq!(angle, deg_to_rad(-180.0));
+    }
+    
+    #[test]
+    fn separation_angle_ne(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = separation(&mut bird, &bird_vec);
+        assert_eq!(angle, deg_to_rad(45.0));
+    }
+    
+    #[test]
+    fn separation_angle_nw(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = separation(&mut bird, &bird_vec);
+        assert_eq!(angle, deg_to_rad(-45.0));
+    }
+    #[test]
+    fn separation_angle_se(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = separation(&mut bird, &bird_vec);
+        assert_eq!(angle, deg_to_rad(-225.0));
+    }
+
+    #[test]
+    fn separation_angle_sw(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = separation(&mut bird, &bird_vec);
+        assert_eq!(angle, deg_to_rad(-135.0));
     }
 }
 
