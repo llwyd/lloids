@@ -106,7 +106,7 @@ impl Bird{
     pub fn draw(&self, draw: &Draw)
     {
         draw.tri()
-            .points(pt2(0.0,Self::BIRD_HEIGHT / 2.0),pt2(-Self::BIRD_WIDTH_2, -Self::BIRD_HEIGHT / 2.0),pt2(Self::BIRD_WIDTH_2, -Self::BIRD_HEIGHT / 2.0))
+            .points(pt2(Self::BIRD_HEIGHT / 2.0, 0.0),pt2(-Self::BIRD_HEIGHT / 2.0, -Self::BIRD_WIDTH_2),pt2(-Self::BIRD_HEIGHT / 2.0,Self::BIRD_WIDTH_2))
             .x_y(self.xy.x, self.xy.y)
             .rotate(self.angle)
             .color(WHITE);
@@ -163,8 +163,8 @@ impl Bird{
         println!("New Angle: {:?}", rad_to_deg(self.angle));
         assert!(self.angle >= 0.0);
         let mov_inc = random_range(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
-        self.xy.x += -mov_inc * self.angle.sin();
-        self.xy.y += mov_inc * self.angle.cos();
+        self.xy.x += mov_inc * self.angle.cos();
+        self.xy.y += mov_inc * self.angle.sin();
 
         self.screen_wrap(win);
     }
@@ -188,8 +188,8 @@ impl Bird{
         /* Randomise movement */
         let mov_inc = random_range(lower_speed, upper_speed); 
         let old_xy = self.xy;
-        self.xy.x += -mov_inc * angle.sin();
-        self.xy.y += mov_inc * angle.cos();
+        self.xy.x += mov_inc * angle.cos();
+        self.xy.y += mov_inc * angle.sin();
         let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         delta * gain
     }
