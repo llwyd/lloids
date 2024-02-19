@@ -30,7 +30,7 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
         angle = angle + ( 2.0 * std::f32::consts::PI );
     }
     
-    let mut separation_angle = (angle - deg_to_rad(90.0)) * -1.0;
+    let mut separation_angle = (angle) * -1.0;
     
     if separation_angle <= -std::f32::consts::PI{
         separation_angle += 2.0 * std::f32::consts::PI;

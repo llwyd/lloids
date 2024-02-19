@@ -16,7 +16,7 @@ const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 
 const SCREEN_TURN_OFFSET:f32 = 100.0;
 
-const NUM_BIRDS:u32 = 1;
+const NUM_BIRDS:u32 = 16;
 
 struct Model {
     bird:Vec<Bird>,
@@ -45,7 +45,7 @@ fn model(app: &App) -> Model {
         let angle = random_range(0.0, 359.0);
 
         //model.bird.push(Bird::new(pt2(x, y), deg_to_rad(0.0))); 
-        model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(315.0))); 
+        model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
     }
 
     model
