@@ -44,7 +44,8 @@ fn model(app: &App) -> Model {
         let y = random_range(-SCREEN_H_2, SCREEN_H_2); 
         let angle = random_range(0.0, 359.0);
 
-        model.bird.push(Bird::new(pt2(x, y), deg_to_rad(0.0))); 
+        //model.bird.push(Bird::new(pt2(x, y), deg_to_rad(0.0))); 
+        model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(315.0))); 
     }
 
     model
