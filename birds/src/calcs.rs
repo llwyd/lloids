@@ -29,16 +29,10 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     if angle < 0.0{
         angle = angle + ( 2.0 * std::f32::consts::PI );
     }
-    
-    let mut separation_angle = (angle) * -1.0;
-    
-    if separation_angle <= -std::f32::consts::PI{
-        separation_angle += 2.0 * std::f32::consts::PI;
-    }
 
-    println!("Separation:{:?} Angle:{},{}", average, rad_to_deg(angle), rad_to_deg(separation_angle));
+    println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
 
-    separation_angle
+    angle
 }
 
 pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
