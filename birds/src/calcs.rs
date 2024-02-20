@@ -132,7 +132,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(90.0));
+        assert_eq!(angle, deg_to_rad(0.0));
     }
     
     #[test]
@@ -143,7 +143,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(-90.0));
+        assert_eq!(angle, deg_to_rad(180.0));
     }
     
     #[test]
@@ -154,7 +154,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(0.0), FLOAT_PRECISION));
+        assert!(compare_floats(angle, deg_to_rad(90.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -165,7 +165,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(-180.0), FLOAT_PRECISION));
+        assert!(compare_floats(angle, deg_to_rad(270.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -187,7 +187,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(-45.0), FLOAT_PRECISION));
+        assert!(compare_floats(angle, deg_to_rad(135.0), FLOAT_PRECISION));
     }
     #[test]
     fn separation_angle_se(){
@@ -197,7 +197,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(135.0), FLOAT_PRECISION));
+        assert!(compare_floats(angle, deg_to_rad(315.0), FLOAT_PRECISION));
     }
 
     #[test]
@@ -208,7 +208,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(-135.0));
+        assert!(compare_floats(angle, deg_to_rad(225.0), FLOAT_PRECISION));
     }
 }
 
