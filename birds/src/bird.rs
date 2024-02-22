@@ -195,6 +195,22 @@ impl Bird{
         assert!(wrapped_angle >= 0.0);
         wrapped_angle
     }
+    
+    fn wrap_angle_180(&self, angle: f32) -> f32{
+        let ref_angle = angle % (2.0 * std::f32::consts::PI);
+        let mut wrapped_angle = ref_angle;
+        
+        if ref_angle <= std::f32::consts::PI{
+            wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
+        }
+        else if ref_angle >= std::f32::consts::PI{
+            wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
+        }
+        
+        assert!(wrapped_angle >= -180.0);
+        assert!(wrapped_angle <= 180.0);
+        wrapped_angle
+    }
 
     pub fn spatial_awareness(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool) -> f32{
         /* Randomise movement */
