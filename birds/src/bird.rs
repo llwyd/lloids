@@ -143,14 +143,14 @@ impl Bird{
 
         /* Separation */
         if self.sep_changed{
-            let diff = self.spatial_awareness(self.sep_angle, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX);
+            let diff = self.spatial_awareness(self.sep_angle, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
             self.angle += diff;
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
-            let diff = self.spatial_awareness(self.coh_angle, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX);
+            let diff = self.spatial_awareness(self.coh_angle, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
             self.angle += diff;
             self.coh_changed = false;
         }
@@ -196,9 +196,16 @@ impl Bird{
         wrapped_angle
     }
 
-    fn spatial_awareness(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32) -> f32{
+    pub fn spatial_awareness(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool) -> f32{
         /* Randomise movement */
-        let mov_inc = random_range(lower_speed, upper_speed); 
+        let mov_inc:f32;
+        if randomise{
+            mov_inc = random_range(lower_speed, upper_speed); 
+        }
+        else
+        {
+            mov_inc = upper_speed;
+        }
         let old_xy = self.xy;
         self.xy.x += mov_inc * angle.cos();
         self.xy.y += mov_inc * angle.sin();
@@ -298,7 +305,13 @@ impl Bird{
 #[cfg(test)]
 mod tests {
     use super::*;    
-    //const FLOAT_PRECISION:f32 = 0.00001;
+    const FLOAT_PRECISION:f32 = 0.00001;
+    
+    fn compare_floats(x:f32, y:f32, precision:f32)->bool{
+
+        let delta = (x - y).abs();
+        delta <= precision
+    }
 
     #[test]
     fn init_bird(){
@@ -330,4 +343,112 @@ mod tests {
         assert_eq!(bird.get_cohesion(), angle);
     }
 
+    #[test]
+    fn spatial_awareness_east(){
+        let x = 0.0;
+        let y = 0.0;
+        let angle = 0.0;
+        let mut bird = Bird::new(pt2(x, y), angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), angle);
+        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), angle);
+
+        let dir_angle = 0.0;
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(angle_fract, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().x, 1.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn spatial_awareness_west(){
+        let x = 0.0;
+        let y = 0.0;
+        let angle = 0.0;
+        let mut bird = Bird::new(pt2(x, y), angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), angle);
+        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), angle);
+
+        let dir_angle = std::f32::consts::PI;
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
+
+        println!("{:?}", bird.position());
+
+        /* NOTE: abs() used here because angle can be calculated as -180 */
+        assert!(compare_floats(angle_fract.abs(), dir_angle, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().x, -1.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn spatial_awareness_north(){
+        let x = 0.0;
+        let y = 0.0;
+        let angle = 0.0;
+        let mut bird = Bird::new(pt2(x, y), angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), angle);
+        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), angle);
+
+        let dir_angle = std::f32::consts::PI / 2.0;
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
+
+        println!("{:?}", bird.position());
+        assert!(compare_floats(angle_fract, dir_angle, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().x, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 1.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn spatial_awareness_south(){
+        let x = 0.0;
+        let y = 0.0;
+        let angle = 0.0;
+        let mut bird = Bird::new(pt2(x, y), angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), angle);
+        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), angle);
+
+        let dir_angle = -(std::f32::consts::PI / 2.0);
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
+
+        println!("{:?}", bird.position());
+        assert!(compare_floats(angle_fract, dir_angle, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().x, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, -1.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
+    }
 }
