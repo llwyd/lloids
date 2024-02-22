@@ -217,5 +217,92 @@ mod tests {
         let angle = separation(&mut bird, &bird_vec);
         assert!(compare_floats(angle, deg_to_rad(-135.0), FLOAT_PRECISION));
     }
+    
+    #[test]
+    fn cohesion_angle_x_pos(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = cohesion(&mut bird, &bird_vec);
+        assert_eq!(angle, std::f32::consts::PI);
+    }
+    
+    #[test]
+    fn cohesion_angle_x_neg(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = cohesion(&mut bird, &bird_vec);
+        assert_eq!(angle, deg_to_rad(0.0));
+    }
+    
+    #[test]
+    fn cohesion_angle_y_pos(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = cohesion(&mut bird, &bird_vec);
+        assert!(compare_floats(angle, deg_to_rad(-90.0), FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn cohesion_angle_y_neg(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = cohesion(&mut bird, &bird_vec);
+        assert!(compare_floats(angle, deg_to_rad(90.0), FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn cohesion_angle_ne(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = cohesion(&mut bird, &bird_vec);
+        assert!(compare_floats(angle, deg_to_rad(-135.0), FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn cohesion_angle_nw(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = cohesion(&mut bird, &bird_vec);
+        assert!(compare_floats(angle, deg_to_rad(-45.0), FLOAT_PRECISION));
+    }
+    #[test]
+    fn cohesion_angle_se(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = cohesion(&mut bird, &bird_vec);
+        assert!(compare_floats(angle, deg_to_rad(135.0), FLOAT_PRECISION));
+    }
+
+    #[test]
+    fn cohesion_angle_sw(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        let mut bird = Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0));
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+
+        let angle = cohesion(&mut bird, &bird_vec);
+        assert!(compare_floats(angle, deg_to_rad(45.0), FLOAT_PRECISION));
+    }
 }
 
