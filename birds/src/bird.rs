@@ -389,13 +389,23 @@ mod tests {
         let upper_speed = 1.0;
         let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
 
-        println!("{:?}", bird.position());
 
         /* NOTE: abs() used here because angle can be calculated as -180 */
         assert!(compare_floats(angle_fract.abs(), dir_angle, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().x, -1.0, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
         assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
+       
+        /* Additional test to assert above :) */
+        let mut bird_neg = Bird::new(pt2(x, y), angle);
+        let dir_angle_neg = -std::f32::consts::PI;
+        let angle_fract = bird_neg.spatial_awareness(dir_angle_neg, gain, lower_speed, upper_speed, false);
+
+        /* NOTE: abs() used here because angle can be calculated as -180 */
+        assert!(compare_floats(angle_fract.abs(), dir_angle, FLOAT_PRECISION));
+        assert!(compare_floats(bird_neg.position().x, -1.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird_neg.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird_neg.angle(), 0.0, FLOAT_PRECISION));
     }
     
     #[test]
@@ -418,7 +428,6 @@ mod tests {
         let upper_speed = 1.0;
         let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
 
-        println!("{:?}", bird.position());
         assert!(compare_floats(angle_fract, dir_angle, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().x, 0.0, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().y, 1.0, FLOAT_PRECISION));
@@ -445,7 +454,6 @@ mod tests {
         let upper_speed = 1.0;
         let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
 
-        println!("{:?}", bird.position());
         assert!(compare_floats(angle_fract, dir_angle, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().x, 0.0, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().y, -1.0, FLOAT_PRECISION));
