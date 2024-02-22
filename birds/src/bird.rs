@@ -64,6 +64,18 @@ impl Bird{
         self.sep_changed = true;
     }
     
+    pub fn get_separation(&self) -> f32{
+        self.sep_angle
+    }
+    
+    pub fn get_alignment(&self) -> f32{
+        self.align_angle
+    }
+    
+    pub fn get_cohesion(&self) -> f32{
+        self.coh_angle
+    }
+    
     pub fn set_alignment(&mut self, new_rotation:f32){
         self.align_angle = new_rotation;
     }
@@ -298,6 +310,9 @@ mod tests {
         assert_eq!(bird.position().x, x);
         assert_eq!(bird.position().y, y);
         assert_eq!(bird.angle(), angle);
+        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.get_alignment(), angle);
+        assert_eq!(bird.get_cohesion(), angle);
     }
 
     #[test]
@@ -310,6 +325,9 @@ mod tests {
         assert_eq!(bird.position().x, x);
         assert_eq!(bird.position().y, y);
         assert_eq!(bird.angle(), angle);
+        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), angle);
     }
 
 }
