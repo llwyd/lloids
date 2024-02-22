@@ -59,9 +59,10 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     delta
 }
 
-/*
+
 pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
-    
+
+    /* Calculate angles */
     let num_bird = other_birds.len();
 
     let mut average = pt2(0.0, 0.0);
@@ -74,16 +75,20 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     average.x /= num_bird as f32;
     average.y /= num_bird as f32;
 
-    let mut angle = (bird.position().y - average.y).atan2(bird.position().x - average.x);
+    //let mut angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+    let angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
+
+    /*
     if angle < 0.0{
         angle = angle + ( 2.0 * std::f32::consts::PI );
     }
-
-    println!("Cohesion:{:?} Angle:{}", average, rad_to_deg(angle));
+    */
+    
+    println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
 
     angle
 }
-*/
+
 
 #[cfg(test)]
 mod tests {
