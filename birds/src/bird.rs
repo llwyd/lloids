@@ -161,6 +161,9 @@ impl Bird{
             self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
         
             self.angle = self.wrap_angle(self.angle);
+            let mov_inc = random_range(Self::BIRD_SPEED_MIN / 2.0, Self::BIRD_SPEED_MAX /2.0); 
+            self.xy.x += mov_inc * self.angle.cos();
+            self.xy.y += mov_inc * self.angle.sin();
         }
 
         /* Adjust Alignment */
