@@ -283,3 +283,33 @@ impl Bird{
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;    
+    //const FLOAT_PRECISION:f32 = 0.00001;
+
+    #[test]
+    fn init_bird(){
+        let x = 0.0;
+        let y = 0.0;
+        let angle = 0.0;
+        let bird = Bird::new(pt2(x, y), angle);
+
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), angle);
+    }
+
+    #[test]
+    fn init_bird_non_zero(){
+        let x = 12.34;
+        let y = 56.78;
+        let angle = 91.011;
+        let bird = Bird::new(pt2(x, y), angle);
+
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), angle);
+    }
+
+}
