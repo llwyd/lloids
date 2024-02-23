@@ -107,8 +107,8 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             model.bird[i].set_alignment(align_angle); 
 
             /* Handle Cohesion */
-            let coh_angle = calcs::separation(&mut model.bird[i], &nearby);
-            model.bird[i].set_cohesion(-coh_angle); 
+            let coh_angle = calcs::cohesion(&mut model.bird[i], &nearby);
+            model.bird[i].set_cohesion(coh_angle); 
         }
         else
         {
