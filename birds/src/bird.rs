@@ -253,7 +253,7 @@ impl Bird{
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
-        let mut delta = 0.0;
+        let delta = 0.0;
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
         if rotated_position.y.is_positive()
