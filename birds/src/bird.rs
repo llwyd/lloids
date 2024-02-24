@@ -23,10 +23,10 @@ impl Bird{
     const ALIGNMENT_GAIN:f32 = 0.12;
 
     const SEP_SPEED_MIN:f32 = 1.0;
-    const SEP_SPEED_MAX:f32 = 1.5;
+    const SEP_SPEED_MAX:f32 = 2.0;
     
     const COH_SPEED_MIN:f32 = 0.1;
-    const COH_SPEED_MAX:f32 = 1.0;
+    const COH_SPEED_MAX:f32 = 0.5;
 
     const BIRD_SPEED_MIN:f32 = 1.0;
     const BIRD_SPEED_MAX:f32 = 5.0;
@@ -143,15 +143,15 @@ impl Bird{
 
         /* Separation */
         if self.sep_changed{
-            let diff = self.spatial_awareness(self.sep_angle, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
-            self.angle -= diff;
+            let diff = self.spatial_awareness_redux(self.sep_angle, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
+            self.angle += diff;
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
-            let diff = self.spatial_awareness(self.coh_angle, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
-            self.angle += diff;
+            let diff = self.spatial_awareness_redux(self.coh_angle, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
+            self.angle -= diff;
             self.coh_changed = false;
         }
 
@@ -229,6 +229,43 @@ impl Bird{
         self.xy.x += mov_inc * angle.cos();
         self.xy.y += mov_inc * angle.sin();
         let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
+        delta * gain
+    }
+    
+    pub fn spatial_awareness_redux(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool) -> f32{
+        /* Randomise movement */
+        let mov_inc:f32;
+        if randomise{
+            mov_inc = random_range(lower_speed, upper_speed); 
+        }
+        else
+        {
+            mov_inc = upper_speed;
+        }
+        let old_xy = self.xy;
+
+        /* 1. Move bird in direction of angle */
+        self.xy.x += mov_inc * angle.cos();
+        self.xy.y += mov_inc * angle.sin();
+
+        /* 2. Calculate how much bird should rotate away from the reference_bird */
+        let angle_offset = 0.0 - angle;
+        
+        /* 3. rotate the original point */
+        let rotated_position = self.rotate(old_xy, angle_offset);
+        let mut delta = 0.0;
+
+        /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
+        if rotated_position.y.is_positive()
+        {
+            delta = deg_to_rad(4.5);
+        }
+        else
+        {
+            delta = deg_to_rad(-4.5);
+        }
+
+        //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         delta * gain
     }
 
@@ -318,6 +355,13 @@ impl Bird{
         else if self.xy.y <= win.bottom() as f32{
             self.xy.y += win.wh().y;
         } 
+    }
+
+    pub fn rotate(&self, source:Point2, angle: f32) -> Point2{
+        let x = (source.x * angle.cos()) - (source.y * angle.sin());
+        let y = (source.x * angle.sin()) + (source.y * angle.cos());
+   
+        pt2(x, y)
     }
 }
 
