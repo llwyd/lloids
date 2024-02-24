@@ -597,6 +597,174 @@ mod tests {
     }
     
     #[test]
+    fn apply_separation_east_pos_x_0_dir_45_rot(){
+        let x = 1.0;
+        let y = 0.0;
+        let bird_angle = deg_to_rad(45.0);
+        let dir_angle = deg_to_rad(0.0);
+        let exp_angle = deg_to_rad(46.0);
+        let mut bird = Bird::new(pt2(x, y), bird_angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, 2.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn apply_separation_east_pos_x_0_dir_90_rot(){
+        let x = 1.0;
+        let y = 0.0;
+        let bird_angle = deg_to_rad(90.0);
+        let dir_angle = deg_to_rad(0.0);
+        let exp_angle = deg_to_rad(91.0);
+        let mut bird = Bird::new(pt2(x, y), bird_angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, 2.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn apply_separation_east_pos_x_0_dir_180_rot(){
+        let x = 1.0;
+        let y = 0.0;
+        let bird_angle = deg_to_rad(180.0);
+        let dir_angle = deg_to_rad(0.0);
+        let exp_angle = deg_to_rad(181.0);
+        let mut bird = Bird::new(pt2(x, y), bird_angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, 2.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn apply_separation_east_pos_x_0_dir_225_rot(){
+        let x = 1.0;
+        let y = 0.0;
+        let bird_angle = deg_to_rad(225.0);
+        let dir_angle = deg_to_rad(0.0);
+        let exp_angle = deg_to_rad(226.0);
+        let mut bird = Bird::new(pt2(x, y), bird_angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, 2.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn apply_separation_east_pos_x_0_dir_270_rot(){
+        let x = 1.0;
+        let y = 0.0;
+        let bird_angle = deg_to_rad(270.0);
+        let dir_angle = deg_to_rad(0.0);
+        let exp_angle = deg_to_rad(271.0);
+        let mut bird = Bird::new(pt2(x, y), bird_angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, 2.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn apply_separation_east_pos_x_0_dir_315_rot(){
+        let x = 1.0;
+        let y = 0.0;
+        let bird_angle = deg_to_rad(315.0);
+        let dir_angle = deg_to_rad(0.0);
+        let exp_angle = deg_to_rad(316.0);
+        let mut bird = Bird::new(pt2(x, y), bird_angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, 2.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
+    }
+    
+    #[test]
     fn apply_separation_east_neg_x_90_dir_45_rot(){
         let x = -1.0;
         let y = 0.0;
