@@ -302,11 +302,25 @@ impl Bird{
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
         if rotated_position.y.is_positive()
         {
-            delta = rot_angle;
+            if self.angle > deg_to_rad(90.0) && self.angle < deg_to_rad(270.0)
+            {
+                delta = -rot_angle;
+            }
+            else
+            {
+                delta = rot_angle;
+            }
         }
         else
         {
-            delta = -rot_angle;
+            if self.angle > deg_to_rad(90.0) && self.angle < deg_to_rad(270.0)
+            {
+                delta = rot_angle;
+            }
+            else
+            {
+                delta = -rot_angle;
+            }
         }
 
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
@@ -631,6 +645,34 @@ mod tests {
         let bird_angle = deg_to_rad(90.0);
         let dir_angle = deg_to_rad(0.0);
         let exp_angle = deg_to_rad(91.0);
+        let mut bird = Bird::new(pt2(x, y), bird_angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, 2.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn apply_separation_east_pos_x_0_dir_135_rot(){
+        let x = 1.0;
+        let y = 0.0;
+        let bird_angle = deg_to_rad(135.0);
+        let dir_angle = deg_to_rad(0.0);
+        let exp_angle = deg_to_rad(134.0);
         let mut bird = Bird::new(pt2(x, y), bird_angle);
         
         assert_eq!(bird.position().x, x);
