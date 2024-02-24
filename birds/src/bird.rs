@@ -98,6 +98,10 @@ impl Bird{
     pub fn position(&self) -> Point2{
         self.xy
     }
+    
+    pub fn get_position(&self) -> &Point2{
+        &self.xy
+    }
 
     pub fn draw_region(&self, draw: &Draw)
     {
@@ -270,6 +274,45 @@ impl Bird{
 
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         delta * gain
+    }
+    
+    pub fn apply_separation(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
+        /* Randomise movement */
+        let mov_inc:f32;
+        if randomise{
+            mov_inc = random_range(lower_speed, upper_speed); 
+        }
+        else
+        {
+            mov_inc = upper_speed;
+        }
+        let old_xy = self.xy;
+
+        /* 1. Move bird in direction of angle */
+        self.xy.x += mov_inc * angle.cos();
+        self.xy.y += mov_inc * angle.sin();
+
+        /* 2. Calculate how much bird should rotate away from the reference_bird */
+        let angle_offset = 0.0 - angle;
+        
+        /* 3. rotate the original point */
+        let rotated_position = self.rotate(old_xy, angle_offset);
+        let delta:f32;
+
+        /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
+        if rotated_position.y.is_positive()
+        {
+            delta = rot_angle;
+        }
+        else
+        {
+            delta = -rot_angle;
+        }
+
+        //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
+        self.angle += delta * gain;
+
+        println!("new_angle: {:?}", rad_to_deg(self.angle));
     }
 
     fn is_near_edge(&self, inner: &Rect<f32>) -> bool
@@ -524,5 +567,59 @@ mod tests {
         assert!(compare_floats(bird.position().x, 0.0, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().y, -1.0, FLOAT_PRECISION));
         assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn apply_separation_east_pos_x(){
+        let x = 1.0;
+        let y = 0.0;
+        let angle = 0.0;
+        let mut bird = Bird::new(pt2(x, y), angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), angle);
+        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), angle);
+
+        let dir_angle = 0.0;
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, 2.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), deg_to_rad(1.0), FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn apply_separation_east_neg_x(){
+        let x = -1.0;
+        let y = 0.0;
+        let angle = deg_to_rad(45.0);
+        let mut bird = Bird::new(pt2(x, y), angle);
+        
+        assert_eq!(bird.position().x, x);
+        assert_eq!(bird.position().y, y);
+        assert_eq!(bird.angle(), angle);
+        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), angle);
+
+        let dir_angle = deg_to_rad(90.0);
+        let gain = 1.0;
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+
+        assert!(compare_floats(bird.position().x, -1.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, 1.0, FLOAT_PRECISION));
+        assert!(compare_floats(bird.angle(), deg_to_rad(46.0), FLOAT_PRECISION));
     }
 }
