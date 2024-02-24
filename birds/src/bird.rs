@@ -570,10 +570,11 @@ mod tests {
     }
     
     #[test]
-    fn apply_separation_east_pos_x(){
+    fn apply_separation_east_pos_x_0_dir_0_rot(){
+        let dir_angle = deg_to_rad(0.0);
         let x = 1.0;
         let y = 0.0;
-        let angle = 0.0;
+        let angle = deg_to_rad(0.0);
         let mut bird = Bird::new(pt2(x, y), angle);
         
         assert_eq!(bird.position().x, x);
@@ -583,7 +584,6 @@ mod tests {
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), angle);
 
-        let dir_angle = 0.0;
         let gain = 1.0;
         let lower_speed = 1.0;
         let upper_speed = 1.0;
@@ -597,20 +597,20 @@ mod tests {
     }
     
     #[test]
-    fn apply_separation_east_neg_x(){
+    fn apply_separation_east_neg_x_90_dir_45_rot(){
         let x = -1.0;
         let y = 0.0;
-        let angle = deg_to_rad(45.0);
-        let mut bird = Bird::new(pt2(x, y), angle);
+        let bird_angle = deg_to_rad(45.0);
+        let dir_angle = deg_to_rad(90.0);
+        let mut bird = Bird::new(pt2(x, y), bird_angle);
         
         assert_eq!(bird.position().x, x);
         assert_eq!(bird.position().y, y);
-        assert_eq!(bird.angle(), angle);
-        assert_eq!(bird.get_separation(), angle);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
         assert_eq!(bird.get_alignment(), 0.0);
-        assert_eq!(bird.get_cohesion(), angle);
+        assert_eq!(bird.get_cohesion(), bird_angle);
 
-        let dir_angle = deg_to_rad(90.0);
         let gain = 1.0;
         let lower_speed = 1.0;
         let upper_speed = 1.0;
