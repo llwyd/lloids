@@ -265,7 +265,7 @@ impl Bird{
         }
         else
         {
-            delta = deg_to_rad(rot_angle);
+            delta = deg_to_rad(-rot_angle);
         }
 
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
