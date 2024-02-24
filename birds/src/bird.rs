@@ -30,7 +30,9 @@ impl Bird{
 
     const BIRD_SPEED_MIN:f32 = 1.0;
     const BIRD_SPEED_MAX:f32 = 5.0;
-    
+
+    const SEP_ANGLE:f32 = 3.6;
+    const COH_ANGLE:f32 = 0.25;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
     const REDUCTION_FACTOR:f32 = 0.5;
@@ -143,14 +145,14 @@ impl Bird{
 
         /* Separation */
         if self.sep_changed{
-            let diff = self.spatial_awareness_redux(self.sep_angle, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
+            let diff = self.spatial_awareness_redux(self.sep_angle, Self::SEP_ANGLE, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
             self.angle += diff;
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
-            let diff = self.spatial_awareness_redux(self.coh_angle, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
+            let diff = self.spatial_awareness_redux(self.coh_angle, Self::COH_ANGLE, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
             self.angle -= diff;
             self.coh_changed = false;
         }
@@ -232,7 +234,7 @@ impl Bird{
         delta * gain
     }
     
-    pub fn spatial_awareness_redux(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool) -> f32{
+    pub fn spatial_awareness_redux(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool) -> f32{
         /* Randomise movement */
         let mov_inc:f32;
         if randomise{
@@ -258,11 +260,11 @@ impl Bird{
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
         if rotated_position.y.is_positive()
         {
-            delta = deg_to_rad(4.5);
+            delta = deg_to_rad(rot_angle);
         }
         else
         {
-            delta = deg_to_rad(-4.5);
+            delta = deg_to_rad(rot_angle);
         }
 
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
