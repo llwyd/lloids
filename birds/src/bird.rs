@@ -18,8 +18,8 @@ impl Bird{
     const BIRD_REGION_RADIUS:f32 = 180.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 65.0;
 
-    const SEPARATION_GAIN:f32 = 0.024;
-    const COHESION_GAIN:f32 = 0.005;
+    const SEPARATION_GAIN:f32 = 1.0;
+    const COHESION_GAIN:f32 = 1.0;
     const ALIGNMENT_GAIN:f32 = 0.12;
 
     const SEP_SPEED_MIN:f32 = 1.0;
