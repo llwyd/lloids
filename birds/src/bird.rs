@@ -35,7 +35,7 @@ impl Bird{
     const COH_ANGLE:f32 = 0.5;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
-    const REDUCTION_FACTOR:f32 = 0.5;
+    const REDUCTION_FACTOR:f32 = 0.01;
 
     const TURN_ANGLE:f32 = 45.0;
     const TURN_GAIN:f32 = 0.02;
@@ -164,19 +164,7 @@ impl Bird{
         /* Adjust Alignment */
         self.angle -= self.align_angle * align_gain;
         self.angle = self.wrap_angle(self.angle);
-
-        /* Handle Screen Edge */
-        if near_edge{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
         
-            self.angle = self.wrap_angle(self.angle);
-            let mov_inc = random_range(Self::BIRD_SPEED_MIN / 2.0, Self::BIRD_SPEED_MAX /2.0); 
-            self.xy.x += mov_inc * self.angle.cos();
-            self.xy.y += mov_inc * self.angle.sin();
-        }
-
-
         println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
@@ -188,6 +176,24 @@ impl Bird{
         let mov_inc = random_range(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
         self.xy.x += mov_inc * self.angle.cos();
         self.xy.y += mov_inc * self.angle.sin();
+
+        /* Handle Screen Edge */
+        if near_edge{
+            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
+            self.angle = self.wrap_angle(self.angle);
+            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
+            self.xy.x += mov_inc * self.angle.cos();
+            self.xy.y += mov_inc * self.angle.sin();
+            
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
+        
+            self.angle = self.wrap_angle(self.angle);
+            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
+            self.xy.x += mov_inc * self.angle.cos();
+            self.xy.y += mov_inc * self.angle.sin();
+        }
+
+
 
         self.screen_wrap(win);
     }
