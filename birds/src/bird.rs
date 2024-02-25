@@ -18,9 +18,9 @@ impl Bird{
     const BIRD_REGION_RADIUS:f32 = 180.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 65.0;
 
-    const SEPARATION_GAIN:f32 = 1.0;
-    const COHESION_GAIN:f32 = 1.0;
-    const ALIGNMENT_GAIN:f32 = 0.12;
+    const SEPARATION_GAIN:f32 = 0.05;
+    const COHESION_GAIN:f32 = 0.025;
+    const ALIGNMENT_GAIN:f32 = 0.08;
 
     const SEP_SPEED_MIN:f32 = 0.5;
     const SEP_SPEED_MAX:f32 = 1.0;
@@ -149,15 +149,15 @@ impl Bird{
 
         /* Separation */
         if self.sep_changed{
-            let diff = self.spatial_awareness_redux(self.sep_angle, Self::SEP_ANGLE, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
-            self.angle += diff;
+            self.apply_separation(self.sep_angle, Self::SEP_ANGLE, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
+            //self.angle += diff;
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
-            let diff = self.spatial_awareness_redux(self.coh_angle, Self::COH_ANGLE, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
-            self.angle -= diff;
+            self.apply_cohesion(self.coh_angle, Self::COH_ANGLE, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
+            //self.angle -= diff;
             self.coh_changed = false;
         }
         
@@ -320,6 +320,59 @@ impl Bird{
             else
             {
                 delta = -rot_angle;
+            }
+        }
+
+        //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
+        self.angle += delta * gain;
+
+        println!("new_angle: {:?}", rad_to_deg(self.angle));
+    }
+    
+    pub fn apply_cohesion(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
+        /* Randomise movement */
+        let mov_inc:f32;
+        if randomise{
+            mov_inc = random_range(lower_speed, upper_speed); 
+        }
+        else
+        {
+            mov_inc = upper_speed;
+        }
+        let old_xy = self.xy;
+
+        /* 1. Move bird in direction of angle */
+        self.xy.x += mov_inc * angle.cos();
+        self.xy.y += mov_inc * angle.sin();
+
+        /* 2. Calculate how much bird should rotate away from the reference_bird */
+        let angle_offset = 0.0 - angle;
+        
+        /* 3. rotate the original point */
+        let rotated_position = self.rotate(old_xy, angle_offset);
+        let delta:f32;
+
+        /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
+        if rotated_position.y.is_positive()
+        {
+            if self.angle > deg_to_rad(90.0) && self.angle < deg_to_rad(270.0)
+            {
+                delta = rot_angle;
+            }
+            else
+            {
+                delta = -rot_angle;
+            }
+        }
+        else
+        {
+            if self.angle > deg_to_rad(90.0) && self.angle < deg_to_rad(270.0)
+            {
+                delta = -rot_angle;
+            }
+            else
+            {
+                delta = rot_angle;
             }
         }
 
