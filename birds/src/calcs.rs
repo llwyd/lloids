@@ -8,6 +8,25 @@ pub fn is_bird_nearby(bird: &Bird, other_bird: &Bird, bird_radius: f32) -> bool{
     other_bird_radius <= bird_radius
 }
 
+fn average_position(bird: &Vec <Bird>) -> Point2{
+    
+    /* Calculate angles */
+    let num_bird = bird.len();
+    assert!(num_bird > 0);
+
+    let mut average = pt2(0.0, 0.0);
+
+    for i in 0..num_bird{
+        average.x += bird[i].position().x;
+        average.y += bird[i].position().y;
+    }
+
+    average.x /= num_bird as f32;
+    average.y /= num_bird as f32;
+
+    average
+}
+
 pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 
     /* Calculate angles */
@@ -58,6 +77,9 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     println!("Align: {:?}, Delta{:?}", average, delta);
     assert!(delta != std::f32::INFINITY);
     assert!(delta != std::f32::NEG_INFINITY);
+    
+    assert!(delta >= -180.0);
+    assert!(delta <= 180.0);
 
     delta
 }
@@ -308,6 +330,76 @@ mod tests {
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert!(compare_floats(angle, deg_to_rad(45.0), FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_average_single_pos_x(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0))); 
+
+        let average_position = average_position(&bird_vec);
+        assert!(compare_floats(average_position.x, 1.0, FLOAT_PRECISION));
+        assert!(compare_floats(average_position.y, 0.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_average_single_neg_x(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0))); 
+
+        let average_position = average_position(&bird_vec);
+        assert!(compare_floats(average_position.x, -1.0, FLOAT_PRECISION));
+        assert!(compare_floats(average_position.y, 0.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_average_single_pos_y(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0))); 
+
+        let average_position = average_position(&bird_vec);
+        assert!(compare_floats(average_position.x, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(average_position.y, 1.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_average_single_neg_y(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0))); 
+
+        let average_position = average_position(&bird_vec);
+        assert!(compare_floats(average_position.x, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(average_position.y, -1.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_average_2_pos(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
+
+        let average_position = average_position(&bird_vec);
+        assert!(compare_floats(average_position.x, 1.0, FLOAT_PRECISION));
+        assert!(compare_floats(average_position.y, 2.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_average_4_corners(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0))); 
+
+        let average_position = average_position(&bird_vec);
+        assert!(compare_floats(average_position.x, 0.0, FLOAT_PRECISION));
+        assert!(compare_floats(average_position.y, 0.0, FLOAT_PRECISION));
     }
 }
 
