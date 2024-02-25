@@ -295,10 +295,6 @@ impl Bird{
         }
         let old_xy = self.xy;
 
-        /* 1. Move bird in direction of angle */
-        self.xy.x += mov_inc * angle.cos();
-        self.xy.y += mov_inc * angle.sin();
-
         /* 2. Calculate how much bird should rotate away from the reference_bird */
         let angle_offset = 0.0 - angle;
         
@@ -333,6 +329,10 @@ impl Bird{
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         self.angle += delta * gain;
         self.angle = self.wrap_angle(self.angle);
+        
+        /* 1. Move bird in direction of angle */
+        self.xy.x += mov_inc * angle.cos();
+        self.xy.y += mov_inc * angle.sin();
         println!("new_angle: {:?}", rad_to_deg(self.angle));
     }
     
@@ -348,9 +348,6 @@ impl Bird{
         }
         let old_xy = self.xy;
 
-        /* 1. Move bird in direction of angle */
-        self.xy.x += mov_inc * angle.cos();
-        self.xy.y += mov_inc * angle.sin();
 
         /* 2. Calculate how much bird should rotate away from the reference_bird */
         let angle_offset = 0.0 - angle;
@@ -386,6 +383,10 @@ impl Bird{
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         self.angle += delta * gain;
         self.angle = self.wrap_angle(self.angle);
+
+        /* 1. Move bird in direction of angle */
+        self.xy.x += mov_inc * angle.cos();
+        self.xy.y += mov_inc * angle.sin();
         println!("new_angle: {:?}", rad_to_deg(self.angle));
     }
 
