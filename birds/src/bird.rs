@@ -20,7 +20,7 @@ impl Bird{
 
     const SEPARATION_GAIN:f32 = 0.05;
     const COHESION_GAIN:f32 = 0.025;
-    const ALIGNMENT_GAIN:f32 = 0.025;
+    const ALIGNMENT_GAIN:f32 = 0.050;
 
     const SEP_SPEED_MIN:f32 = 0.5;
     const SEP_SPEED_MAX:f32 = 1.0;
@@ -31,8 +31,8 @@ impl Bird{
     const BIRD_SPEED_MIN:f32 = 1.0;
     const BIRD_SPEED_MAX:f32 = 5.0;
 
-    const SEP_ANGLE:f32 = 1.2;
-    const COH_ANGLE:f32 = 0.25;
+    const SEP_ANGLE:f32 = 0.5;
+    const COH_ANGLE:f32 = 0.5;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
     const REDUCTION_FACTOR:f32 = 0.5;
@@ -163,6 +163,7 @@ impl Bird{
         
         /* Adjust Alignment */
         self.angle -= self.align_angle * align_gain;
+        self.angle = self.wrap_angle(self.angle);
 
         /* Handle Screen Edge */
         if near_edge{
