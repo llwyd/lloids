@@ -33,6 +33,9 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     */
     
     println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
+    
+    assert!(angle >= -180.0);
+    assert!(angle <= 180.0);
 
     angle
 }
@@ -85,6 +88,8 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     */
     
     println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
+    assert!(angle >= -180.0);
+    assert!(angle <= 180.0);
 
     angle
 }
