@@ -739,4 +739,23 @@ mod tests {
         test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(269.0)); 
         test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(314.0)); 
     }
+    
+    #[test]
+    fn apply_separation_pos_x_zero_y_45(){
+        let x = 1.0;
+        let y = 0.0;
+        let angle = 45.0;
+
+        let exp_x = x + deg_to_rad(angle).cos();
+        let exp_y = y + deg_to_rad(angle).sin();
+        
+        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(0.0), deg_to_rad(angle), deg_to_rad(359.0)); 
+        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(45.0), deg_to_rad(angle), deg_to_rad(44.0)); 
+        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(90.0), deg_to_rad(angle), deg_to_rad(89.0)); 
+        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(135.0), deg_to_rad(angle), deg_to_rad(136.0)); 
+        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(180.0), deg_to_rad(angle), deg_to_rad(181.0)); 
+        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(225.0), deg_to_rad(angle), deg_to_rad(226.0)); 
+        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(270.0), deg_to_rad(angle), deg_to_rad(269.0)); 
+        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(315.0), deg_to_rad(angle), deg_to_rad(314.0)); 
+    }
 }
