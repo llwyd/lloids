@@ -724,12 +724,12 @@ mod tests {
     #[test]
     fn apply_separation_east_neg_y(){
         test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(0.0), deg_to_rad(0.0), deg_to_rad(359.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(45.0), deg_to_rad(0.0), deg_to_rad(46.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(90.0), deg_to_rad(0.0), deg_to_rad(91.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(135.0), deg_to_rad(0.0), deg_to_rad(134.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(180.0), deg_to_rad(0.0), deg_to_rad(179.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(225.0), deg_to_rad(0.0), deg_to_rad(224.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(271.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(316.0)); 
+        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(45.0), deg_to_rad(0.0), deg_to_rad(44.0)); 
+        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(90.0), deg_to_rad(0.0), deg_to_rad(89.0)); 
+        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(135.0), deg_to_rad(0.0), deg_to_rad(136.0)); 
+        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(180.0), deg_to_rad(0.0), deg_to_rad(181.0)); 
+        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(225.0), deg_to_rad(0.0), deg_to_rad(226.0)); 
+        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(269.0)); 
+        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(314.0)); 
     }
 }
