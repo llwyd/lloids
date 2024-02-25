@@ -83,7 +83,7 @@ impl Bird{
     }
     
     pub fn set_cohesion(&mut self, new_rotation:f32){
-        self.coh_angle = self.wrap_angle_180(new_rotation);
+        self.coh_angle = new_rotation;
         self.coh_changed = true;
     }
 
