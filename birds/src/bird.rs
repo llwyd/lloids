@@ -211,7 +211,7 @@ impl Bird{
         let ref_angle = angle % (2.0 * std::f32::consts::PI);
         let mut wrapped_angle = ref_angle;
         
-        if ref_angle <= std::f32::consts::PI{
+        if ref_angle <= -std::f32::consts::PI{
             wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
         }
         else if ref_angle >= std::f32::consts::PI{
