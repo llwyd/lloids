@@ -392,10 +392,10 @@ impl Bird{
     fn is_near_edge(&self, inner: &Rect<f32>) -> bool
     {
         let mut near_edge = false;
-        if  self.xy.x >= inner.right() as f32 ||
-            self.xy.x <= inner.left() as f32 ||
-            self.xy.y >= inner.top() as f32 ||
-            self.xy.y <= inner.bottom() as f32 {
+        if  self.xy.x > inner.right() as f32 ||
+            self.xy.x < inner.left() as f32 ||
+            self.xy.y > inner.top() as f32 ||
+            self.xy.y < inner.bottom() as f32 {
             
                 near_edge = true;
         }
@@ -408,6 +408,8 @@ impl Bird{
     
         if self.xy.y > inner.top() as f32{
             let mut delta = self.xy.y - inner.top();
+            assert!(delta >= 0.0);
+
             delta *= Self::DECAY;
             let mut angle = self.angle - (std::f32::consts::PI / 2.0);
             angle = self.wrap_angle(angle);
@@ -418,6 +420,7 @@ impl Bird{
         }
         else if self.xy.y < inner.bottom() as f32{
             let mut delta = inner.bottom() - self.xy.y;
+            assert!(delta >= 0.0);
             delta *= Self::DECAY;
             let mut angle = self.angle - (std::f32::consts::PI * 1.5);
             angle = self.wrap_angle(angle);
@@ -437,8 +440,8 @@ impl Bird{
 
         if self.xy.x > inner.right() as f32{
             let mut delta = self.xy.x - inner.right();
+            assert!(delta >= 0.0);
             delta *= Self::DECAY;
-            //let mut angle = self.angle - (std::f32::consts::PI * 1.5);
             let mut angle = self.angle;
             angle = self.wrap_angle(angle);
 
@@ -449,6 +452,7 @@ impl Bird{
         }
         else if self.xy.x < inner.left() as f32{
             let mut delta = inner.left() - self.xy.x;
+            assert!(delta >= 0.0);
             delta *= Self::DECAY;
             let mut angle = self.angle - (std::f32::consts::PI);
             angle = self.wrap_angle(angle);
