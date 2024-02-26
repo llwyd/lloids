@@ -37,9 +37,8 @@ impl Bird{
     const ALIGNMENT_INITIAL:f32 = 0.0;
     const REDUCTION_FACTOR:f32 = 0.8;
 
-    const TURN_ANGLE:f32 = 45.0;
-    const TURN_GAIN:f32 = 0.02;
-    const DECAY:f32 = 0.045;
+    const TURN_ANGLE:f32 = 1.0;
+    const DECAY:f32 = 0.075;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -179,13 +178,13 @@ impl Bird{
 
         /* Handle Screen Edge */
         if near_edge{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
+            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE));
             self.angle = self.wrap_angle(self.angle);
             let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
             self.xy.x += mov_inc * self.angle.cos();
             self.xy.y += mov_inc * self.angle.sin();
             
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE));
         
             self.angle = self.wrap_angle(self.angle);
             let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
@@ -402,7 +401,7 @@ impl Bird{
         }
         near_edge
     }
-    fn v_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, gain:f32) -> f32
+    fn v_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32) -> f32
     {
         let mut turn = 1.0;
         let mut diff = 0.0;
@@ -417,7 +416,7 @@ impl Bird{
             if rad_to_deg(angle) > 180.0{
                 turn = -1.0;
             }
-            diff = turn * turn_angle * gain * delta.exp();
+            diff = turn * turn_angle * delta.exp();
         }
         else if self.xy.y < inner.bottom() as f32{
             let mut delta = inner.bottom() - self.xy.y;
@@ -429,12 +428,12 @@ impl Bird{
             if rad_to_deg(angle) > 180.0{
                 turn = -1.0;
             }
-            diff = turn * turn_angle * gain * delta.exp();
+            diff = turn * turn_angle * delta.exp();
         }
         diff
     }
 
-    fn h_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, gain:f32) -> f32
+    fn h_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32) -> f32
     {
         let mut turn = 1.0;
         let mut diff = 0.0;
@@ -449,7 +448,7 @@ impl Bird{
             if rad_to_deg(angle) > 180.0{
                 turn = -1.0;
             }
-            diff = turn * turn_angle * gain * delta.exp();
+            diff = turn * turn_angle * delta.exp();
         }
         else if self.xy.x < inner.left() as f32{
             let mut delta = inner.left() - self.xy.x;
@@ -461,7 +460,7 @@ impl Bird{
             if rad_to_deg(angle) > 180.0{
                 turn = -1.0;
             }
-            diff= turn * turn_angle * gain * delta.exp();
+            diff = turn * turn_angle * delta.exp();
         }
         diff
     }

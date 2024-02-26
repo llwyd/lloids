@@ -40,8 +40,8 @@ fn model(app: &App) -> Model {
     };
 
     for _i in 0..NUM_BIRDS{
-        let x = random_range(-SCREEN_W_2, SCREEN_W_2); 
-        let y = random_range(-SCREEN_H_2, SCREEN_H_2); 
+        let x = random_range(-SCREEN_W_2 + SCREEN_TURN_OFFSET, SCREEN_W_2 - SCREEN_TURN_OFFSET); 
+        let y = random_range(-SCREEN_H_2 + SCREEN_TURN_OFFSET, SCREEN_H_2 - SCREEN_TURN_OFFSET); 
         let angle = random_range(0.0, 359.0);
 
         model.bird.push(Bird::new(pt2(x, y), deg_to_rad(angle))); 
