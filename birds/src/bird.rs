@@ -15,15 +15,15 @@ impl Bird{
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
 
-    const BIRD_REGION_RADIUS:f32 = 180.0; 
+    const BIRD_REGION_RADIUS:f32 = 250.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 65.0;
 
     const SEPARATION_GAIN:f32 = 0.05;
-    const COHESION_GAIN:f32 = 0.025;
-    const ALIGNMENT_GAIN:f32 = 0.050;
+    const COHESION_GAIN:f32 = 0.045;
+    const ALIGNMENT_GAIN:f32 = 0.025;
 
-    const SEP_SPEED_MIN:f32 = 0.5;
-    const SEP_SPEED_MAX:f32 = 1.0;
+    const SEP_SPEED_MIN:f32 = 0.25;
+    const SEP_SPEED_MAX:f32 = 0.5;
     
     const COH_SPEED_MIN:f32 = 0.1;
     const COH_SPEED_MAX:f32 = 0.5;
@@ -31,11 +31,11 @@ impl Bird{
     const BIRD_SPEED_MIN:f32 = 1.0;
     const BIRD_SPEED_MAX:f32 = 5.0;
 
-    const SEP_ANGLE:f32 = 0.5;
-    const COH_ANGLE:f32 = 0.5;
+    const SEP_ANGLE:f32 = 0.125;
+    const COH_ANGLE:f32 = 0.0125;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
-    const REDUCTION_FACTOR:f32 = 0.01;
+    const REDUCTION_FACTOR:f32 = 0.8;
 
     const TURN_ANGLE:f32 = 45.0;
     const TURN_GAIN:f32 = 0.02;
@@ -181,14 +181,14 @@ impl Bird{
         if near_edge{
             self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
             self.angle = self.wrap_angle(self.angle);
-            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
+            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
             self.xy.x += mov_inc * self.angle.cos();
             self.xy.y += mov_inc * self.angle.sin();
             
             self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::TURN_GAIN);
         
             self.angle = self.wrap_angle(self.angle);
-            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
+            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
             self.xy.x += mov_inc * self.angle.cos();
             self.xy.y += mov_inc * self.angle.sin();
         }
