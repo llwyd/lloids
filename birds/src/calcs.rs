@@ -64,15 +64,21 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     /* Calculate angles */
     let num_bird = other_birds.len();
 
-    let mut average = 0.0;
+    let mut average_sin = 0.0;
+    let mut average_cos = 0.0;
 
     for i in 0..num_bird{
-        average += other_birds[i].angle();
+        average_sin += other_birds[i].angle().sin();
+        average_cos += other_birds[i].angle().cos();
     }
     
-    average /= num_bird as f32;
-    let delta = bird.angle() - average;
-    
+    average_sin /= num_bird as f32;
+    average_cos /= num_bird as f32;
+   
+    /* Circular mean */
+    let average = average_sin.atan2(average_cos);
+
+    let delta = bird.angle() - average; 
     
     println!("Align: {:?}, Delta{:?}", average, delta);
     assert!(delta != std::f32::INFINITY);
