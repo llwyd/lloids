@@ -762,4 +762,19 @@ mod tests {
         test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(270.0), deg_to_rad(angle), deg_to_rad(269.0)); 
         test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(315.0), deg_to_rad(angle), deg_to_rad(314.0)); 
     }
+    
+    #[test]
+    fn rotate_90()
+    {
+        let x = 0.0;
+        let y = 1.0;
+        let angle = 0.0;
+        let bird = Bird::new(pt2(x, y), angle);
+        
+        let pos = pt2(x, y);
+        let new = bird.rotate(pos, deg_to_rad(-90.0));
+
+        assert!(compare_floats(new.x, 1.0, FLOAT_PRECISION));
+        assert!(compare_floats(new.y, 0.0, FLOAT_PRECISION));
+    }
 }
