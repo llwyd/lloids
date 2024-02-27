@@ -29,10 +29,10 @@ impl Bird{
     const COH_SPEED_MAX:f32 = 0.5;
 
     const BIRD_SPEED_MIN:f32 = 1.0;
-    const BIRD_SPEED_MAX:f32 = 5.0;
+    const BIRD_SPEED_MAX:f32 = 7.5;
 
     const SEP_ANGLE:f32 = 0.125;
-    const COH_ANGLE:f32 = 0.0125;
+    const COH_ANGLE:f32 = 0.00125;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
     const REDUCTION_FACTOR:f32 = 0.8;
@@ -330,8 +330,8 @@ impl Bird{
         self.angle = self.wrap_angle(self.angle);
         
         /* 1. Move bird in direction of angle */
-        self.xy.x += mov_inc * angle.cos();
-        self.xy.y += mov_inc * angle.sin();
+        self.xy.x += mov_inc * self.angle.cos();
+        self.xy.y += mov_inc * self.angle.sin();
         println!("new_angle: {:?}", rad_to_deg(self.angle));
     }
     
@@ -384,8 +384,8 @@ impl Bird{
         self.angle = self.wrap_angle(self.angle);
 
         /* 1. Move bird in direction of angle */
-        self.xy.x += mov_inc * angle.cos();
-        self.xy.y += mov_inc * angle.sin();
+        self.xy.x += mov_inc * self.angle.cos();
+        self.xy.y += mov_inc * self.angle.sin();
         println!("new_angle: {:?}", rad_to_deg(self.angle));
     }
 
