@@ -35,7 +35,7 @@ impl Bird{
     const COH_ANGLE:f32 = 0.00125;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
-    const REDUCTION_FACTOR:f32 = 0.0;
+    const REDUCTION_FACTOR:f32 = 0.5;
 
     const TURN_ANGLE:f32 = 1.0;
     const DECAY:f32 = 0.02;
