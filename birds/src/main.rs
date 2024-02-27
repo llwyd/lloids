@@ -15,6 +15,7 @@ const SCREEN_W_U32:u32 = SCREEN_W_F32 as u32;
 const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 
 const SCREEN_TURN_OFFSET:f32 = 150.0;
+const SCREEN_TURN_OFFSET_HARD:f32 = 25.0;
 
 const NUM_BIRDS:u32 = 80;
 
@@ -70,6 +71,11 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         y: Range{start: -SCREEN_H_2 + SCREEN_TURN_OFFSET, end: SCREEN_H_2 - SCREEN_TURN_OFFSET},
     };
 
+    
+    let inner_hard = Rect{
+        x: Range{start: -SCREEN_W_2 + SCREEN_TURN_OFFSET_HARD, end: SCREEN_W_2 - SCREEN_TURN_OFFSET_HARD},
+        y: Range{start: -SCREEN_H_2 + SCREEN_TURN_OFFSET_HARD, end: SCREEN_H_2 - SCREEN_TURN_OFFSET_HARD},
+    };
 
     let num_bird = model.bird.len();
     for i in 0..num_bird{
@@ -115,7 +121,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             model.bird[i].set_alignment(0.0); 
         }
 
-        model.bird[i].update(&win, &inner);
+        model.bird[i].update(&win, &inner, &inner_hard);
     }
 
 }

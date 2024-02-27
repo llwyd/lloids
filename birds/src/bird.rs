@@ -129,7 +129,7 @@ impl Bird{
             .color(WHITE);
     }
 
-    pub fn update(&mut self, win: &Rect<f32>, inner: &Rect<f32>)
+    pub fn update(&mut self, win: &Rect<f32>, inner: &Rect<f32>, inner_hard: &Rect<f32>)
     {
         println!("Old Angle: {:?}", rad_to_deg(self.angle));
         assert!(self.angle >= 0.0);
@@ -193,6 +193,22 @@ impl Bird{
         }
 
 
+        let near_edge_hard = self.is_near_edge(inner_hard);
+        
+        if near_edge_hard{
+            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 4.0));
+            self.angle = self.wrap_angle(self.angle);
+            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
+            self.xy.x += mov_inc * self.angle.cos();
+            self.xy.y += mov_inc * self.angle.sin();
+            
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 4.0));
+        
+            self.angle = self.wrap_angle(self.angle);
+            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
+            self.xy.x += mov_inc * self.angle.cos();
+            self.xy.y += mov_inc * self.angle.sin();
+        }
 
         self.screen_wrap(win);
     }
