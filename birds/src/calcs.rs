@@ -1,6 +1,22 @@
 pub use crate::bird::Bird;
 use nannou::prelude::*;
 
+fn wrap_angle(angle: f32) -> f32{
+    let ref_angle = angle % (2.0 * std::f32::consts::PI);
+    let mut wrapped_angle = ref_angle;
+    
+    if ref_angle < 0.0{
+        wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
+    }
+    else if ref_angle >= ( 2.0 * std::f32::consts::PI ){
+        wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
+    }
+    
+    assert!(wrapped_angle >= 0.0);
+    assert!(wrapped_angle < deg_to_rad(360.0));
+    wrapped_angle
+}
+
 pub fn is_bird_nearby(bird: &Bird, other_bird: &Bird, bird_radius: f32) -> bool{
     let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
     let dy_2:f32 = (other_bird.position().y - bird.position().y).pow(2);
@@ -59,7 +75,8 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     /* Circular mean */
     let average = average_sin.atan2(average_cos);
 
-    let delta = bird.angle() - average; 
+    
+    let delta = bird.angle() - wrap_angle(average);
     
     println!("Align: {:?}, Delta{:?}", average, delta);
     assert!(delta != std::f32::INFINITY);
