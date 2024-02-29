@@ -446,12 +446,11 @@ mod tests {
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), bird_angle);
 
-        let gain = 1.0;
         let lower_speed = 1.0;
         let upper_speed = 1.0;
         let rotation_angle = deg_to_rad(1.0);
 
-        bird.apply_separation(dir_angle, rotation_angle, gain, lower_speed, upper_speed, false);
+        bird.apply_separation(dir_angle, rotation_angle, lower_speed, upper_speed, false);
 
         assert!(compare_floats(bird.position().x, exp_position.x, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().y, exp_position.y, FLOAT_PRECISION));
