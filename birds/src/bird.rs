@@ -131,7 +131,6 @@ impl Bird{
 
     pub fn update(&mut self, win: &Rect<f32>, inner: &Rect<f32>, inner_hard: &Rect<f32>)
     {
-        println!("Old Angle: {:?}", rad_to_deg(self.angle));
         assert!(self.angle >= 0.0);
 
         let mut sep_gain = Self::SEPARATION_GAIN;
@@ -164,13 +163,11 @@ impl Bird{
         self.angle -= self.align_angle * align_gain;
         self.angle = self.wrap_angle(self.angle);
         
-        println!("Sep: {:?}, Align: {:?}, Coh:{:?}", rad_to_deg(self.sep_angle), rad_to_deg(self.align_angle), rad_to_deg(self.coh_angle));
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
         
         self.angle = self.wrap_angle(self.angle);
 
-        println!("New Angle: {:?}", rad_to_deg(self.angle));
         assert!(self.angle >= 0.0);
         let mov_inc = random_range(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
         self.xy.x += mov_inc * self.angle.cos();
@@ -348,7 +345,6 @@ impl Bird{
         /* 1. Move bird in direction of angle */
         self.xy.x += mov_inc * self.angle.cos();
         self.xy.y += mov_inc * self.angle.sin();
-        println!("new_angle: {:?}", rad_to_deg(self.angle));
     }
     
     pub fn apply_cohesion(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
@@ -402,7 +398,6 @@ impl Bird{
         /* 1. Move bird in direction of angle */
         self.xy.x += mov_inc * self.angle.cos();
         self.xy.y += mov_inc * self.angle.sin();
-        println!("new_angle: {:?}", rad_to_deg(self.angle));
     }
 
     fn is_near_edge(&self, inner: &Rect<f32>) -> bool

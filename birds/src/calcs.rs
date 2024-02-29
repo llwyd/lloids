@@ -48,8 +48,6 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     let average = average_position( other_birds );
     let angle = (bird.position().y - average.y).atan2(bird.position().x - average.x);
     
-    println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
-    
     assert!(angle >= -180.0);
     assert!(angle <= 180.0);
 
@@ -78,7 +76,6 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     
     let delta = bird.angle() - wrap_angle(average);
     
-    println!("Align: {:?}, Delta{:?}", average, delta);
     assert!(delta != std::f32::INFINITY);
     assert!(delta != std::f32::NEG_INFINITY);
     
@@ -94,7 +91,6 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32
     let average = average_position( other_birds );
     let angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
     
-    println!("Separation:{:?} Angle:{}", average, rad_to_deg(angle));
     assert!(angle >= -180.0);
     assert!(angle <= 180.0);
 
