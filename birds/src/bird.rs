@@ -222,77 +222,7 @@ impl Bird{
         
         assert!(wrapped_angle >= 0.0);
         wrapped_angle
-    }
-    
-    fn wrap_angle_180(&self, angle: f32) -> f32{
-        let ref_angle = angle % (2.0 * std::f32::consts::PI);
-        let mut wrapped_angle = ref_angle;
-        
-        if ref_angle <= -std::f32::consts::PI{
-            wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
-        }
-        else if ref_angle >= std::f32::consts::PI{
-            wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
-        }
-        
-        assert!(wrapped_angle >= -180.0);
-        assert!(wrapped_angle <= 180.0);
-        wrapped_angle
-    }
-
-    pub fn spatial_awareness(&mut self, angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool) -> f32{
-        /* Randomise movement */
-        let mov_inc:f32;
-        if randomise{
-            mov_inc = random_range(lower_speed, upper_speed); 
-        }
-        else
-        {
-            mov_inc = upper_speed;
-        }
-        let old_xy = self.xy;
-        self.xy.x += mov_inc * angle.cos();
-        self.xy.y += mov_inc * angle.sin();
-        let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
-        delta * gain
-    }
-    
-    pub fn spatial_awareness_redux(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool) -> f32{
-        /* Randomise movement */
-        let mov_inc:f32;
-        if randomise{
-            mov_inc = random_range(lower_speed, upper_speed); 
-        }
-        else
-        {
-            mov_inc = upper_speed;
-        }
-        let old_xy = self.xy;
-
-        /* 1. Move bird in direction of angle */
-        self.xy.x += mov_inc * angle.cos();
-        self.xy.y += mov_inc * angle.sin();
-
-        /* 2. Calculate how much bird should rotate away from the reference_bird */
-        let angle_offset = 0.0 - angle;
-        
-        /* 3. rotate the original point */
-        let rotated_position = self.rotate(old_xy, angle_offset);
-        let delta:f32;
-
-        /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
-        if rotated_position.y.is_positive()
-        {
-            delta = deg_to_rad(rot_angle);
-        }
-        else
-        {
-            delta = deg_to_rad(-rot_angle);
-        }
-
-        //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
-        delta * gain
-    }
+    } 
     
     pub fn apply_separation(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
         /* Randomise movement */
@@ -342,8 +272,7 @@ impl Bird{
         self.angle = self.wrap_angle(self.angle);
         
         /* 1. Move bird in direction of angle */
-        self.xy.x += mov_inc * self.angle.cos();
-        self.xy.y += mov_inc * self.angle.sin();
+        self.move_bird(mov_inc);
     }
     
     pub fn apply_cohesion(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
@@ -395,8 +324,7 @@ impl Bird{
         self.angle = self.wrap_angle(self.angle);
 
         /* 1. Move bird in direction of angle */
-        self.xy.x += mov_inc * self.angle.cos();
-        self.xy.y += mov_inc * self.angle.sin();
+        self.move_bird(mov_inc);
     }
 
     fn is_near_edge(&self, inner: &Rect<f32>) -> bool
@@ -563,124 +491,7 @@ mod tests {
         assert_eq!(bird.get_separation(), angle);
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), angle);
-    }
-
-    #[test]
-    fn spatial_awareness_east(){
-        let x = 0.0;
-        let y = 0.0;
-        let angle = 0.0;
-        let mut bird = Bird::new(pt2(x, y), angle);
-        
-        assert_eq!(bird.position().x, x);
-        assert_eq!(bird.position().y, y);
-        assert_eq!(bird.angle(), angle);
-        assert_eq!(bird.get_separation(), angle);
-        assert_eq!(bird.get_alignment(), 0.0);
-        assert_eq!(bird.get_cohesion(), angle);
-
-        let dir_angle = 0.0;
-        let gain = 1.0;
-        let lower_speed = 1.0;
-        let upper_speed = 1.0;
-        let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
-
-        assert!(compare_floats(angle_fract, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().x, 1.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
-    }
-    
-    #[test]
-    fn spatial_awareness_west(){
-        let x = 0.0;
-        let y = 0.0;
-        let angle = 0.0;
-        let mut bird = Bird::new(pt2(x, y), angle);
-        
-        assert_eq!(bird.position().x, x);
-        assert_eq!(bird.position().y, y);
-        assert_eq!(bird.angle(), angle);
-        assert_eq!(bird.get_separation(), angle);
-        assert_eq!(bird.get_alignment(), 0.0);
-        assert_eq!(bird.get_cohesion(), angle);
-
-        let dir_angle = std::f32::consts::PI;
-        let gain = 1.0;
-        let lower_speed = 1.0;
-        let upper_speed = 1.0;
-        let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
-
-
-        /* NOTE: abs() used here because angle can be calculated as -180 */
-        assert!(compare_floats(angle_fract.abs(), dir_angle, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().x, -1.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().y, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
-       
-        /* Additional test to assert above :) */
-        let mut bird_neg = Bird::new(pt2(x, y), angle);
-        let dir_angle_neg = -std::f32::consts::PI;
-        let angle_fract = bird_neg.spatial_awareness(dir_angle_neg, gain, lower_speed, upper_speed, false);
-
-        /* NOTE: abs() used here because angle can be calculated as -180 */
-        assert!(compare_floats(angle_fract.abs(), dir_angle, FLOAT_PRECISION));
-        assert!(compare_floats(bird_neg.position().x, -1.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird_neg.position().y, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird_neg.angle(), 0.0, FLOAT_PRECISION));
-    }
-    
-    #[test]
-    fn spatial_awareness_north(){
-        let x = 0.0;
-        let y = 0.0;
-        let angle = 0.0;
-        let mut bird = Bird::new(pt2(x, y), angle);
-        
-        assert_eq!(bird.position().x, x);
-        assert_eq!(bird.position().y, y);
-        assert_eq!(bird.angle(), angle);
-        assert_eq!(bird.get_separation(), angle);
-        assert_eq!(bird.get_alignment(), 0.0);
-        assert_eq!(bird.get_cohesion(), angle);
-
-        let dir_angle = std::f32::consts::PI / 2.0;
-        let gain = 1.0;
-        let lower_speed = 1.0;
-        let upper_speed = 1.0;
-        let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
-
-        assert!(compare_floats(angle_fract, dir_angle, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().x, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().y, 1.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
-    }
-    
-    #[test]
-    fn spatial_awareness_south(){
-        let x = 0.0;
-        let y = 0.0;
-        let angle = 0.0;
-        let mut bird = Bird::new(pt2(x, y), angle);
-        
-        assert_eq!(bird.position().x, x);
-        assert_eq!(bird.position().y, y);
-        assert_eq!(bird.angle(), angle);
-        assert_eq!(bird.get_separation(), angle);
-        assert_eq!(bird.get_alignment(), 0.0);
-        assert_eq!(bird.get_cohesion(), angle);
-
-        let dir_angle = -(std::f32::consts::PI / 2.0);
-        let gain = 1.0;
-        let lower_speed = 1.0;
-        let upper_speed = 1.0;
-        let angle_fract = bird.spatial_awareness(dir_angle, gain, lower_speed, upper_speed, false);
-
-        assert!(compare_floats(angle_fract, dir_angle, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().x, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().y, -1.0, FLOAT_PRECISION));
-        assert!(compare_floats(bird.angle(), 0.0, FLOAT_PRECISION));
-    }
+    }  
     
     #[test]
     fn apply_separation_east_zero_x(){
