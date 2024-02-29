@@ -18,10 +18,6 @@ impl Bird{
     const BIRD_REGION_RADIUS:f32 = 125.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 30.0;
 
-    const SEPARATION_GAIN:f32 = 0.05;
-    const COHESION_GAIN:f32 = 0.045;
-    const ALIGNMENT_GAIN:f32 = 0.025;
-
     const SEP_SPEED_MIN:f32 = 0.25;
     const SEP_SPEED_MAX:f32 = 0.5;
     
@@ -31,8 +27,9 @@ impl Bird{
     const BIRD_SPEED_MIN:f32 = 1.0;
     const BIRD_SPEED_MAX:f32 = 7.5;
 
-    const SEP_ANGLE:f32 = 0.125;
-    const COH_ANGLE:f32 = 0.00125;
+    const SEP_ANGLE:f32 = 0.00625;
+    const COH_ANGLE:f32 = 0.00005625;
+    const ALIGNMENT_GAIN:f32 = 0.025;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
     const REDUCTION_FACTOR:f32 = 0.5;
@@ -133,27 +130,27 @@ impl Bird{
     {
         assert!(self.angle >= 0.0);
 
-        let mut sep_gain = Self::SEPARATION_GAIN;
-        let mut coh_gain = Self::COHESION_GAIN;
+        let mut sep_angle = self.sep_angle;
+        let mut coh_angle = self.coh_angle;
         let mut align_gain = Self::ALIGNMENT_GAIN;
 
         let near_edge = self.is_near_edge(inner);
         if near_edge {
             
-            sep_gain *= Self::REDUCTION_FACTOR;
-            coh_gain *= Self::REDUCTION_FACTOR;
+            sep_angle *= Self::REDUCTION_FACTOR;
+            coh_angle *= Self::REDUCTION_FACTOR;
             align_gain *= Self::REDUCTION_FACTOR;
         }
 
         /* Separation */
         if self.sep_changed{
-            self.apply_separation(self.sep_angle, Self::SEP_ANGLE, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
+            self.apply_separation(sep_angle, Self::SEP_ANGLE, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
-            self.apply_cohesion(self.coh_angle, Self::COH_ANGLE, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
+            self.apply_cohesion(coh_angle, Self::COH_ANGLE, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
             self.coh_changed = false;
         }
         
@@ -224,7 +221,7 @@ impl Bird{
         wrapped_angle
     } 
     
-    pub fn apply_separation(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
+    pub fn apply_separation(&mut self, angle: f32, rot_angle: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
         /* Randomise movement */
         let mov_inc:f32;
         if randomise{
@@ -268,14 +265,14 @@ impl Bird{
         }
 
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
-        self.angle += delta * gain;
+        self.angle += delta;
         self.angle = self.wrap_angle(self.angle);
         
         /* 1. Move bird in direction of angle */
         self.move_bird(mov_inc);
     }
     
-    pub fn apply_cohesion(&mut self, angle: f32, rot_angle: f32, gain: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
+    pub fn apply_cohesion(&mut self, angle: f32, rot_angle: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
         /* Randomise movement */
         let mov_inc:f32;
         if randomise{
@@ -320,7 +317,7 @@ impl Bird{
         }
 
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
-        self.angle += delta * gain;
+        self.angle += delta;
         self.angle = self.wrap_angle(self.angle);
 
         /* 1. Move bird in direction of angle */
