@@ -18,11 +18,11 @@ impl Bird{
     const BIRD_REGION_RADIUS:f32 = 125.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 30.0;
 
-    const SEP_SPEED_MIN:f32 = 0.25;
-    const SEP_SPEED_MAX:f32 = 0.5;
+    const SEP_SPEED_MIN:f32 = 1.25;
+    const SEP_SPEED_MAX:f32 = 2.5;
     
-    const COH_SPEED_MIN:f32 = 0.1;
-    const COH_SPEED_MAX:f32 = 0.5;
+    const COH_SPEED_MIN:f32 = 0.5;
+    const COH_SPEED_MAX:f32 = 1.5;
 
     const BIRD_SPEED_MIN:f32 = 1.0;
     const BIRD_SPEED_MAX:f32 = 7.5;
@@ -37,7 +37,7 @@ impl Bird{
 
     /* Degrees, confusing I know */
     const TURN_ANGLE:f32 = 1.0;
-    const DECAY:f32 = 0.02;
+    const DECAY:f32 = 0.01;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -183,11 +183,11 @@ impl Bird{
         /* Handle extreme edge of screen */
         let near_edge_hard = self.is_near_edge(inner_hard); 
         if near_edge_hard{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 4.0));
+            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 10.0));
             self.angle = self.wrap_angle(self.angle);
             self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
             
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 4.0));
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 10.0));
             self.angle = self.wrap_angle(self.angle);
             self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
         }

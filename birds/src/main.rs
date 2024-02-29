@@ -5,8 +5,8 @@ mod bird;
 mod calcs;
 pub use crate::bird::Bird;
     
-const SCREEN_W_F32:f32 = 1024.0;
-const SCREEN_H_F32:f32 = 768.0;
+const SCREEN_W_F32:f32 = 1920.0;
+const SCREEN_H_F32:f32 = 1080.0;
 
 const SCREEN_W_2:f32 = SCREEN_W_F32 / 2.0;
 const SCREEN_H_2:f32 = SCREEN_H_F32 / 2.0;
@@ -14,10 +14,10 @@ const SCREEN_H_2:f32 = SCREEN_H_F32 / 2.0;
 const SCREEN_W_U32:u32 = SCREEN_W_F32 as u32;
 const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 
-const SCREEN_TURN_OFFSET:f32 = 150.0;
-const SCREEN_TURN_OFFSET_HARD:f32 = 25.0;
+const SCREEN_TURN_OFFSET:f32 = 200.0;
+const SCREEN_TURN_OFFSET_HARD:f32 = 75.0;
 
-const NUM_BIRDS:u32 = 80;
+const NUM_BIRDS:u32 = 320;
 
 struct Model {
     bird:Vec<Bird>,
