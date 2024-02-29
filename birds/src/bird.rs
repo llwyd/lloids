@@ -148,14 +148,12 @@ impl Bird{
         /* Separation */
         if self.sep_changed{
             self.apply_separation(self.sep_angle, Self::SEP_ANGLE, sep_gain, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
-            //self.angle += diff;
             self.sep_changed = false;
         }
         
         /* Cohesion */
         if self.coh_changed{
             self.apply_cohesion(self.coh_angle, Self::COH_ANGLE, coh_gain, Self::COH_SPEED_MIN, Self::COH_SPEED_MAX, true);
-            //self.angle -= diff;
             self.coh_changed = false;
         }
         
@@ -169,45 +167,46 @@ impl Bird{
         self.angle = self.wrap_angle(self.angle);
 
         assert!(self.angle >= 0.0);
-        let mov_inc = random_range(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
-        self.xy.x += mov_inc * self.angle.cos();
-        self.xy.y += mov_inc * self.angle.sin();
+        self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
         /* Handle Screen Edge */
         if near_edge{
             self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE));
             self.angle = self.wrap_angle(self.angle);
-            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-            self.xy.x += mov_inc * self.angle.cos();
-            self.xy.y += mov_inc * self.angle.sin();
+            self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
             
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE));
-        
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE)); 
             self.angle = self.wrap_angle(self.angle);
-            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-            self.xy.x += mov_inc * self.angle.cos();
-            self.xy.y += mov_inc * self.angle.sin();
+            self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
         }
 
 
-        let near_edge_hard = self.is_near_edge(inner_hard);
-        
+        /* Handle extreme edge of screen */
+        let near_edge_hard = self.is_near_edge(inner_hard); 
         if near_edge_hard{
             self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 4.0));
             self.angle = self.wrap_angle(self.angle);
-            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-            self.xy.x += mov_inc * self.angle.cos();
-            self.xy.y += mov_inc * self.angle.sin();
+            self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
             
             self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 4.0));
-        
             self.angle = self.wrap_angle(self.angle);
-            let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-            self.xy.x += mov_inc * self.angle.cos();
-            self.xy.y += mov_inc * self.angle.sin();
+            self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
         }
 
         self.screen_wrap(win);
+    }
+
+
+    fn move_rnd(&mut self, lower_speed:f32, upper_speed:f32)
+    {
+        let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
+        self.move_bird(mov_inc);
+    }
+
+    fn move_bird(&mut self, mov_inc:f32)
+    {
+        self.xy.x += mov_inc * self.angle.cos();
+        self.xy.y += mov_inc * self.angle.sin();
     }
 
     fn wrap_angle(&self, angle: f32) -> f32{
