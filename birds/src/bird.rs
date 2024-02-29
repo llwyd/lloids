@@ -199,7 +199,7 @@ impl Bird{
 
     fn move_rnd(&mut self, lower_speed:f32, upper_speed:f32)
     {
-        let mov_inc = random_range(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
+        let mov_inc = random_range(lower_speed, upper_speed); 
         self.move_bird(mov_inc);
     }
 
