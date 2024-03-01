@@ -37,12 +37,12 @@ impl Bird{
     const BIRD_SPEED_MAX:f32 = 7.5;
 
     /* NOTE: Radians */
-    const SEP_ANGLE:f32 = 0.00625;
-    const COH_ANGLE:f32 = 0.00005625;
-    const ALIGNMENT_GAIN:f32 = 0.025;
+    const SEP_ANGLE:f32 = 0.00625 * 0.25;
+    const COH_ANGLE:f32 = 0.00005625 * 2.0;
+    const ALIGNMENT_GAIN:f32 = 0.028;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
-    const REDUCTION_FACTOR:f32 = 0.05;
+    const REDUCTION_FACTOR:f32 = 0.01;
 
     /* Degrees, confusing I know */
     const TURN_ANGLE:f32 = 1.0;
@@ -152,8 +152,8 @@ impl Bird{
         if near_edge {
             
             sep_angle *= Self::REDUCTION_FACTOR;
-            coh_angle *= Self::REDUCTION_FACTOR;
-            align_gain *= Self::REDUCTION_FACTOR;
+            coh_angle *= 10.0;
+            align_gain *= 1.0;
         }
 
         /* Separation */
