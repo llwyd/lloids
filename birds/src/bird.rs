@@ -583,7 +583,7 @@ mod tests {
     }
     
     #[test]
-    fn rotate_90()
+    fn rotate_minus_90()
     {
         let x = 0.0;
         let y = 1.0;
@@ -594,6 +594,21 @@ mod tests {
         let new = bird.rotate(pos, deg_to_rad(-90.0));
 
         assert!(compare_floats(new.x, 1.0, FLOAT_PRECISION));
+        assert!(compare_floats(new.y, 0.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn rotate_plus_90()
+    {
+        let x = 0.0;
+        let y = 1.0;
+        let angle = 0.0;
+        let bird = Bird::new(pt2(x, y), angle);
+        
+        let pos = pt2(x, y);
+        let new = bird.rotate(pos, deg_to_rad(90.0));
+
+        assert!(compare_floats(new.x, -1.0, FLOAT_PRECISION));
         assert!(compare_floats(new.y, 0.0, FLOAT_PRECISION));
     }
 }
