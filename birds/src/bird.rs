@@ -170,11 +170,11 @@ impl Bird{
 
         /* Handle Screen Edge */
         if near_edge{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE));
+            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::DECAY);
             self.angle = self.wrap_angle(self.angle);
             self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
             
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE)); 
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::DECAY); 
             self.angle = self.wrap_angle(self.angle);
             self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
         }
@@ -183,11 +183,11 @@ impl Bird{
         /* Handle extreme edge of screen */
         let near_edge_hard = self.is_near_edge(inner_hard); 
         if near_edge_hard{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 10.0));
+            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 10.0), Self::DECAY);
             self.angle = self.wrap_angle(self.angle);
             self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
             
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 10.0));
+            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 10.0), Self::DECAY);
             self.angle = self.wrap_angle(self.angle);
             self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
         }
@@ -338,7 +338,7 @@ impl Bird{
         }
         near_edge
     }
-    fn v_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32) -> f32
+    fn v_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, decay: f32) -> f32
     {
         let mut turn = 1.0;
         let mut diff = 0.0;
@@ -347,7 +347,7 @@ impl Bird{
             let mut delta = self.xy.y - inner.top();
             assert!(delta >= 0.0);
 
-            delta *= Self::DECAY;
+            delta *= decay;
             let mut angle = self.angle - (std::f32::consts::PI / 2.0);
             angle = self.wrap_angle(angle);
             if rad_to_deg(angle) > 180.0{
@@ -358,7 +358,7 @@ impl Bird{
         else if self.xy.y < inner.bottom() as f32{
             let mut delta = inner.bottom() - self.xy.y;
             assert!(delta >= 0.0);
-            delta *= Self::DECAY;
+            delta *= decay;
             let mut angle = self.angle - (std::f32::consts::PI * 1.5);
             angle = self.wrap_angle(angle);
 
@@ -370,7 +370,7 @@ impl Bird{
         diff
     }
 
-    fn h_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32) -> f32
+    fn h_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, decay:f32) -> f32
     {
         let mut turn = 1.0;
         let mut diff = 0.0;
@@ -378,7 +378,7 @@ impl Bird{
         if self.xy.x > inner.right() as f32{
             let mut delta = self.xy.x - inner.right();
             assert!(delta >= 0.0);
-            delta *= Self::DECAY;
+            delta *= decay;
             let mut angle = self.angle;
             angle = self.wrap_angle(angle);
 
@@ -390,7 +390,7 @@ impl Bird{
         else if self.xy.x < inner.left() as f32{
             let mut delta = inner.left() - self.xy.x;
             assert!(delta >= 0.0);
-            delta *= Self::DECAY;
+            delta *= decay;
             let mut angle = self.angle - (std::f32::consts::PI);
             angle = self.wrap_angle(angle);
 
