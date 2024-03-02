@@ -190,6 +190,7 @@ impl Bird{
                     if self.xy.x > inner.right() as f32
                     {
                         let mut angle = self.angle;
+                        angle = self.wrap_angle(angle);
                         if angle == 0.0
                         {
                             angle = 1.0;
@@ -225,6 +226,7 @@ impl Bird{
                     if self.xy.y > inner.top() as f32
                     {
                         let mut angle = self.angle - (std::f32::consts::PI / 2.0);
+                        angle = self.wrap_angle(angle);
                         if angle == 0.0
                         {
                             angle = 1.0;
