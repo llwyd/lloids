@@ -152,8 +152,8 @@ impl Bird{
         if near_edge {
             
             sep_angle *= Self::REDUCTION_FACTOR;
-            coh_angle *= 10.0;
-            align_gain *= 1.0;
+            coh_angle *= Self::REDUCTION_FACTOR;
+            align_gain *= Self::REDUCTION_FACTOR;
         }
 
         /* Separation */
