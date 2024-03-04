@@ -268,7 +268,6 @@ impl Bird{
                         assert!(turn_angle >= -180.0);
                         assert!(turn_angle <= 180.0);
                         self.turn_angle = turn_angle * Self::TURN_GAIN;
-
                     }
                     else
                     {
@@ -288,25 +287,21 @@ impl Bird{
                 if !near_edge && !self.is_near_edge(win)
                 {
                     self.state = State::Idle;
-                    self.turn_angle = 0.0;
                 }
                 else if near_edge_hard
                 {
-                    self.turn_angle *= Self::HARD_ANGLE_MULTIPLIER;
-                    self.turn_angle = self.wrap_angle_180(self.turn_angle);
                     self.state = State::TurningHarder;
                 }
             },
             State::TurningHarder =>
             {
-                self.angle += self.turn_angle;
+                self.angle += self.wrap_angle_180(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER);
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
                 if !near_edge_hard && near_edge
                 {
                     self.state = State::Idle;
-                    self.turn_angle = 0.0;
                 }
             },
             State::PostTurn =>
