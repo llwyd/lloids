@@ -282,7 +282,7 @@ impl Bird{
                 
                 self.angle += self.turn_angle;
                 self.angle = self.wrap_angle(self.angle);
-                self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
+                self.move_rnd(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
 
                 if !near_edge && !self.is_near_edge(win)
                 {
@@ -295,7 +295,7 @@ impl Bird{
             },
             State::TurningHarder =>
             {
-                self.angle += self.wrap_angle_180(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER);
+                self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(90.0));
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
@@ -331,7 +331,21 @@ impl Bird{
         self.xy.x += mov_inc * self.angle.cos();
         self.xy.y += mov_inc * self.angle.sin();
     }
-    
+
+    fn saturate_angle(&self, angle:f32, limit:f32)->f32
+    {
+        let mut new_angle = angle;
+        if angle >= limit
+        {
+            new_angle = limit;
+        }
+        else if angle <= -limit
+        {
+            new_angle = limit;
+        }
+        new_angle
+    }
+
     fn wrap_angle_180(&self, angle: f32) -> f32{
         let ref_angle = angle % (2.0 * std::f32::consts::PI);
         let mut wrapped_angle = ref_angle;
