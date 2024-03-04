@@ -5,6 +5,7 @@ enum State{
     Idle,
     TurningHorizontal,
     TurningVertical,
+    TurningHarder,
 }
 
 #[derive(Copy, Clone)]
@@ -42,12 +43,12 @@ impl Bird{
     const ALIGNMENT_GAIN:f32 = 0.028;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
-    const REDUCTION_FACTOR:f32 = 0.01;
+    const REDUCTION_FACTOR:f32 = 0.1;
 
     /* Degrees, confusing I know */
     const TURN_ANGLE:f32 = 1.0;
     const DECAY:f32 = 0.01;    
-    const TURN_GAIN:f32 = 0.015;
+    const TURN_GAIN:f32 = 0.0175;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -149,6 +150,7 @@ impl Bird{
         let mut align_gain = Self::ALIGNMENT_GAIN;
 
         let near_edge = self.is_near_edge(inner);
+        let near_edge_hard = self.is_near_edge(inner_hard);
         if near_edge {
             
             sep_angle *= Self::REDUCTION_FACTOR;
@@ -191,7 +193,7 @@ impl Bird{
                     {
                         let mut angle = self.angle;
                         angle = self.wrap_angle(angle);
-                        if angle == 0.0
+                        if angle == 0.0 || angle == 180.0
                         {
                             angle = 1.0;
                         }
@@ -204,7 +206,7 @@ impl Bird{
                     {
                         let mut angle = self.angle - (std::f32::consts::PI);
                         angle = self.wrap_angle(angle);
-                        if angle == 0.0
+                        if angle == 0.0 || angle == 180.0
                         {
                             angle = 1.0;
                         }
@@ -227,7 +229,7 @@ impl Bird{
                     {
                         let mut angle = self.angle - (std::f32::consts::PI / 2.0);
                         angle = self.wrap_angle(angle);
-                        if angle == 0.0
+                        if angle == 0.0 || angle == 180.0
                         {
                             angle = 1.0;
                         }
@@ -240,7 +242,7 @@ impl Bird{
                     {
                         let mut angle = self.angle - (std::f32::consts::PI * 1.5);
                         angle = self.wrap_angle(angle);
-                        if angle == 0.0
+                        if angle == 0.0 || angle == 180.0
                         {
                             angle = 1.0;
                         }
@@ -267,10 +269,15 @@ impl Bird{
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
 
-                if !near_edge || self.is_near_edge(win)
+                if !near_edge && !self.is_near_edge(win)
                 {
                     self.state = State::Idle;
                     self.turn_angle = 0.0;
+                }
+                else if near_edge_hard
+                {
+                    self.turn_angle *= 2.0;
+                    self.state = State::TurningHarder;
                 }
             },
             State::TurningVertical =>
@@ -280,7 +287,24 @@ impl Bird{
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
 
-                if !near_edge || self.is_near_edge(win)
+                if !near_edge && !self.is_near_edge(win)
+                {
+                    self.state = State::Idle;
+                    self.turn_angle = 0.0;
+                }
+                else if near_edge_hard
+                {
+                    self.turn_angle *= 1.2;
+                    self.state = State::TurningHarder;
+                }
+            },
+            State::TurningHarder =>
+            {
+                self.angle += self.turn_angle;
+                self.angle = self.wrap_angle(self.angle);
+                self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
+
+                if !near_edge && !self.is_near_edge(win)
                 {
                     self.state = State::Idle;
                     self.turn_angle = 0.0;
@@ -545,18 +569,18 @@ impl Bird{
     }
 
     fn screen_wrap(&mut self, win: &Rect<f32>){
-        if self.xy.x >= win.right() + 50.0 as f32{
-            self.xy.x -= win.wh().x + 50.0;
+        if self.xy.x >= win.right() + 150.0 as f32{
+            self.xy.x -= win.wh().x + 150.0;
         }
-        else if self.xy.x <= win.left() -50.0 as f32{
-            self.xy.x += win.wh().x + 50.0;
+        else if self.xy.x <= win.left() -150.0 as f32{
+            self.xy.x += win.wh().x + 150.0;
         }
         
-        if self.xy.y >= win.top() +50.0 as f32{
-            self.xy.y -= win.wh().y + 50.0;
+        if self.xy.y >= win.top() +150.0 as f32{
+            self.xy.y -= win.wh().y + 150.0;
         }
-        else if self.xy.y <= win.bottom() - 50.0 as f32{
-            self.xy.y += win.wh().y + 50.0;
+        else if self.xy.y <= win.bottom() - 150.0 as f32{
+            self.xy.y += win.wh().y + 150.0;
         } 
     }
 
