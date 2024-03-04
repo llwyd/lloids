@@ -3,9 +3,9 @@ use nannou::prelude::*;
 #[derive(Copy,Clone)]
 enum State{
     Idle,
-    TurningHorizontal,
-    TurningVertical,
+    Turning,
     TurningHarder,
+    PostTurn,
 }
 
 #[derive(Copy, Clone)]
@@ -43,13 +43,13 @@ impl Bird{
     const ALIGNMENT_GAIN:f32 = 0.028;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
-    const REDUCTION_FACTOR:f32 = 0.1;
+    const REDUCTION_FACTOR:f32 = 0.25;
 
     /* Degrees, confusing I know */
-    const TURN_ANGLE:f32 = 1.0;
-    const DECAY:f32 = 0.01;    
-    const TURN_GAIN:f32 = 0.0175;
+    const TURN_GAIN:f32 = 0.01;
 
+    const HARD_REDUCTION_FACTOR:f32 = 0.0;
+    const HARD_ANGLE_MULTIPLIER:f32 = 4.0;
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
             xy: position,
@@ -151,7 +151,14 @@ impl Bird{
 
         let near_edge = self.is_near_edge(inner);
         let near_edge_hard = self.is_near_edge(inner_hard);
-        if near_edge {
+        if near_edge_hard
+        {
+            sep_angle *= Self::HARD_REDUCTION_FACTOR;
+            coh_angle *= Self::HARD_REDUCTION_FACTOR;
+            align_gain *= Self::HARD_REDUCTION_FACTOR;
+        }
+        else if near_edge 
+        {
             
             sep_angle *= Self::REDUCTION_FACTOR;
             coh_angle *= Self::REDUCTION_FACTOR;
@@ -181,6 +188,16 @@ impl Bird{
 
         assert!(self.angle >= 0.0);
         self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
+        
+
+        self.state_machine(win, inner, inner_hard);
+        self.screen_wrap(win);
+    }
+
+    fn state_machine(&mut self, win: &Rect<f32>, inner: &Rect<f32>, inner_hard: &Rect<f32>)
+    {
+        let near_edge = self.is_near_edge(inner);
+        let near_edge_hard = self.is_near_edge(inner_hard);
         
         match self.state{
             State::Idle =>
@@ -221,7 +238,7 @@ impl Bird{
                     {
                         assert!(false);
                     }
-                    self.state = State::TurningHorizontal;
+                    self.state = State::Turning;
                 }
                 else if self.v_is_near_edge(inner)
                 {
@@ -258,13 +275,12 @@ impl Bird{
                         assert!(false);
                     }
 
-                    self.state = State::TurningVertical;
+                    self.state = State::Turning;
                 }
             },
-            State::TurningHorizontal =>
+            State::Turning =>
             {
                 
-                //self.angle += self.h_screen_edge(inner, self.turn_angle, Self::DECAY);
                 self.angle += self.turn_angle;
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
@@ -276,25 +292,8 @@ impl Bird{
                 }
                 else if near_edge_hard
                 {
-                    self.turn_angle *= 2.0;
-                    self.state = State::TurningHarder;
-                }
-            },
-            State::TurningVertical =>
-            {
-                //self.angle += self.v_screen_edge(inner, self.turn_angle, Self::DECAY); 
-                self.angle += self.turn_angle;
-                self.angle = self.wrap_angle(self.angle);
-                self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-
-                if !near_edge && !self.is_near_edge(win)
-                {
-                    self.state = State::Idle;
-                    self.turn_angle = 0.0;
-                }
-                else if near_edge_hard
-                {
-                    self.turn_angle *= 1.2;
+                    self.turn_angle *= Self::HARD_ANGLE_MULTIPLIER;
+                    self.turn_angle = self.wrap_angle_180(self.turn_angle);
                     self.state = State::TurningHarder;
                 }
             },
@@ -302,45 +301,29 @@ impl Bird{
             {
                 self.angle += self.turn_angle;
                 self.angle = self.wrap_angle(self.angle);
-                self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
+                self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
-                if !near_edge && !self.is_near_edge(win)
+                if !near_edge_hard && near_edge
                 {
                     self.state = State::Idle;
                     self.turn_angle = 0.0;
                 }
             },
+            State::PostTurn =>
+            {
+                if near_edge_hard
+                {
+                    self.state = State::TurningHarder;
+                }
+                if !near_edge
+                {
+                    self.state = State::Idle;
+                }
+                
+            },
         }
 
-
-        /* Handle Screen Edge */
-        /*
-        if near_edge{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::DECAY);
-            self.angle = self.wrap_angle(self.angle);
-            self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-            
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE), Self::DECAY); 
-            self.angle = self.wrap_angle(self.angle);
-            self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-        }
-*/
-/*
-        /* Handle extreme edge of screen */
-        let near_edge_hard = self.is_near_edge(inner_hard); 
-        if near_edge_hard{
-            self.angle += self.h_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 10.0), Self::DECAY);
-            self.angle = self.wrap_angle(self.angle);
-            self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-            
-            self.angle += self.v_screen_edge(inner, deg_to_rad(Self::TURN_ANGLE * 10.0), Self::DECAY);
-            self.angle = self.wrap_angle(self.angle);
-            self.move_rnd(Self::BIRD_SPEED_MIN * 0.25, Self::BIRD_SPEED_MAX * 0.25); 
-        }
-*/
-        self.screen_wrap(win);
     }
-
 
     fn move_rnd(&mut self, lower_speed:f32, upper_speed:f32)
     {
@@ -352,6 +335,22 @@ impl Bird{
     {
         self.xy.x += mov_inc * self.angle.cos();
         self.xy.y += mov_inc * self.angle.sin();
+    }
+    
+    fn wrap_angle_180(&self, angle: f32) -> f32{
+        let ref_angle = angle % (2.0 * std::f32::consts::PI);
+        let mut wrapped_angle = ref_angle;
+        
+        if ref_angle < -std::f32::consts::PI{
+            wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
+        }
+        else if ref_angle >= (std::f32::consts::PI ){
+            wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
+        }
+        
+        assert!(wrapped_angle >= -deg_to_rad(180.0));
+        assert!(wrapped_angle < deg_to_rad(180.0));
+        wrapped_angle
     }
 
     fn wrap_angle(&self, angle: f32) -> f32{
@@ -505,6 +504,7 @@ impl Bird{
         near_edge
     }
 
+    /*
     fn v_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, decay: f32) -> f32
     {
         let mut turn = 1.0;
@@ -567,7 +567,7 @@ impl Bird{
         }
         diff
     }
-
+*/
     fn screen_wrap(&mut self, win: &Rect<f32>){
         if self.xy.x >= win.right() + 150.0 as f32{
             self.xy.x -= win.wh().x + 150.0;
