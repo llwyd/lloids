@@ -216,11 +216,12 @@ impl Bird{
                     {
                         let mut angle = self.angle;
                         angle = self.wrap_angle(angle);
-                        if angle == 0.0 || angle == 180.0
+                        if angle == std::f32::consts::PI
                         {
                             angle = 1.0;
                         }
                         let turn_angle = std::f32::consts::PI - angle;
+                        assert!(turn_angle != 0.0);
                         assert!(turn_angle >= -180.0);
                         assert!(turn_angle <= 180.0);
                         self.turn_angle = turn_angle * Self::TURN_GAIN;
@@ -229,12 +230,13 @@ impl Bird{
                     {
                         let mut angle = self.angle - (std::f32::consts::PI);
                         angle = self.wrap_angle(angle);
-                        if angle == 0.0 || angle == 180.0
+                        if angle == std::f32::consts::PI
                         {
                             angle = 1.0;
                         }
                         
                         let turn_angle = std::f32::consts::PI - angle;
+                        assert!(turn_angle != 0.0);
                         assert!(turn_angle >= -180.0);
                         assert!(turn_angle <= 180.0);
                         self.turn_angle = turn_angle * Self::TURN_GAIN;
@@ -252,11 +254,12 @@ impl Bird{
                     {
                         let mut angle = self.angle - (std::f32::consts::PI / 2.0);
                         angle = self.wrap_angle(angle);
-                        if angle == 0.0 || angle == 180.0
+                        if angle == std::f32::consts::PI
                         {
                             angle = 1.0;
                         }
                         let turn_angle = std::f32::consts::PI - angle;
+                        assert!(turn_angle != 0.0);
                         assert!(turn_angle >= -180.0);
                         assert!(turn_angle <= 180.0);
                         self.turn_angle = turn_angle * Self::TURN_GAIN;
@@ -265,12 +268,13 @@ impl Bird{
                     {
                         let mut angle = self.angle - (std::f32::consts::PI * 1.5);
                         angle = self.wrap_angle(angle);
-                        if angle == 0.0 || angle == 180.0
+                        if angle == std::f32::consts::PI
                         {
                             angle = 1.0;
                         }
                         
                         let turn_angle = std::f32::consts::PI - angle;
+                        assert!(turn_angle != 0.0);
                         assert!(turn_angle >= -180.0);
                         assert!(turn_angle <= 180.0);
                         self.turn_angle = turn_angle * Self::TURN_GAIN;
