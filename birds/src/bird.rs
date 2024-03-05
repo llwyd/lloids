@@ -153,18 +153,22 @@ impl Bird{
 
         let near_edge = self.is_near_edge(inner);
         let near_edge_hard = self.is_near_edge(inner_hard);
+        /*
         if near_edge_hard
         {
             sep_angle *= Self::HARD_REDUCTION_FACTOR;
             coh_angle *= Self::HARD_REDUCTION_FACTOR;
             align_gain *= Self::HARD_REDUCTION_FACTOR;
         }
-        else if near_edge 
+        */
+
+        if near_edge 
         {
-            
-            sep_angle *= Self::REDUCTION_FACTOR;
-            coh_angle *= Self::REDUCTION_FACTOR;
-            align_gain *= Self::REDUCTION_FACTOR;
+            let dist = self.distance_outside(inner); 
+            let reduct = (dist * -0.1).exp();
+            sep_angle *= reduct;
+            coh_angle *= reduct;
+            align_gain *= reduct;
         }
 
         /* Separation */
@@ -600,6 +604,19 @@ impl Bird{
         let y = (source.x * angle.sin()) + (source.y * angle.cos());
    
         pt2(x, y)
+    }
+
+    pub fn distance_outside(&self, boundary: &Rect<f32>) -> f32
+    {
+        let dist_x = (self.xy.x - boundary.top()).abs();
+        let dist_y = (self.xy.y - boundary.right()).abs();
+
+        let mut dist:f32 = dist_y;
+        if dist_x > dist_y
+        {
+            dist = dist_x;
+        }
+        dist
     }
 }
 
