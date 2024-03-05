@@ -39,8 +39,8 @@ impl Bird{
 
     /* NOTE: Radians */
     const SEP_ANGLE:f32 = 0.00625 * 0.25;
-    const COH_ANGLE:f32 = 0.00005625 * 2.0;
-    const ALIGNMENT_GAIN:f32 = 0.028;
+    const COH_ANGLE:f32 = 0.00005625 * 3.0;
+    const ALIGNMENT_GAIN:f32 = 0.035;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
     const REDUCTION_FACTOR:f32 = 0.25;
@@ -49,7 +49,9 @@ impl Bird{
     const TURN_GAIN:f32 = 0.01;
 
     const HARD_REDUCTION_FACTOR:f32 = 0.0;
-    const HARD_ANGLE_MULTIPLIER:f32 = 4.0;
+    const HARD_ANGLE_MULTIPLIER:f32 = 5.0;
+    const HARD_ANGLE_SATURATION:f32 = 60.0;
+
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
             xy: position,
@@ -284,7 +286,7 @@ impl Bird{
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
 
-                if !near_edge && !self.is_near_edge(win)
+                if !near_edge
                 {
                     self.state = State::Idle;
                 }
@@ -295,7 +297,7 @@ impl Bird{
             },
             State::TurningHarder =>
             {
-                self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(90.0));
+                self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(Self::HARD_ANGLE_SATURATION));
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
