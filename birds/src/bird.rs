@@ -317,7 +317,7 @@ impl Bird{
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
-                if !near_edge_hard && near_edge
+                if !near_edge_hard
                 {
                     self.state = State::Idle;
                 }
