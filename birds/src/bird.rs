@@ -51,6 +51,8 @@ impl Bird{
     const HARD_REDUCTION_FACTOR:f32 = 0.0;
     const HARD_ANGLE_MULTIPLIER:f32 = 5.0;
     const HARD_ANGLE_SATURATION:f32 = 60.0;
+    
+    const NON_ZERO_ADJUST:f32 = 0.001;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -218,7 +220,7 @@ impl Bird{
                         angle = self.wrap_angle(angle);
                         if angle == std::f32::consts::PI
                         {
-                            angle = 1.0;
+                            angle -= Self::NON_ZERO_ADJUST;
                         }
                         let turn_angle = std::f32::consts::PI - angle;
                         assert!(turn_angle != 0.0);
@@ -232,7 +234,7 @@ impl Bird{
                         angle = self.wrap_angle(angle);
                         if angle == std::f32::consts::PI
                         {
-                            angle = 1.0;
+                            angle -= Self::NON_ZERO_ADJUST;
                         }
                         
                         let turn_angle = std::f32::consts::PI - angle;
@@ -256,7 +258,7 @@ impl Bird{
                         angle = self.wrap_angle(angle);
                         if angle == std::f32::consts::PI
                         {
-                            angle = 1.0;
+                            angle -= Self::NON_ZERO_ADJUST;
                         }
                         let turn_angle = std::f32::consts::PI - angle;
                         assert!(turn_angle != 0.0);
@@ -270,7 +272,7 @@ impl Bird{
                         angle = self.wrap_angle(angle);
                         if angle == std::f32::consts::PI
                         {
-                            angle = 1.0;
+                            angle -= Self::NON_ZERO_ADJUST;
                         }
                         
                         let turn_angle = std::f32::consts::PI - angle;
