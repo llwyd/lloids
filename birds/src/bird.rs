@@ -3,9 +3,10 @@ use nannou::prelude::*;
 #[derive(Copy,Clone,Debug)]
 enum State{
     Idle,
-    Turning,
-    TurningHarder,
-    PostTurn,
+    TurningH,
+    TurningV,
+    TurningHarderH,
+    TurningHarderV,
 }
 
 #[derive(Copy, Clone)]
@@ -254,7 +255,7 @@ impl Bird{
                     {
                         assert!(false);
                     }
-                    self.state = State::Turning;
+                    self.state = State::TurningH;
                 }
                 else if self.v_is_near_edge(inner)
                 {
@@ -292,47 +293,70 @@ impl Bird{
                         assert!(false);
                     }
 
-                    self.state = State::Turning;
+                    self.state = State::TurningV;
                 }
             },
-            State::Turning =>
+            State::TurningH =>
             {
                 
                 self.angle += self.turn_angle;
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
 
-                if !near_edge
+                if !self.h_is_near_edge(inner)
                 {
                     self.state = State::Idle;
                 }
-                else if near_edge_hard
+                else if self.h_is_near_edge(inner_hard)
                 {
-                    self.state = State::TurningHarder;
+                    self.state = State::TurningHarderH;
+                }
+                else if self.v_is_near_edge(inner_hard)
+                {
+                    self.state = State::TurningHarderV;
                 }
             },
-            State::TurningHarder =>
+            State::TurningV =>
+            {
+                
+                self.angle += self.turn_angle;
+                self.angle = self.wrap_angle(self.angle);
+                self.move_rnd(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
+
+                if !self.v_is_near_edge(inner)
+                {
+                    self.state = State::Idle;
+                }
+                else if self.h_is_near_edge(inner_hard)
+                {
+                    self.state = State::TurningHarderH;
+                }
+                else if self.v_is_near_edge(inner_hard)
+                {
+                    self.state = State::TurningHarderV;
+                }
+            },
+            State::TurningHarderH =>
             {
                 self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(Self::HARD_ANGLE_SATURATION));
                 self.angle = self.wrap_angle(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
-                if !near_edge_hard
+                if !self.h_is_near_edge(inner_hard)
                 {
                     self.state = State::Idle;
                 }
             },
-            State::PostTurn =>
+            State::TurningHarderV =>
             {
-                if near_edge_hard
-                {
-                    self.state = State::TurningHarder;
-                }
-                if !near_edge
+                self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(Self::HARD_ANGLE_SATURATION));
+                self.angle = self.wrap_angle(self.angle);
+                self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
+
+                if !self.v_is_near_edge(inner_hard)
                 {
                     self.state = State::Idle;
                 }
-                
             },
         }
 
