@@ -22,6 +22,7 @@ const NUM_BIRDS:u32 = 56;
 struct Model {
     bird:Vec<Bird>,
     show_radii:bool,
+    show_turnbox:bool,
 }
 
 fn model(app: &App) -> Model {
@@ -38,6 +39,7 @@ fn model(app: &App) -> Model {
     let mut model = Model {
         bird: Vec::new(),
         show_radii: false,
+        show_turnbox: false,
     };
 
     for _i in 0..NUM_BIRDS{
@@ -130,12 +132,20 @@ fn view(app: &App, model: &Model, frame: Frame){
     //let win = app.window_rect();
     let draw = app.draw();
 
-    if model.show_radii{
+    if model.show_turnbox
+    {
+        draw.rect()
+            .x_y(0.0, 0.0)
+            .w_h(SCREEN_W_F32 - (SCREEN_TURN_OFFSET_HARD * 2.0), SCREEN_H_F32 - (SCREEN_TURN_OFFSET_HARD * 2.0))
+            .rgba8(120, 120, 120, 16);
+        
         draw.rect()
             .x_y(0.0, 0.0)
             .w_h(SCREEN_W_F32 - (SCREEN_TURN_OFFSET * 2.0), SCREEN_H_F32 - (SCREEN_TURN_OFFSET * 2.0))
-            .color(DARKGREY);
-
+            .rgba8(90, 90, 90, 16);
+    }
+    
+    if model.show_radii{
         for bird in &model.bird{
             bird.draw_region(&draw);
         }
