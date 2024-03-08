@@ -598,10 +598,10 @@ mod tests {
         delta <= precision
     }
 
-    fn test_separation(init_position:Point2, exp_position:Point2, bird_angle:f32, dir_angle:f32, exp_angle:f32)
+    fn test_separation(init_position:Point2, _exp_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
         let mut bird = Bird::new(init_position, bird_angle);
-        
+
         assert_eq!(bird.position().x, init_position.x);
         assert_eq!(bird.position().y, init_position.y);
         assert_eq!(bird.angle(), bird_angle);
@@ -613,10 +613,11 @@ mod tests {
         let upper_speed = 1.0;
         let rotation_angle = deg_to_rad(1.0);
 
-        bird.apply_separation(dir_angle, rotation_angle, lower_speed, upper_speed, false);
+        bird.apply_separation(sep_angle, rotation_angle, lower_speed, upper_speed, false);
 
-        assert!(compare_floats(bird.position().x, exp_position.x, FLOAT_PRECISION));
-        assert!(compare_floats(bird.position().y, exp_position.y, FLOAT_PRECISION));
+        let expected_position = pt2(init_position.x + (upper_speed* exp_angle.cos()), init_position.y + (upper_speed *exp_angle.sin()));
+        assert!(compare_floats(bird.position().x, expected_position.x, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, expected_position.y, FLOAT_PRECISION));
         assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
 
     }
