@@ -44,12 +44,9 @@ impl Bird{
     const ALIGNMENT_GAIN:f32 = 0.035;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
-    const REDUCTION_FACTOR:f32 = 0.25;
 
-    /* Degrees, confusing I know */
     const TURN_GAIN:f32 = 0.01;
 
-    const HARD_REDUCTION_FACTOR:f32 = 0.0;
     const HARD_ANGLE_MULTIPLIER:f32 = 5.0;
     const HARD_ANGLE_SATURATION:f32 = 60.0;
     
@@ -210,11 +207,8 @@ impl Bird{
         self.screen_wrap(win);
     }
 
-    fn state_machine(&mut self, win: &Rect<f32>, inner: &Rect<f32>, inner_hard: &Rect<f32>)
+    fn state_machine(&mut self, _win: &Rect<f32>, inner: &Rect<f32>, inner_hard: &Rect<f32>)
     {
-        let near_edge = self.is_near_edge(inner);
-        let near_edge_hard = self.is_near_edge(inner_hard);
-        
         match self.state{
             State::Idle =>
             {
@@ -388,7 +382,7 @@ impl Bird{
         }
         new_angle
     }
-
+/*
     fn wrap_angle_180(&self, angle: f32) -> f32{
         let ref_angle = angle % (2.0 * std::f32::consts::PI);
         let mut wrapped_angle = ref_angle;
@@ -404,7 +398,7 @@ impl Bird{
         assert!(wrapped_angle < deg_to_rad(180.0));
         wrapped_angle
     }
-
+*/
     fn wrap_angle(&self, angle: f32) -> f32{
         let ref_angle = angle % (2.0 * std::f32::consts::PI);
         let mut wrapped_angle = ref_angle;
@@ -556,70 +550,6 @@ impl Bird{
         near_edge
     }
 
-    /*
-    fn v_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, decay: f32) -> f32
-    {
-        let mut turn = 1.0;
-        let mut diff = 0.0;
-    
-        if self.xy.y > inner.top() as f32{
-            let mut delta = self.xy.y - inner.top();
-            assert!(delta >= 0.0);
-
-            delta *= decay;
-            let mut angle = self.angle - (std::f32::consts::PI / 2.0);
-            angle = self.wrap_angle(angle);
-            if rad_to_deg(angle) > 180.0{
-                turn = -1.0;
-            }
-            diff = turn * turn_angle;
-        }
-        else if self.xy.y < inner.bottom() as f32{
-            let mut delta = inner.bottom() - self.xy.y;
-            assert!(delta >= 0.0);
-            delta *= decay;
-            let mut angle = self.angle - (std::f32::consts::PI * 1.5);
-            angle = self.wrap_angle(angle);
-
-            if rad_to_deg(angle) > 180.0{
-                turn = -1.0;
-            }
-            diff = turn * turn_angle;
-        }
-        diff
-    }
-
-    fn h_screen_edge(&mut self, inner: &Rect<f32>, turn_angle:f32, decay:f32) -> f32
-    {
-        let mut turn = 1.0;
-        let mut diff = 0.0;
-
-        if self.xy.x > inner.right() as f32{
-            let mut delta = self.xy.x - inner.right();
-            assert!(delta >= 0.0);
-            delta *= decay;
-            let mut angle = self.angle;
-            angle = self.wrap_angle(angle);
-
-            if rad_to_deg(angle) > 180.0{
-                turn = -1.0;
-            }
-            diff = turn * turn_angle;
-        }
-        else if self.xy.x < inner.left() as f32{
-            let mut delta = inner.left() - self.xy.x;
-            assert!(delta >= 0.0);
-            let mut angle = self.angle - (std::f32::consts::PI);
-            angle = self.wrap_angle(angle);
-
-            if rad_to_deg(angle) > 180.0{
-                turn = -1.0;
-            }
-            diff = turn * turn_angle;
-        }
-        diff
-    }
-*/
     fn screen_wrap(&mut self, win: &Rect<f32>){
         if self.xy.x >= win.right() + 150.0 as f32{
             self.xy.x -= win.wh().x + 150.0;
