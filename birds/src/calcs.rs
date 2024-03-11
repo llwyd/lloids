@@ -43,15 +43,37 @@ fn average_position(bird: &Vec <Bird>) -> Point2{
     average
 }
 
-pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
+fn average_angle(bird: &Vec <Bird>) -> f32
+{
+    /* Calculate angles */
+    let num_bird = bird.len();
+
+    let mut average_sin = 0.0;
+    let mut average_cos = 0.0;
+
+    for i in 0..num_bird{
+        average_sin += bird[i].angle().sin();
+        average_cos += bird[i].angle().cos();
+    }
+    
+    average_sin /= num_bird as f32;
+    average_cos /= num_bird as f32;
+   
+    /* Circular mean */
+    let average = average_sin.atan2(average_cos);
+    average
+}
+
+pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32, f32){
 
     let average = average_position( other_birds );
+    let avg_angle = average_angle(other_birds);
     let angle = (bird.position().y - average.y).atan2(bird.position().x - average.x);
     
     assert!(angle >= -180.0);
     assert!(angle <= 180.0);
 
-    angle
+    (angle, avg_angle)
 }
 
 pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
@@ -86,15 +108,16 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
 }
 
 
-pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->f32
+pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32,f32)
 {
     let average = average_position( other_birds );
+    let avg_angle = average_angle(other_birds);
     let angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
     
     assert!(angle >= -180.0);
     assert!(angle <= 180.0);
 
-    angle
+    (angle, avg_angle)
 }
 
 

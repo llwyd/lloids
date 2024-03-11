@@ -20,6 +20,8 @@ pub struct Bird{
     coh_changed: bool,
     state:State,
     turn_angle:f32,
+    avg_sep_angle:f32,
+    avg_coh_angle:f32,
 }
 
 impl Bird{
@@ -39,7 +41,7 @@ impl Bird{
     const BIRD_SPEED_MAX:f32 = 7.5;
 
     /* NOTE: Radians */
-    const SEP_ANGLE:f32 = 0.00625 * 0.25;
+    const SEP_ANGLE:f32 = 0.00625 * 0.75;
     const COH_ANGLE:f32 = 0.00005625 * 3.0;
     const ALIGNMENT_GAIN:f32 = 0.035;
 
@@ -63,6 +65,8 @@ impl Bird{
             coh_changed: false,
             state: State::Idle,
             turn_angle: 0.0,
+            avg_sep_angle: 0.0,
+            avg_coh_angle: 0.0,
         }
     }
 
@@ -74,8 +78,9 @@ impl Bird{
         self.angle = new_rotation;
     }
     
-    pub fn set_separation(&mut self, new_rotation:f32){
+    pub fn set_separation(&mut self, new_rotation:f32, new_angle:f32){
         self.sep_angle = new_rotation;
+        self.avg_sep_angle = new_angle;
         self.sep_changed = true;
     }
     
@@ -95,8 +100,9 @@ impl Bird{
         self.align_angle = new_rotation;
     }
     
-    pub fn set_cohesion(&mut self, new_rotation:f32){
+    pub fn set_cohesion(&mut self, new_rotation:f32, new_angle:f32){
         self.coh_angle = new_rotation;
+        self.avg_coh_angle = new_angle;
         self.coh_changed = true;
     }
 
@@ -427,7 +433,7 @@ impl Bird{
         let old_xy = self.xy;
 
         /* 2. Calculate how much bird should rotate away from the reference_bird */
-        let angle_offset = 0.0 - angle;
+        let angle_offset = 0.0 - self.avg_sep_angle;
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
@@ -479,7 +485,7 @@ impl Bird{
 
 
         /* 2. Calculate how much bird should rotate away from the reference_bird */
-        let angle_offset = 0.0 - angle;
+        let angle_offset = 0.0 - self.avg_coh_angle;
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
