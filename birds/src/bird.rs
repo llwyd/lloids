@@ -437,12 +437,13 @@ impl Bird{
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
+        let norm_angle = self.wrap_angle( self.angle - self.avg_sep_angle );
         let delta:f32;
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
         if rotated_position.y.is_positive()
         {
-            if self.angle > deg_to_rad(90.0) && self.angle < deg_to_rad(270.0)
+            if norm_angle > deg_to_rad(90.0) && norm_angle < deg_to_rad(270.0)
             {
                 delta = -rot_angle;
             }
@@ -453,7 +454,7 @@ impl Bird{
         }
         else
         {
-            if self.angle > deg_to_rad(90.0) && self.angle < deg_to_rad(270.0)
+            if norm_angle > deg_to_rad(90.0) && norm_angle < deg_to_rad(270.0)
             {
                 delta = rot_angle;
             }
@@ -489,12 +490,13 @@ impl Bird{
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
+        let norm_angle = self.wrap_angle( self.angle - self.avg_coh_angle );
         let delta:f32;
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
         if rotated_position.y.is_positive()
         {
-            if self.angle > deg_to_rad(90.0) && self.angle < deg_to_rad(270.0)
+            if norm_angle > deg_to_rad(90.0) && norm_angle < deg_to_rad(270.0)
             {
                 delta = rot_angle;
             }
@@ -505,7 +507,7 @@ impl Bird{
         }
         else
         {
-            if self.angle > deg_to_rad(90.0) && self.angle < deg_to_rad(270.0)
+            if norm_angle > deg_to_rad(90.0) && norm_angle < deg_to_rad(270.0)
             {
                 delta = -rot_angle;
             }
