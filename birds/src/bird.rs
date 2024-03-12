@@ -1,6 +1,6 @@
 use nannou::prelude::*;
     
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy,Clone,Debug,PartialEq)]
 enum State{
     Idle,
     TurningH,
@@ -440,8 +440,10 @@ impl Bird{
         let old_xy = self.xy;
         
         /* 1. Move bird in direction of separation angle */
-        self.move_bird_to_angle(mov_inc / 2.0, angle);
-
+        if self.state == State::Idle
+        {
+            self.move_bird_to_angle(mov_inc / 2.0, angle);
+        }
         /* 2. Calculate how much bird should rotate away from the reference_bird */
         let angle_offset = 0.0 - self.avg_sep_angle;
         
@@ -495,8 +497,10 @@ impl Bird{
         let old_xy = self.xy;
 
         /* 1. Move bird in direction of cohesion angle */
-        self.move_bird_to_angle(mov_inc / 2.0, angle);
-
+        if self.state == State::Idle
+        {
+            self.move_bird_to_angle(mov_inc / 2.0, angle);
+        }
         /* 2. Calculate how much bird should rotate away from the reference_bird */
         let angle_offset = 0.0 - self.avg_coh_angle;
         
