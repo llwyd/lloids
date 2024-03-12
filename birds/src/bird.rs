@@ -49,7 +49,7 @@ impl Bird{
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
 
-    const TURN_GAIN:f32 = 0.01;
+    const TURN_GAIN:f32 = 0.015;
 
     const HARD_ANGLE_MULTIPLIER:f32 = 5.0;
     const HARD_ANGLE_SATURATION:f32 = 60.0;
@@ -235,8 +235,8 @@ impl Bird{
                         }
                         let turn_angle = std::f32::consts::PI - angle;
                         assert!(turn_angle != 0.0);
-                        assert!(turn_angle >= -180.0);
-                        assert!(turn_angle <= 180.0);
+                        assert!(turn_angle >= -std::f32::consts::PI);
+                        assert!(turn_angle <= std::f32::consts::PI);
                         self.turn_angle = turn_angle * Self::TURN_GAIN;
                     }
                     else if self.xy.x < inner.left() as f32
@@ -250,8 +250,8 @@ impl Bird{
                         
                         let turn_angle = std::f32::consts::PI - angle;
                         assert!(turn_angle != 0.0);
-                        assert!(turn_angle >= -180.0);
-                        assert!(turn_angle <= 180.0);
+                        assert!(turn_angle >= -std::f32::consts::PI);
+                        assert!(turn_angle <= std::f32::consts::PI);
                         self.turn_angle = turn_angle * Self::TURN_GAIN;
 
                     }
