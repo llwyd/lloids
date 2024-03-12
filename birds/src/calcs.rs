@@ -13,7 +13,23 @@ fn wrap_angle(angle: f32) -> f32{
     }
     
     assert!(wrapped_angle >= 0.0);
-    assert!(wrapped_angle < deg_to_rad(360.0));
+    assert!(wrapped_angle < (2.0 * std::f32::consts::PI) );
+    wrapped_angle
+}
+
+fn wrap_angle_180(angle: f32) -> f32{
+    let ref_angle = angle % (2.0 * std::f32::consts::PI);
+    let mut wrapped_angle = ref_angle;
+    
+    if ref_angle < -std::f32::consts::PI{
+        wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
+    }
+    else if ref_angle >= (std::f32::consts::PI ){
+        wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
+    }
+    
+    assert!(wrapped_angle >= -std::f32::consts::PI);
+    assert!(wrapped_angle < std::f32::consts::PI);
     wrapped_angle
 }
 
@@ -70,8 +86,8 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32, f32){
     let avg_angle = average_angle(other_birds);
     let angle = (bird.position().y - average.y).atan2(bird.position().x - average.x);
     
-    assert!(angle >= -180.0);
-    assert!(angle <= 180.0);
+    assert!(angle >= -std::f32::consts::PI);
+    assert!(angle <= std::f32::consts::PI);
 
     (angle, avg_angle)
 }
@@ -96,13 +112,13 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     let average = average_sin.atan2(average_cos);
 
     
-    let delta = bird.angle() - wrap_angle(average);
+    let delta = wrap_angle_180(bird.angle() - wrap_angle(average));
     
     assert!(delta != std::f32::INFINITY);
     assert!(delta != std::f32::NEG_INFINITY);
     
-    assert!(delta >= -180.0);
-    assert!(delta <= 180.0);
+    assert!(delta >= -std::f32::consts::PI);
+    assert!(delta <= std::f32::consts::PI);
 
     delta
 }
@@ -114,8 +130,8 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32,f32)
     let avg_angle = average_angle(other_birds);
     let angle = (average.y - bird.position().y).atan2(average.x - bird.position().x);
     
-    assert!(angle >= -180.0);
-    assert!(angle <= 180.0);
+    assert!(angle >= -std::f32::consts::PI);
+    assert!(angle <= std::f32::consts::PI);
 
     (angle, avg_angle)
 }
