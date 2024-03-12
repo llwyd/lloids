@@ -31,17 +31,19 @@ impl Bird{
     const BIRD_REGION_RADIUS:f32 = 225.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 30.0;
 
-    const SEP_SPEED_MIN:f32 = 1.25;
-    const SEP_SPEED_MAX:f32 = 2.5;
-    
-    const COH_SPEED_MIN:f32 = 0.5;
-    const COH_SPEED_MAX:f32 = 1.5;
+    const SPEED_GAIN:f32 = 1.4;
 
-    const BIRD_SPEED_MIN:f32 = 1.0;
-    const BIRD_SPEED_MAX:f32 = 7.5;
+    const SEP_SPEED_MIN:f32 = 1.25 * Self::SPEED_GAIN;
+    const SEP_SPEED_MAX:f32 = 2.5 * Self::SPEED_GAIN;
+    
+    const COH_SPEED_MIN:f32 = 0.5 * Self::SPEED_GAIN;
+    const COH_SPEED_MAX:f32 = 1.5 * Self::SPEED_GAIN;
+
+    const BIRD_SPEED_MIN:f32 = 1.0 * Self::SPEED_GAIN;
+    const BIRD_SPEED_MAX:f32 = 7.5 * Self::SPEED_GAIN;
 
     /* NOTE: Radians */
-    const SEP_ANGLE:f32 = 0.00625 * 2.75;
+    const SEP_ANGLE:f32 = 0.00625 * 1.2;
     const COH_ANGLE:f32 = 0.00005625 * 3.0;
     const ALIGNMENT_GAIN:f32 = 0.0275;
 
