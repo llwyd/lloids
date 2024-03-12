@@ -374,6 +374,12 @@ impl Bird{
         self.xy.x += mov_inc * self.angle.cos();
         self.xy.y += mov_inc * self.angle.sin();
     }
+    
+    fn move_bird_to_angle(&mut self, mov_inc:f32, angle:f32)
+    {
+        self.xy.x += mov_inc * angle.cos();
+        self.xy.y += mov_inc * angle.sin();
+    }
 
     fn saturate_angle(&self, angle:f32, limit:f32)->f32
     {
@@ -431,6 +437,9 @@ impl Bird{
             mov_inc = upper_speed;
         }
         let old_xy = self.xy;
+        
+        /* 1. Move bird in direction of separation angle */
+        self.move_bird_to_angle(mov_inc / 2.0, angle);
 
         /* 2. Calculate how much bird should rotate away from the reference_bird */
         let angle_offset = 0.0 - self.avg_sep_angle;
@@ -469,7 +478,7 @@ impl Bird{
         self.angle = self.wrap_angle(self.angle);
         
         /* 1. Move bird in direction of angle */
-        self.move_bird(mov_inc);
+        self.move_bird(mov_inc / 2.0);
     }
     
     pub fn apply_cohesion(&mut self, angle: f32, rot_angle: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
@@ -484,6 +493,8 @@ impl Bird{
         }
         let old_xy = self.xy;
 
+        /* 1. Move bird in direction of cohesion angle */
+        self.move_bird_to_angle(mov_inc / 2.0, angle);
 
         /* 2. Calculate how much bird should rotate away from the reference_bird */
         let angle_offset = 0.0 - self.avg_coh_angle;
@@ -522,7 +533,7 @@ impl Bird{
         self.angle = self.wrap_angle(self.angle);
 
         /* 1. Move bird in direction of angle */
-        self.move_bird(mov_inc);
+        self.move_bird(mov_inc / 2.0);
     }
 
     fn is_near_edge(&self, inner: &Rect<f32>) -> bool
