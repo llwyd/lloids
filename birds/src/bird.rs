@@ -53,6 +53,7 @@ impl Bird{
     const HARD_ANGLE_SATURATION:f32 = 60.0;
     
     const NON_ZERO_ADJUST:f32 = 0.001;
+    const DISTANCE_DECAY:f32 = 0.1;
 
     pub fn new(position:Point2, angle:f32) -> Bird{
         Bird{
@@ -178,7 +179,7 @@ impl Bird{
         if near_edge 
         {
             let dist = self.distance_outside(inner); 
-            let reduct = (dist * -0.1).exp();
+            let reduct = (dist * -Self::DISTANCE_DECAY).exp();
             sep_angle *= reduct;
             coh_angle *= reduct;
             align_gain *= reduct;
