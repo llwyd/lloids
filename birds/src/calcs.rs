@@ -1,6 +1,7 @@
 pub use crate::bird::Bird;
 use nannou::prelude::*;
 
+/*
 fn wrap_angle(angle: f32) -> f32{
     let ref_angle = angle % (2.0 * std::f32::consts::PI);
     let mut wrapped_angle = ref_angle;
@@ -16,6 +17,7 @@ fn wrap_angle(angle: f32) -> f32{
     assert!(wrapped_angle < (2.0 * std::f32::consts::PI) );
     wrapped_angle
 }
+*/
 
 fn wrap_angle_180(angle: f32) -> f32{
     let ref_angle = angle % (2.0 * std::f32::consts::PI);
@@ -77,6 +79,9 @@ fn average_angle(bird: &Vec <Bird>) -> f32
    
     /* Circular mean */
     let average = average_sin.atan2(average_cos);
+    assert!(average >= -std::f32::consts::PI);
+    assert!(average <= std::f32::consts::PI);
+    
     average
 }
 
@@ -92,27 +97,11 @@ pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32, f32){
     (angle, avg_angle)
 }
 
-pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
-
-    /* Calculate angles */
-    let num_bird = other_birds.len();
-
-    let mut average_sin = 0.0;
-    let mut average_cos = 0.0;
-
-    for i in 0..num_bird{
-        average_sin += other_birds[i].angle().sin();
-        average_cos += other_birds[i].angle().cos();
-    }
-    
-    average_sin /= num_bird as f32;
-    average_cos /= num_bird as f32;
-   
+pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{ 
     /* Circular mean */
-    let average = average_sin.atan2(average_cos);
-
+    let average = average_angle(other_birds);
     
-    let delta = wrap_angle_180(bird.angle() - wrap_angle(average));
+    let delta = wrap_angle_180(bird.angle() - average);
     
     assert!(delta != std::f32::INFINITY);
     assert!(delta != std::f32::NEG_INFINITY);
