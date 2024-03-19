@@ -1,7 +1,7 @@
 pub use crate::bird::Bird;
 use nannou::prelude::*;
 
-/*
+
 fn wrap_angle(angle: f32) -> f32{
     let ref_angle = angle % (2.0 * std::f32::consts::PI);
     let mut wrapped_angle = ref_angle;
@@ -17,7 +17,7 @@ fn wrap_angle(angle: f32) -> f32{
     assert!(wrapped_angle < (2.0 * std::f32::consts::PI) );
     wrapped_angle
 }
-*/
+
 
 fn wrap_angle_180(angle: f32) -> f32{
     let ref_angle = angle % (2.0 * std::f32::consts::PI);
@@ -82,7 +82,7 @@ fn average_angle(bird: &Vec <Bird>) -> f32
     assert!(average >= -std::f32::consts::PI);
     assert!(average <= std::f32::consts::PI);
     
-    average
+    wrap_angle(average)
 }
 
 pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32, f32){
