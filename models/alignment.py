@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Polygon
 
 x_lim = 2
 y_lim = 2
@@ -18,6 +19,13 @@ ax.spines['right'].set_color('none')
 ax.spines['top'].set_color('none')
 
 plt.scatter(-1,1, color='black')
+
+patches = []
+poly = Polygon([[0,1],[-1,0],[1,0]], closed=True, color='red')
+patches.append(poly)
+p = PatchCollection(patches)
+
+ax.add_collection(p)
 plt.xlim(-x_lim, x_lim)
 plt.ylim(-y_lim, y_lim)
 plt.show()
