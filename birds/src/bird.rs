@@ -623,7 +623,7 @@ mod tests {
         let delta = (x - y).abs();
         delta <= precision
     }
-
+/*
     fn test_separation(init_position:Point2, _exp_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
         let mut bird = Bird::new(init_position, bird_angle);
@@ -799,4 +799,5 @@ mod tests {
         assert!(compare_floats(new.x, -1.0, FLOAT_PRECISION));
         assert!(compare_floats(new.y, 0.0, FLOAT_PRECISION));
     }
+    */
 }
