@@ -26,12 +26,12 @@ fn wrap_angle_180(angle: f32) -> f32{
     if ref_angle < -std::f32::consts::PI{
         wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
     }
-    else if ref_angle >= (std::f32::consts::PI ){
+    else if ref_angle > std::f32::consts::PI{
         wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
     }
     
     assert!(wrapped_angle >= -std::f32::consts::PI);
-    assert!(wrapped_angle < std::f32::consts::PI);
+    assert!(wrapped_angle <= std::f32::consts::PI);
     wrapped_angle
 }
 
@@ -85,6 +85,11 @@ fn average_angle(bird: &Vec <Bird>) -> f32
     average
 }
 
+fn angle_delta(a:f32, b:f32) -> f32
+{
+    wrap_angle_180(a - b)
+}
+
 pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32, f32){
 
     let average = average_position( other_birds );
@@ -101,7 +106,7 @@ pub fn alignment(bird: &mut Bird, other_birds: &Vec <Bird>)->f32{
     /* Circular mean */
     let average = average_angle(other_birds);
     
-    let delta = wrap_angle_180(bird.angle() - average);
+    let delta = angle_delta(average, bird.angle());
     
     assert!(delta != std::f32::INFINITY);
     assert!(delta != std::f32::NEG_INFINITY);
@@ -131,7 +136,7 @@ mod tests {
     use super::*;    
     const FLOAT_PRECISION:f32 = 0.00001;
    
-    fn compare_floats(x:f32, y:f32, precision:f32)->bool{
+    fn cmp_floats(x:f32, y:f32, precision:f32)->bool{
 
         let delta = (x - y).abs();
         delta <= precision
@@ -175,7 +180,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(0.0));
+        assert_eq!(angle.0, deg_to_rad(0.0));
     }
     
     #[test]
@@ -186,7 +191,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(180.0));
+        assert_eq!(angle.0, deg_to_rad(180.0));
     }
     
     #[test]
@@ -197,7 +202,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(90.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(90.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -208,7 +213,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(-90.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(-90.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -219,7 +224,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(45.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(45.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -230,7 +235,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(135.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(135.0), FLOAT_PRECISION));
     }
     #[test]
     fn separation_angle_se(){
@@ -240,7 +245,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(-45.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(-45.0), FLOAT_PRECISION));
     }
 
     #[test]
@@ -251,7 +256,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = separation(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(-135.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(-135.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -262,7 +267,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = cohesion(&mut bird, &bird_vec);
-        assert_eq!(angle, std::f32::consts::PI);
+        assert_eq!(angle.0, std::f32::consts::PI);
     }
     
     #[test]
@@ -273,7 +278,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = cohesion(&mut bird, &bird_vec);
-        assert_eq!(angle, deg_to_rad(0.0));
+        assert_eq!(angle.0, deg_to_rad(0.0));
     }
     
     #[test]
@@ -284,7 +289,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = cohesion(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(-90.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(-90.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -295,7 +300,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = cohesion(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(90.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(90.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -306,7 +311,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = cohesion(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(-135.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(-135.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -317,7 +322,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = cohesion(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(-45.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(-45.0), FLOAT_PRECISION));
     }
     #[test]
     fn cohesion_angle_se(){
@@ -327,7 +332,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = cohesion(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(135.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(135.0), FLOAT_PRECISION));
     }
 
     #[test]
@@ -338,7 +343,7 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
 
         let angle = cohesion(&mut bird, &bird_vec);
-        assert!(compare_floats(angle, deg_to_rad(45.0), FLOAT_PRECISION));
+        assert!(cmp_floats(angle.0, deg_to_rad(45.0), FLOAT_PRECISION));
     }
     
     #[test]
@@ -348,8 +353,8 @@ mod tests {
         bird_vec.push(Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0))); 
 
         let average_position = average_position(&bird_vec);
-        assert!(compare_floats(average_position.x, 1.0, FLOAT_PRECISION));
-        assert!(compare_floats(average_position.y, 0.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.x, 1.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.y, 0.0, FLOAT_PRECISION));
     }
     
     #[test]
@@ -359,8 +364,8 @@ mod tests {
         bird_vec.push(Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0))); 
 
         let average_position = average_position(&bird_vec);
-        assert!(compare_floats(average_position.x, -1.0, FLOAT_PRECISION));
-        assert!(compare_floats(average_position.y, 0.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.x, -1.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.y, 0.0, FLOAT_PRECISION));
     }
     
     #[test]
@@ -370,8 +375,8 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0))); 
 
         let average_position = average_position(&bird_vec);
-        assert!(compare_floats(average_position.x, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(average_position.y, 1.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.x, 0.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.y, 1.0, FLOAT_PRECISION));
     }
     
     #[test]
@@ -381,8 +386,8 @@ mod tests {
         bird_vec.push(Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0))); 
 
         let average_position = average_position(&bird_vec);
-        assert!(compare_floats(average_position.x, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(average_position.y, -1.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.x, 0.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.y, -1.0, FLOAT_PRECISION));
     }
     
     #[test]
@@ -393,8 +398,8 @@ mod tests {
         bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
 
         let average_position = average_position(&bird_vec);
-        assert!(compare_floats(average_position.x, 1.0, FLOAT_PRECISION));
-        assert!(compare_floats(average_position.y, 2.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.x, 1.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.y, 2.0, FLOAT_PRECISION));
     }
     
     #[test]
@@ -407,8 +412,57 @@ mod tests {
         bird_vec.push(Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0))); 
 
         let average_position = average_position(&bird_vec);
-        assert!(compare_floats(average_position.x, 0.0, FLOAT_PRECISION));
-        assert!(compare_floats(average_position.y, 0.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.x, 0.0, FLOAT_PRECISION));
+        assert!(cmp_floats(average_position.y, 0.0, FLOAT_PRECISION));
     }
+
+    #[test]
+    fn calc_angle_wrap_180(){
+        assert_eq!(0.0, wrap_angle_180(0.0));
+        assert_eq!(1.0, wrap_angle_180(1.0));
+        assert_eq!(-1.0, wrap_angle_180(-1.0));
+        
+        assert_eq!(std::f32::consts::PI, wrap_angle_180(std::f32::consts::PI));
+        assert_eq!(-std::f32::consts::PI, wrap_angle_180(-std::f32::consts::PI));
+        
+
+        assert_eq!(0.0, wrap_angle_180(2.0*std::f32::consts::PI));
+        assert_eq!(0.0, wrap_angle_180(-2.0*std::f32::consts::PI));
+        
+        assert!(cmp_floats(deg_to_rad(-90.0), wrap_angle_180(deg_to_rad(270.0)), FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(90.0), wrap_angle_180(deg_to_rad(-270.0)), FLOAT_PRECISION));
+        
+        assert!(cmp_floats(deg_to_rad(-135.0), wrap_angle_180(deg_to_rad(225.0)), FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(135.0), wrap_angle_180(deg_to_rad(-225.0)), FLOAT_PRECISION));
+        
+        assert!(cmp_floats(deg_to_rad(-179.0), wrap_angle_180(deg_to_rad(181.0)), FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(179.0), wrap_angle_180(deg_to_rad(-181.0)), FLOAT_PRECISION));
+        
+        assert!(cmp_floats(deg_to_rad(179.0), wrap_angle_180(deg_to_rad(179.0)), FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(-179.0), wrap_angle_180(deg_to_rad(-179.0)), FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_angle_delta(){
+
+        assert_eq!(0.0, angle_delta(0.0, 0.0));
+        assert_eq!(-1.0, angle_delta(0.0, 1.0));
+        assert_eq!(1.0, angle_delta(1.0, 0.0));
+        
+        assert!(cmp_floats(deg_to_rad(-5.0), angle_delta(deg_to_rad(45.0), deg_to_rad(50.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(5.0), angle_delta(deg_to_rad(50.0), deg_to_rad(45.0)),FLOAT_PRECISION));
+    
+        assert!(cmp_floats(deg_to_rad(-1.0), angle_delta(deg_to_rad(270.0), deg_to_rad(271.0)),FLOAT_PRECISION));
+
+        /*Average angle is 10, bird is 270, so 270 + 100 wraps round to 10 */
+        assert!(cmp_floats(deg_to_rad(100.0), angle_delta(deg_to_rad(10.0), deg_to_rad(270.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(-180.0), angle_delta(deg_to_rad(-90.0), deg_to_rad(90.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(180.0), angle_delta(deg_to_rad(90.0), deg_to_rad(-90.0)),FLOAT_PRECISION));
+        
+        assert!(cmp_floats(deg_to_rad(-100.0), angle_delta(deg_to_rad(270.0), deg_to_rad(10.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(-179.0), angle_delta(deg_to_rad(180.0), deg_to_rad(359.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(179.0), angle_delta(deg_to_rad(180.0), deg_to_rad(1.0)),FLOAT_PRECISION));
+
+    }    
 }
 
