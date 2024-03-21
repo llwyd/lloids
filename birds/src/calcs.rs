@@ -460,6 +460,8 @@ mod tests {
         assert!(cmp_floats(deg_to_rad(180.0), angle_delta(deg_to_rad(90.0), deg_to_rad(-90.0)),FLOAT_PRECISION));
         
         assert!(cmp_floats(deg_to_rad(-100.0), angle_delta(deg_to_rad(270.0), deg_to_rad(10.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(-179.0), angle_delta(deg_to_rad(180.0), deg_to_rad(359.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(179.0), angle_delta(deg_to_rad(180.0), deg_to_rad(1.0)),FLOAT_PRECISION));
 
     }    
 }
