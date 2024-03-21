@@ -200,7 +200,7 @@ impl Bird{
         }
         
         /* Adjust Alignment */
-        self.angle -= self.align_angle * align_gain;
+        self.angle += self.align_angle * align_gain;
         self.angle = self.wrap_angle(self.angle);
         
         assert!(self.angle != std::f32::INFINITY);
