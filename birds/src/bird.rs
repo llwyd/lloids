@@ -28,6 +28,8 @@ impl Bird{
     const BIRD_HEIGHT:f32 = 30.0;
     const BIRD_WIDTH_2:f32 = 10.0;
 
+    const EDGE_BLEED:f32 = 150.0;
+
     const BIRD_REGION_RADIUS:f32 = 225.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 30.0;
 
@@ -577,18 +579,18 @@ impl Bird{
     }
 
     fn screen_wrap(&mut self, win: &Rect<f32>){
-        if self.xy.x >= win.right() + 150.0 as f32{
-            self.xy.x -= win.wh().x + 150.0;
+        if self.xy.x >= win.right() + Self::EDGE_BLEED as f32{
+            self.xy.x -= win.wh().x + Self::EDGE_BLEED;
         }
-        else if self.xy.x <= win.left() -150.0 as f32{
-            self.xy.x += win.wh().x + 150.0;
+        else if self.xy.x <= win.left() -Self::EDGE_BLEED as f32{
+            self.xy.x += win.wh().x + Self::EDGE_BLEED;
         }
         
-        if self.xy.y >= win.top() +150.0 as f32{
-            self.xy.y -= win.wh().y + 150.0;
+        if self.xy.y >= win.top() + Self::EDGE_BLEED as f32{
+            self.xy.y -= win.wh().y + Self::EDGE_BLEED;
         }
-        else if self.xy.y <= win.bottom() - 150.0 as f32{
-            self.xy.y += win.wh().y + 150.0;
+        else if self.xy.y <= win.bottom() - Self::EDGE_BLEED as f32{
+            self.xy.y += win.wh().y + Self::EDGE_BLEED;
         } 
     }
 
