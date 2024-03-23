@@ -1,4 +1,5 @@
 use nannou::prelude::*;
+use crate::angle;
     
 #[derive(Copy,Clone,Debug,PartialEq)]
 enum State{
@@ -203,12 +204,12 @@ impl Bird{
         
         /* Adjust Alignment */
         self.angle += self.align_angle * align_gain;
-        self.angle = self.wrap_angle(self.angle);
+        self.angle = angle::wrap(self.angle);
         
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
         
-        self.angle = self.wrap_angle(self.angle);
+        self.angle = angle::wrap(self.angle);
 
         assert!(self.angle >= 0.0);
         self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
@@ -230,7 +231,7 @@ impl Bird{
                     if self.xy.x > inner.right() as f32
                     {
                         let mut angle = self.angle;
-                        angle = self.wrap_angle(angle);
+                        angle = angle::wrap(angle);
                         if angle == std::f32::consts::PI
                         {
                             angle -= Self::NON_ZERO_ADJUST;
@@ -244,7 +245,7 @@ impl Bird{
                     else if self.xy.x < inner.left() as f32
                     {
                         let mut angle = self.angle - (std::f32::consts::PI);
-                        angle = self.wrap_angle(angle);
+                        angle = angle::wrap(angle);
                         if angle == std::f32::consts::PI
                         {
                             angle -= Self::NON_ZERO_ADJUST;
@@ -268,7 +269,7 @@ impl Bird{
                     if self.xy.y > inner.top() as f32
                     {
                         let mut angle = self.angle - (std::f32::consts::PI / 2.0);
-                        angle = self.wrap_angle(angle);
+                        angle = angle::wrap(angle);
                         if angle == std::f32::consts::PI
                         {
                             angle -= Self::NON_ZERO_ADJUST;
@@ -282,7 +283,7 @@ impl Bird{
                     else if self.xy.y < inner.bottom() as f32
                     {
                         let mut angle = self.angle - (std::f32::consts::PI * 1.5);
-                        angle = self.wrap_angle(angle);
+                        angle = angle::wrap(angle);
                         if angle == std::f32::consts::PI
                         {
                             angle -= Self::NON_ZERO_ADJUST;
@@ -306,7 +307,7 @@ impl Bird{
             {
                 
                 self.angle += self.turn_angle;
-                self.angle = self.wrap_angle(self.angle);
+                self.angle = angle::wrap(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
 
                 if !self.h_is_near_edge(inner)
@@ -326,7 +327,7 @@ impl Bird{
             {
                 
                 self.angle += self.turn_angle;
-                self.angle = self.wrap_angle(self.angle);
+                self.angle = angle::wrap(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
 
                 if !self.v_is_near_edge(inner)
@@ -345,7 +346,7 @@ impl Bird{
             State::TurningHarderH =>
             {
                 self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(Self::HARD_ANGLE_SATURATION));
-                self.angle = self.wrap_angle(self.angle);
+                self.angle = angle::wrap(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
                 if !self.h_is_near_edge(inner_hard)
@@ -356,7 +357,7 @@ impl Bird{
             State::TurningHarderV =>
             {
                 self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(Self::HARD_ANGLE_SATURATION));
-                self.angle = self.wrap_angle(self.angle);
+                self.angle = angle::wrap(self.angle);
                 self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
 
                 if !self.v_is_near_edge(inner_hard)
@@ -399,37 +400,6 @@ impl Bird{
         }
         new_angle
     }
-/*
-    fn wrap_angle_180(&self, angle: f32) -> f32{
-        let ref_angle = angle % (2.0 * std::f32::consts::PI);
-        let mut wrapped_angle = ref_angle;
-        
-        if ref_angle < -std::f32::consts::PI{
-            wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
-        }
-        else if ref_angle >= (std::f32::consts::PI ){
-            wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
-        }
-        
-        assert!(wrapped_angle >= -deg_to_rad(180.0));
-        assert!(wrapped_angle < deg_to_rad(180.0));
-        wrapped_angle
-    }
-*/
-    fn wrap_angle(&self, angle: f32) -> f32{
-        let ref_angle = angle % (2.0 * std::f32::consts::PI);
-        let mut wrapped_angle = ref_angle;
-        
-        if ref_angle < 0.0{
-            wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
-        }
-        else if ref_angle >= ( 2.0 * std::f32::consts::PI ){
-            wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
-        }
-        
-        assert!(wrapped_angle >= 0.0);
-        wrapped_angle
-    } 
     
     pub fn apply_separation(&mut self, angle: f32, rot_angle: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
         /* Randomise movement */
@@ -453,7 +423,7 @@ impl Bird{
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
-        let norm_angle = self.wrap_angle( self.angle - self.avg_sep_angle );
+        let norm_angle = angle::wrap( self.angle - self.avg_sep_angle );
         let delta:f32;
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
@@ -482,7 +452,7 @@ impl Bird{
 
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         self.angle += delta;
-        self.angle = self.wrap_angle(self.angle);
+        self.angle = angle::wrap(self.angle);
         
         /* 1. Move bird in direction of angle */
         self.move_bird(mov_inc / 2.0);
@@ -510,7 +480,7 @@ impl Bird{
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
-        let norm_angle = self.wrap_angle( self.angle - self.avg_coh_angle );
+        let norm_angle = angle::wrap( self.angle - self.avg_coh_angle );
         let delta:f32;
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
@@ -539,7 +509,7 @@ impl Bird{
 
         //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         self.angle += delta;
-        self.angle = self.wrap_angle(self.angle);
+        self.angle = angle::wrap(self.angle);
 
         /* 1. Move bird in direction of angle */
         self.move_bird(mov_inc / 2.0);

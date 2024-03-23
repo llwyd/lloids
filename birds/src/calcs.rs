@@ -1,39 +1,6 @@
 pub use crate::bird::Bird;
 use nannou::prelude::*;
-
-/*
-fn wrap_angle(angle: f32) -> f32{
-    let ref_angle = angle % (2.0 * std::f32::consts::PI);
-    let mut wrapped_angle = ref_angle;
-    
-    if ref_angle < 0.0{
-        wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
-    }
-    else if ref_angle >= ( 2.0 * std::f32::consts::PI ){
-        wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
-    }
-    
-    assert!(wrapped_angle >= 0.0);
-    assert!(wrapped_angle < (2.0 * std::f32::consts::PI) );
-    wrapped_angle
-}
-*/
-
-fn wrap_angle_180(angle: f32) -> f32{
-    let ref_angle = angle % (2.0 * std::f32::consts::PI);
-    let mut wrapped_angle = ref_angle;
-    
-    if ref_angle < -std::f32::consts::PI{
-        wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
-    }
-    else if ref_angle > std::f32::consts::PI{
-        wrapped_angle = ref_angle - ( 2.0 * std::f32::consts::PI ); 
-    }
-    
-    assert!(wrapped_angle >= -std::f32::consts::PI);
-    assert!(wrapped_angle <= std::f32::consts::PI);
-    wrapped_angle
-}
+use crate::angle;
 
 pub fn is_bird_nearby(bird: &Bird, other_bird: &Bird, bird_radius: f32) -> bool{
     let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
@@ -89,7 +56,7 @@ fn average_angle(bird: &Vec <Bird>) -> f32
 
 fn angle_delta(a:f32, b:f32) -> f32
 {
-    wrap_angle_180(a - b)
+    angle::wrap_180(a - b)
 }
 
 pub fn separation(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32, f32){
@@ -416,32 +383,6 @@ mod tests {
         let average_position = average_position(&bird_vec);
         assert!(cmp_floats(average_position.x, 0.0, FLOAT_PRECISION));
         assert!(cmp_floats(average_position.y, 0.0, FLOAT_PRECISION));
-    }
-
-    #[test]
-    fn calc_angle_wrap_180(){
-        assert_eq!(0.0, wrap_angle_180(0.0));
-        assert_eq!(1.0, wrap_angle_180(1.0));
-        assert_eq!(-1.0, wrap_angle_180(-1.0));
-        
-        assert_eq!(std::f32::consts::PI, wrap_angle_180(std::f32::consts::PI));
-        assert_eq!(-std::f32::consts::PI, wrap_angle_180(-std::f32::consts::PI));
-        
-
-        assert_eq!(0.0, wrap_angle_180(2.0*std::f32::consts::PI));
-        assert_eq!(0.0, wrap_angle_180(-2.0*std::f32::consts::PI));
-        
-        assert!(cmp_floats(deg_to_rad(-90.0), wrap_angle_180(deg_to_rad(270.0)), FLOAT_PRECISION));
-        assert!(cmp_floats(deg_to_rad(90.0), wrap_angle_180(deg_to_rad(-270.0)), FLOAT_PRECISION));
-        
-        assert!(cmp_floats(deg_to_rad(-135.0), wrap_angle_180(deg_to_rad(225.0)), FLOAT_PRECISION));
-        assert!(cmp_floats(deg_to_rad(135.0), wrap_angle_180(deg_to_rad(-225.0)), FLOAT_PRECISION));
-        
-        assert!(cmp_floats(deg_to_rad(-179.0), wrap_angle_180(deg_to_rad(181.0)), FLOAT_PRECISION));
-        assert!(cmp_floats(deg_to_rad(179.0), wrap_angle_180(deg_to_rad(-181.0)), FLOAT_PRECISION));
-        
-        assert!(cmp_floats(deg_to_rad(179.0), wrap_angle_180(deg_to_rad(179.0)), FLOAT_PRECISION));
-        assert!(cmp_floats(deg_to_rad(-179.0), wrap_angle_180(deg_to_rad(-179.0)), FLOAT_PRECISION));
     }
     
     #[test]

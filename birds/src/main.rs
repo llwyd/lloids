@@ -3,6 +3,7 @@ use nannou::geom::Range;
 
 mod bird;
 mod calcs;
+mod angle;
 pub use crate::bird::Bird;
     
 const SCREEN_W_F32:f32 = 1920.0;
