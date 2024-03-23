@@ -32,6 +32,7 @@ pub fn wrap_180(angle: f32) -> f32{
 
 #[cfg(test)]
 mod tests {
+    use nannou::prelude::*;
     use super::*;    
     const FLOAT_PRECISION:f32 = 0.00001;
    
