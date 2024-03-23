@@ -70,6 +70,8 @@ fn average_angle(bird: &Vec <Bird>) -> f32
     let mut average_cos = 0.0;
 
     for i in 0..num_bird{
+        assert!( bird[i].angle() >= 0.0);
+        assert!( bird[i].angle() < 2.0 * std::f32::consts::PI);
         average_sin += bird[i].angle().sin();
         average_cos += bird[i].angle().cos();
     }
@@ -464,5 +466,42 @@ mod tests {
         assert!(cmp_floats(deg_to_rad(179.0), angle_delta(deg_to_rad(180.0), deg_to_rad(1.0)),FLOAT_PRECISION));
 
     }    
+    
+    #[test]
+    fn calc_average_angle_zeros(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
+
+        let average_angle = average_angle(&bird_vec);
+        assert!(cmp_floats(average_angle, 0.0, FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_average_angle_45(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0))); 
+
+        let average_angle = average_angle(&bird_vec);
+        assert!(cmp_floats(average_angle, deg_to_rad(45.0), FLOAT_PRECISION));
+    }
+    
+    #[test]
+    fn calc_average_angle_90_90_270(){
+        let mut bird_vec:Vec<Bird> = Vec::new();
+        
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(90.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(90.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(270.0))); 
+
+        let average_angle = average_angle(&bird_vec);
+        println!("{:?}", average_angle);
+        assert!(cmp_floats(average_angle, deg_to_rad(90.0), FLOAT_PRECISION));
+    }
 }
 
