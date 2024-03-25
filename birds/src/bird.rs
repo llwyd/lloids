@@ -164,22 +164,7 @@ impl Bird{
         let mut align_gain = Self::ALIGNMENT_GAIN;
 
 
-        /*
-        if self.is_near_edge(win)
-        {
-            println!("State: {:?}, turn_angle: {:?} ({:?})", self.state, self.turn_angle, rad_to_deg(self.turn_angle));
-        }
-        */
         let near_edge = self.is_near_edge(inner);
-        /*
-        let near_edge_hard = self.is_near_edge(inner_hard);
-        if near_edge_hard
-        {
-            sep_angle *= Self::HARD_REDUCTION_FACTOR;
-            coh_angle *= Self::HARD_REDUCTION_FACTOR;
-            align_gain *= Self::HARD_REDUCTION_FACTOR;
-        }
-        */
 
         if near_edge 
         {
