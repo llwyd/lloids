@@ -164,22 +164,7 @@ impl Bird{
         let mut align_gain = Self::ALIGNMENT_GAIN;
 
 
-        /*
-        if self.is_near_edge(win)
-        {
-            println!("State: {:?}, turn_angle: {:?} ({:?})", self.state, self.turn_angle, rad_to_deg(self.turn_angle));
-        }
-        */
         let near_edge = self.is_near_edge(inner);
-        /*
-        let near_edge_hard = self.is_near_edge(inner_hard);
-        if near_edge_hard
-        {
-            sep_angle *= Self::HARD_REDUCTION_FACTOR;
-            coh_angle *= Self::HARD_REDUCTION_FACTOR;
-            align_gain *= Self::HARD_REDUCTION_FACTOR;
-        }
-        */
 
         if near_edge 
         {
@@ -208,12 +193,9 @@ impl Bird{
         
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
-        
-        self.angle = angle::wrap(self.angle);
-
         assert!(self.angle >= 0.0);
+
         self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
-        
 
         self.state_machine(win, inner, inner_hard);
         self.screen_wrap(win);
