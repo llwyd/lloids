@@ -193,12 +193,9 @@ impl Bird{
         
         assert!(self.angle != std::f32::INFINITY);
         assert!(self.angle != std::f32::NEG_INFINITY);
-        
-        self.angle = angle::wrap(self.angle);
-
         assert!(self.angle >= 0.0);
+
         self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
-        
 
         self.state_machine(win, inner, inner_hard);
         self.screen_wrap(win);

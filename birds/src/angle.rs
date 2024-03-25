@@ -1,7 +1,16 @@
 pub fn wrap(angle: f32) -> f32{
-    let ref_angle = angle % (2.0 * std::f32::consts::PI);
+    let mut ref_angle = angle % (2.0 * std::f32::consts::PI);
+
+    if ref_angle.is_sign_negative()
+    {
+        if ref_angle >= -std::f32::EPSILON
+        {
+            ref_angle = 0.0;
+        }
+    }
+
     let mut wrapped_angle = ref_angle;
-    
+
     if ref_angle < 0.0{
         wrapped_angle = ref_angle + ( 2.0 * std::f32::consts::PI );
     }
@@ -68,4 +77,23 @@ mod tests {
         assert!(cmp_floats(deg_to_rad(-179.0), wrap_180(deg_to_rad(-179.0)), FLOAT_PRECISION));
     }
 
+    #[test]
+    fn calc_angle_wrap(){
+        assert_eq!(0.0, wrap(0.0));
+        assert_eq!(2.0, wrap(2.0));
+        assert_eq!(std::f32::consts::PI, wrap(std::f32::consts::PI));
+        assert_eq!(std::f32::consts::PI, wrap(-std::f32::consts::PI));
+        assert_eq!(0.0, wrap(2.0*std::f32::consts::PI));
+        assert_eq!(0.0, wrap(-2.0*std::f32::consts::PI));
+        assert_eq!(0.0, wrap(4.0*std::f32::consts::PI));
+        assert_eq!(0.0, wrap(-4.0*std::f32::consts::PI));
+
+        assert!(cmp_floats(deg_to_rad(270.0), wrap(deg_to_rad(630.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(90.0), wrap(deg_to_rad(-630.0)),FLOAT_PRECISION));
+        
+        assert!(cmp_floats(0.0, wrap(-5.7742e-8),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(5.7742e-8),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(std::f32::EPSILON),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(-std::f32::EPSILON),FLOAT_PRECISION));
+    }
 }
