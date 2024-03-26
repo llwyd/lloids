@@ -432,7 +432,6 @@ impl Bird{
             }
         }
 
-        //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         self.angle += delta;
         self.angle = angle::wrap(self.angle);
         
@@ -489,7 +488,6 @@ impl Bird{
             }
         }
 
-        //let delta = (self.xy.y - old_xy.y).atan2(self.xy.x - old_xy.x);
         self.angle += delta;
         self.angle = angle::wrap(self.angle);
 
@@ -577,8 +575,7 @@ mod tests {
         let delta = (x - y).abs();
         delta <= precision
     }
-/*
-    fn test_separation(init_position:Point2, _exp_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
+    fn test_separation(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
         let mut bird = Bird::new(init_position, bird_angle);
 
@@ -588,20 +585,21 @@ mod tests {
         assert_eq!(bird.get_separation(), bird_angle);
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), bird_angle);
-
+        
         let lower_speed = 1.0;
         let upper_speed = 1.0;
         let rotation_angle = deg_to_rad(1.0);
 
+
         bird.apply_separation(sep_angle, rotation_angle, lower_speed, upper_speed, false);
 
-        let expected_position = pt2(init_position.x + (upper_speed* exp_angle.cos()), init_position.y + (upper_speed *exp_angle.sin()));
+        let position_step1 = pt2(init_position.x + (upper_speed * 0.5 * sep_angle.cos()), init_position.y + (upper_speed * 0.5 * sep_angle.sin()));
+        let expected_position = pt2(position_step1.x + (upper_speed * 0.5 * exp_angle.cos()), position_step1.y + (upper_speed * 0.5 * exp_angle.sin()));
+        println!("{:?}, {:?}", init_position, expected_position);
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().x, expected_position.x, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().y, expected_position.y, FLOAT_PRECISION));
-        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
-
     }
-
 
     #[test]
     fn init_bird(){
@@ -634,17 +632,24 @@ mod tests {
     }  
     
     #[test]
-    fn apply_separation_east_zero_x(){
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(0.0), deg_to_rad(0.0), deg_to_rad(1.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(45.0), deg_to_rad(0.0), deg_to_rad(46.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(90.0), deg_to_rad(0.0), deg_to_rad(91.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(135.0), deg_to_rad(0.0), deg_to_rad(134.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(180.0), deg_to_rad(0.0), deg_to_rad(179.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(225.0), deg_to_rad(0.0), deg_to_rad(224.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(271.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(316.0)); 
+    fn apply_separation_bird_0_sep_0(){
+
+        let bird_angle = 0.0;
+        let sep_angle = 0.0;
+        
+        /* initial position, bird angle, separation angle, expected angle */
+        test_separation(pt2(0.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_separation(pt2(1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_separation(pt2(1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_separation(pt2(-1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_separation(pt2(-1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_separation(pt2(1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_separation(pt2(-1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
     }
     
+/*
     #[test]
     fn apply_separation_east_pos_x(){
         test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(0.0), deg_to_rad(0.0), deg_to_rad(1.0)); 
