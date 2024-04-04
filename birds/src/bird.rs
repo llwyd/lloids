@@ -384,6 +384,8 @@ impl Bird{
     }
     
     pub fn apply_separation(&mut self, angle: f32, rot_angle: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
+        assert!(angle >= -std::f32::consts::PI);
+        assert!(angle <= std::f32::consts::PI);
         /* Randomise movement */
         let mov_inc:f32;
         if randomise{
@@ -440,6 +442,8 @@ impl Bird{
     }
     
     pub fn apply_cohesion(&mut self, angle: f32, rot_angle: f32, lower_speed: f32, upper_speed: f32, randomise: bool){
+        assert!(angle >= -std::f32::consts::PI);
+        assert!(angle <= std::f32::consts::PI);
         /* Randomise movement */
         let mov_inc:f32;
         if randomise{
