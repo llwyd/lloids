@@ -563,6 +563,7 @@ mod tests {
         let delta = (x - y).abs();
         delta <= precision
     }
+
     fn test_separation(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
         let mut bird = Bird::new(init_position, bird_angle);
@@ -580,6 +581,32 @@ mod tests {
 
 
         bird.apply_separation(sep_angle, rotation_angle, lower_speed, upper_speed, false);
+
+        let position_step1 = pt2(init_position.x + (upper_speed * 0.5 * sep_angle.cos()), init_position.y + (upper_speed * 0.5 * sep_angle.sin()));
+        let expected_position = pt2(position_step1.x + (upper_speed * 0.5 * exp_angle.cos()), position_step1.y + (upper_speed * 0.5 * exp_angle.sin()));
+        println!("{:?}, {:?}", init_position, expected_position);
+        assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().x, expected_position.x, FLOAT_PRECISION));
+        assert!(compare_floats(bird.position().y, expected_position.y, FLOAT_PRECISION));
+    }
+    
+    fn test_cohesion(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
+    {
+        let mut bird = Bird::new(init_position, bird_angle);
+
+        assert_eq!(bird.position().x, init_position.x);
+        assert_eq!(bird.position().y, init_position.y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+        
+        let lower_speed = 1.0;
+        let upper_speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+
+        bird.apply_cohesion(sep_angle, rotation_angle, lower_speed, upper_speed, false);
 
         let position_step1 = pt2(init_position.x + (upper_speed * 0.5 * sep_angle.cos()), init_position.y + (upper_speed * 0.5 * sep_angle.sin()));
         let expected_position = pt2(position_step1.x + (upper_speed * 0.5 * exp_angle.cos()), position_step1.y + (upper_speed * 0.5 * exp_angle.sin()));
@@ -635,6 +662,24 @@ mod tests {
         test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
         test_separation(pt2(1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
         test_separation(pt2(-1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+    }
+    
+    #[test]
+    fn apply_cohesion_bird_0_sep_0(){
+
+        let bird_angle = 0.0;
+        let sep_angle = 0.0;
+        
+        /* initial position, bird angle, separation angle, expected angle */
+        test_cohesion(pt2(0.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_cohesion(pt2(1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_cohesion(pt2(1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_cohesion(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_cohesion(pt2(-1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_cohesion(pt2(-1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_cohesion(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_cohesion(pt2(1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_cohesion(pt2(-1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
     }
     
     #[test]
