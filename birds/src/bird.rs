@@ -700,6 +700,18 @@ mod tests {
         test_separation(pt2(-1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
     }
     
+    #[test]
+    fn rotation_delta_positive_angle(){
+    /* Positive angle would move bird away from the cluster */
+        
+        let rotation_angle = deg_to_rad(1.0);
+        let angle = deg_to_rad(0.0);
+        let position = pt2(0.0, 0.0);
+        let mut bird = Bird::new(position, angle);
+
+        let delta = bird.rotation_delta(position, angle, rotation_angle);
+        assert!(compare_floats(delta, deg_to_rad(1.0), FLOAT_PRECISION));
+    }
 /*
     #[test]
     fn apply_separation_east_pos_x(){
