@@ -615,6 +615,21 @@ mod tests {
         assert!(compare_floats(bird.position().x, expected_position.x, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().y, expected_position.y, FLOAT_PRECISION));
     }
+    
+    fn test_rotation_delta(init_position:Point2, bird_angle:f32, rotation_angle:f32, exp_angle:f32)
+    {
+        let bird = Bird::new(init_position, bird_angle);
+
+        assert_eq!(bird.position().x, init_position.x);
+        assert_eq!(bird.position().y, init_position.y);
+        assert_eq!(bird.angle(), bird_angle);
+        assert_eq!(bird.get_separation(), bird_angle);
+        assert_eq!(bird.get_alignment(), 0.0);
+        assert_eq!(bird.get_cohesion(), bird_angle);
+        
+        let delta = bird.rotation_delta(bird.position(), bird_angle, rotation_angle);
+        assert!(compare_floats(delta, exp_angle, FLOAT_PRECISION));
+    }
 
     #[test]
     fn init_bird(){
@@ -656,7 +671,7 @@ mod tests {
         test_separation(pt2(0.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_separation(pt2(1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_separation(pt2(1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
-        test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_separation(pt2(0.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_separation(pt2(-1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_separation(pt2(-1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
         test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
@@ -674,7 +689,7 @@ mod tests {
         test_cohesion(pt2(0.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
         test_cohesion(pt2(1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
         test_cohesion(pt2(1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
-        test_cohesion(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
+        test_cohesion(pt2(0.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
         test_cohesion(pt2(-1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
         test_cohesion(pt2(-1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_cohesion(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
@@ -692,7 +707,7 @@ mod tests {
         test_separation(pt2(0.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_separation(pt2(1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_separation(pt2(1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
-        test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
+        test_separation(pt2(0.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_separation(pt2(-1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(1.0)));
         test_separation(pt2(-1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
         test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(deg_to_rad(-1.0)));
@@ -701,97 +716,41 @@ mod tests {
     }
     
     #[test]
-    fn rotation_delta_positive_angle(){
+    fn rotation_delta_zero_bird_angle(){
     /* Positive angle would move bird away from the cluster */
         
-        let rotation_angle = deg_to_rad(1.0);
-        let angle = deg_to_rad(0.0);
-        let position = pt2(0.0, 0.0);
-        let mut bird = Bird::new(position, angle);
+        let bird_angle = 0.0;
+        let rotation_angle = 1.0;
 
-        let delta = bird.rotation_delta(position, angle, rotation_angle);
-        assert!(compare_floats(delta, deg_to_rad(1.0), FLOAT_PRECISION));
-    }
-/*
-    #[test]
-    fn apply_separation_east_pos_x(){
-        test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(0.0), deg_to_rad(0.0), deg_to_rad(1.0)); 
-        test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(45.0), deg_to_rad(0.0), deg_to_rad(46.0)); 
-        test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(90.0), deg_to_rad(0.0), deg_to_rad(91.0)); 
-        test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(135.0), deg_to_rad(0.0), deg_to_rad(134.0)); 
-        test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(180.0), deg_to_rad(0.0), deg_to_rad(179.0)); 
-        test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(225.0), deg_to_rad(0.0), deg_to_rad(224.0)); 
-        test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(271.0)); 
-        test_separation(pt2(1.0, 0.0), pt2(2.0, 0.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(316.0)); 
+        test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
     }
     
     #[test]
-    fn apply_separation_east_neg_x(){
-        test_separation(pt2(-1.0, 0.0), pt2(0.0, 0.0), deg_to_rad(0.0), deg_to_rad(0.0), deg_to_rad(1.0)); 
-        test_separation(pt2(-1.0, 0.0), pt2(0.0, 0.0), deg_to_rad(45.0), deg_to_rad(0.0), deg_to_rad(46.0)); 
-        test_separation(pt2(-1.0, 0.0), pt2(0.0, 0.0), deg_to_rad(90.0), deg_to_rad(0.0), deg_to_rad(91.0)); 
-        test_separation(pt2(-1.0, 0.0), pt2(0.0, 0.0), deg_to_rad(135.0), deg_to_rad(0.0), deg_to_rad(134.0)); 
-        test_separation(pt2(-1.0, 0.0), pt2(0.0, 0.0), deg_to_rad(180.0), deg_to_rad(0.0), deg_to_rad(179.0)); 
-        test_separation(pt2(-1.0, 0.0), pt2(0.0, 0.0), deg_to_rad(225.0), deg_to_rad(0.0), deg_to_rad(224.0)); 
-        test_separation(pt2(-1.0, 0.0), pt2(0.0, 0.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(271.0)); 
-        test_separation(pt2(-1.0, 0.0), pt2(0.0, 0.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(316.0)); 
-    }
-    
-    #[test]
-    fn apply_separation_east_zero_y(){
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(0.0), deg_to_rad(0.0), deg_to_rad(1.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(45.0), deg_to_rad(0.0), deg_to_rad(46.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(90.0), deg_to_rad(0.0), deg_to_rad(91.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(135.0), deg_to_rad(0.0), deg_to_rad(134.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(180.0), deg_to_rad(0.0), deg_to_rad(179.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(225.0), deg_to_rad(0.0), deg_to_rad(224.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(271.0)); 
-        test_separation(pt2(0.0, 0.0), pt2(1.0, 0.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(316.0)); 
-    }
-    
-    #[test]
-    fn apply_separation_east_pos_y(){
-        test_separation(pt2(0.0, 1.0), pt2(1.0, 1.0), deg_to_rad(0.0), deg_to_rad(0.0), deg_to_rad(1.0)); 
-        test_separation(pt2(0.0, 1.0), pt2(1.0, 1.0), deg_to_rad(45.0), deg_to_rad(0.0), deg_to_rad(46.0)); 
-        test_separation(pt2(0.0, 1.0), pt2(1.0, 1.0), deg_to_rad(90.0), deg_to_rad(0.0), deg_to_rad(91.0)); 
-        test_separation(pt2(0.0, 1.0), pt2(1.0, 1.0), deg_to_rad(135.0), deg_to_rad(0.0), deg_to_rad(134.0)); 
-        test_separation(pt2(0.0, 1.0), pt2(1.0, 1.0), deg_to_rad(180.0), deg_to_rad(0.0), deg_to_rad(179.0)); 
-        test_separation(pt2(0.0, 1.0), pt2(1.0, 1.0), deg_to_rad(225.0), deg_to_rad(0.0), deg_to_rad(224.0)); 
-        test_separation(pt2(0.0, 1.0), pt2(1.0, 1.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(271.0)); 
-        test_separation(pt2(0.0, 1.0), pt2(1.0, 1.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(316.0)); 
-    }
-    
-    #[test]
-    fn apply_separation_east_neg_y(){
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(0.0), deg_to_rad(0.0), deg_to_rad(359.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(45.0), deg_to_rad(0.0), deg_to_rad(44.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(90.0), deg_to_rad(0.0), deg_to_rad(89.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(135.0), deg_to_rad(0.0), deg_to_rad(136.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(180.0), deg_to_rad(0.0), deg_to_rad(181.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(225.0), deg_to_rad(0.0), deg_to_rad(226.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(270.0), deg_to_rad(0.0), deg_to_rad(269.0)); 
-        test_separation(pt2(0.0, -1.0), pt2(1.0, -1.0), deg_to_rad(315.0), deg_to_rad(0.0), deg_to_rad(314.0)); 
-    }
-    
-    #[test]
-    fn apply_separation_pos_x_zero_y_45(){
-        let x = 1.0;
-        let y = 0.0;
-        let angle = 45.0;
-
-        let exp_x = x + deg_to_rad(angle).cos();
-        let exp_y = y + deg_to_rad(angle).sin();
+    fn rotation_delta_zero_bird_angle_neg_rot(){
+    /* Positive angle would move bird away from the cluster */
         
-        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(0.0), deg_to_rad(angle), deg_to_rad(359.0)); 
-        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(45.0), deg_to_rad(angle), deg_to_rad(44.0)); 
-        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(90.0), deg_to_rad(angle), deg_to_rad(89.0)); 
-        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(135.0), deg_to_rad(angle), deg_to_rad(136.0)); 
-        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(180.0), deg_to_rad(angle), deg_to_rad(181.0)); 
-        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(225.0), deg_to_rad(angle), deg_to_rad(226.0)); 
-        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(270.0), deg_to_rad(angle), deg_to_rad(269.0)); 
-        test_separation(pt2(x, y), pt2(exp_x, exp_y), deg_to_rad(315.0), deg_to_rad(angle), deg_to_rad(314.0)); 
+        let bird_angle = 0.0;
+        let rotation_angle = -1.0;
+
+        test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
     }
-    
+
     #[test]
     fn rotate_minus_90()
     {
@@ -821,5 +780,4 @@ mod tests {
         assert!(compare_floats(new.x, -1.0, FLOAT_PRECISION));
         assert!(compare_floats(new.y, 0.0, FLOAT_PRECISION));
     }
-    */
 }
