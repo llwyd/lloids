@@ -95,5 +95,19 @@ mod tests {
         assert!(cmp_floats(0.0, wrap(5.7742e-8),FLOAT_PRECISION));
         assert!(cmp_floats(0.0, wrap(std::f32::EPSILON),FLOAT_PRECISION));
         assert!(cmp_floats(0.0, wrap(-std::f32::EPSILON),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(0.0000000000001),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(-0.000000000001),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(-0.0),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(-std::f32::EPSILON),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(std::f32::EPSILON),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(-std::f32::EPSILON + (-2.0 * std::f32::consts::PI)),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(std::f32::EPSILON + (-2.0 * std::f32::consts::PI)),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(-std::f32::EPSILON + (2.0 * std::f32::consts::PI)),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(std::f32::EPSILON + (2.0 * std::f32::consts::PI)),FLOAT_PRECISION));
+        
+        assert!(cmp_floats(0.0, wrap(-0.00000000001 + (-2.0 * std::f32::consts::PI)),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap( 0.00000000001 + (-2.0 * std::f32::consts::PI)),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap(-0.00000000001 + (2.0 * std::f32::consts::PI)),FLOAT_PRECISION));
+        assert!(cmp_floats(0.0, wrap( 0.00000000001 + (2.0 * std::f32::consts::PI)),FLOAT_PRECISION));
     }
 }
