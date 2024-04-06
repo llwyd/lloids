@@ -18,12 +18,13 @@ const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 const SCREEN_TURN_OFFSET:f32 = 250.0;
 const SCREEN_TURN_OFFSET_HARD:f32 = 80.0;
 
-const NUM_BIRDS:u32 = 200;
+const NUM_BIRDS:u32 = 150;
 
 struct Model {
     bird:Vec<Bird>,
     show_radii:bool,
     show_turnbox:bool,
+    show_trails:bool,
 }
 
 fn model(app: &App) -> Model {
@@ -41,6 +42,7 @@ fn model(app: &App) -> Model {
         bird: Vec::new(),
         show_radii: false,
         show_turnbox: false,
+        show_trails: false,
     };
 
     for _i in 0..NUM_BIRDS{
@@ -153,6 +155,12 @@ fn view(app: &App, model: &Model, frame: Frame){
         
         for bird in &model.bird{
             bird.draw_sep_region(&draw);
+        }
+    }
+
+    if model.show_trails{
+        for bird in &model.bird{
+            bird.draw_trail(&draw);
         }
     }
 

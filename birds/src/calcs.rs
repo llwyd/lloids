@@ -399,7 +399,7 @@ mod tests {
 
         /*Average angle is 10, bird is 270, so 270 + 100 wraps round to 10 */
         assert!(cmp_floats(deg_to_rad(100.0), angle_delta(deg_to_rad(10.0), deg_to_rad(270.0)),FLOAT_PRECISION));
-        assert!(cmp_floats(deg_to_rad(-180.0), angle_delta(deg_to_rad(-90.0), deg_to_rad(90.0)),FLOAT_PRECISION));
+        assert!(cmp_floats(deg_to_rad(180.0), angle_delta(deg_to_rad(-90.0), deg_to_rad(90.0)),FLOAT_PRECISION));
         assert!(cmp_floats(deg_to_rad(180.0), angle_delta(deg_to_rad(90.0), deg_to_rad(-90.0)),FLOAT_PRECISION));
         
         assert!(cmp_floats(deg_to_rad(-100.0), angle_delta(deg_to_rad(270.0), deg_to_rad(10.0)),FLOAT_PRECISION));

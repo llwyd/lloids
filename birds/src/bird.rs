@@ -10,6 +10,8 @@ enum State{
     TurningHarderV,
 }
 
+const TRAIL_LEN:usize = 64;
+
 #[derive(Copy, Clone)]
 pub struct Bird{
     xy: Point2,
@@ -23,6 +25,9 @@ pub struct Bird{
     turn_angle:f32,
     avg_sep_angle:f32,
     avg_coh_angle:f32,
+
+    trail:[Point2; TRAIL_LEN],
+    trail_pos:usize,
 }
 
 impl Bird{
@@ -73,6 +78,8 @@ impl Bird{
             turn_angle: 0.0,
             avg_sep_angle: 0.0,
             avg_coh_angle: 0.0,
+            trail: [position; TRAIL_LEN],
+            trail_pos: 0,
         }
     }
 
@@ -146,6 +153,29 @@ impl Bird{
             .h(Self::BIRD_SEPARATION_RADIUS * 2.0);
     }
 
+    pub fn draw_trail(&self, draw: &Draw)
+    {
+        let mut start_idx = self.trail_pos + 1;
+        if start_idx == self.trail.len()
+        {
+            start_idx = 0;
+        }
+
+        let points = (0..self.trail.len() - 1).map(|_|{
+            let point = self.trail[start_idx];
+            start_idx += 1;
+            if start_idx == self.trail.len()
+            {
+                start_idx = 0;
+            }
+            (point, WHITE)
+        });
+
+        draw.polyline()
+            .weight(0.5)
+            .points_colored(points);
+    }
+
     pub fn draw(&self, draw: &Draw)
     {
         draw.tri()
@@ -199,6 +229,16 @@ impl Bird{
 
         self.state_machine(win, inner, inner_hard);
         self.screen_wrap(win);
+
+        self.update_trail();
+    }
+
+    fn update_trail(&mut self)
+    {
+        self.trail[self.trail_pos] = self.xy;
+        self.trail_pos += 1;
+        self.trail_pos %= self.trail.len();
+
     }
 
     fn state_machine(&mut self, _win: &Rect<f32>, inner: &Rect<f32>, inner_hard: &Rect<f32>)
