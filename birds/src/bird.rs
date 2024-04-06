@@ -662,7 +662,7 @@ mod tests {
     }  
     
     #[test]
-    fn apply_separation_quad_0_sep_0(){
+    fn apply_separation_quad_0(){
         for i in 0..91
         {
             let bird_angle = i as f32;
@@ -684,6 +684,75 @@ mod tests {
         }
     }
     
+    #[test]
+    fn apply_separation_quad_1(){
+        for i in 91..181
+        {
+            let bird_angle = i as f32;
+            for j in -180..181
+            {
+                let sep_angle = j as f32;
+                let bird_angle_deg = deg_to_rad(bird_angle);
+                /* initial position, bird angle, separation angle, expected angle */
+                test_separation(pt2(0.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(0.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(-1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(-1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(-1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+            }
+        }
+    }
+
+    #[test]
+    fn apply_separation_quad_2(){
+        for i in 181..270
+        {
+            let bird_angle = i as f32;
+            for j in -180..181
+            {
+                let sep_angle = j as f32;
+                let bird_angle_deg = deg_to_rad(bird_angle);
+                /* initial position, bird angle, separation angle, expected angle */
+                test_separation(pt2(0.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(0.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(-1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(-1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(-1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+            }
+        }
+    }
+    
+    #[test]
+    fn apply_separation_quad_3(){
+        for i in 270..360
+        {
+            let bird_angle = i as f32;
+            for j in -180..181
+            {
+                let sep_angle = j as f32;
+                let bird_angle_deg = deg_to_rad(bird_angle);
+                /* initial position, bird angle, separation angle, expected angle */
+                test_separation(pt2(0.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(0.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(-1.0, 0.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+                test_separation(pt2(-1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(0.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(1.0, -1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(-1.0)));
+                test_separation(pt2(-1.0, 1.0), deg_to_rad(bird_angle), deg_to_rad(sep_angle), angle::wrap(bird_angle_deg + deg_to_rad(1.0)));
+            }
+        }
+    }
+
     #[test]
     fn apply_cohesion_bird_0_sep_0(){
 
@@ -759,7 +828,7 @@ mod tests {
     #[test]
     fn rotation_delta_quad_0_positive_rot(){
     /* Positive angle would move bird away from the cluster */
-        for i in 0..90
+        for i in 0..91
         {
             let bird_angle = i as f32;
             let rotation_angle = 1.0;
@@ -779,7 +848,7 @@ mod tests {
     #[test]
     fn rotation_delta_quad_1_positive_rot(){
     /* Positive angle would move bird away from the cluster */
-        for i in 91..180
+        for i in 91..181
         {
             let bird_angle = i as f32;
             let rotation_angle = 1.0;
@@ -799,7 +868,7 @@ mod tests {
     #[test]
     fn rotation_delta_quad_2_positive_rot(){
     /* Positive angle would move bird away from the cluster */
-        for i in 181..269
+        for i in 181..270
         {
             let bird_angle = i as f32;
             let rotation_angle = 1.0;
@@ -819,7 +888,7 @@ mod tests {
     #[test]
     fn rotation_delta_quad_3_positive_rot(){
     /* Positive angle would move bird away from the cluster */
-        for i in 270..359
+        for i in 270..360
         {
             let bird_angle = i as f32;
             let rotation_angle = 1.0;
@@ -839,7 +908,7 @@ mod tests {
     #[test]
     fn rotation_delta_quad_0_negative_rot(){
     /* Positive angle would move bird away from the cluster */
-        for i in 0..90
+        for i in 0..91
         {
             let bird_angle = i as f32;
             let rotation_angle = -1.0;
@@ -859,7 +928,7 @@ mod tests {
     #[test]
     fn rotation_delta_quad_1_negative_rot(){
     /* Positive angle would move bird away from the cluster */
-        for i in 91..180
+        for i in 91..181
         {
             let bird_angle = i as f32;
             let rotation_angle = -1.0;
@@ -879,7 +948,7 @@ mod tests {
     #[test]
     fn rotation_delta_quad_2_negative_rot(){
     /* Positive angle would move bird away from the cluster */
-        for i in 181..269
+        for i in 181..270
         {
             let bird_angle = i as f32;
             let rotation_angle = -1.0;
@@ -899,7 +968,7 @@ mod tests {
     #[test]
     fn rotation_delta_quad_3_negative_rot(){
     /* Positive angle would move bird away from the cluster */
-        for i in 270..359
+        for i in 270..360
         {
             let bird_angle = i as f32;
             let rotation_angle = -1.0;
