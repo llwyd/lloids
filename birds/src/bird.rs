@@ -750,6 +750,166 @@ mod tests {
         test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
         test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
     }
+    
+    #[test]
+    fn rotation_delta_quad_0_positive_rot(){
+    /* Positive angle would move bird away from the cluster */
+        for i in 0..90
+        {
+            let bird_angle = i as f32;
+            let rotation_angle = 1.0;
+
+            test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        }
+    }
+
+    #[test]
+    fn rotation_delta_quad_1_positive_rot(){
+    /* Positive angle would move bird away from the cluster */
+        for i in 91..180
+        {
+            let bird_angle = i as f32;
+            let rotation_angle = 1.0;
+
+            test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        }
+    }
+    
+    #[test]
+    fn rotation_delta_quad_2_positive_rot(){
+    /* Positive angle would move bird away from the cluster */
+        for i in 181..269
+        {
+            let bird_angle = i as f32;
+            let rotation_angle = 1.0;
+
+            test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        }
+    }
+    
+    #[test]
+    fn rotation_delta_quad_3_positive_rot(){
+    /* Positive angle would move bird away from the cluster */
+        for i in 270..359
+        {
+            let bird_angle = i as f32;
+            let rotation_angle = 1.0;
+
+            test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        }
+    }
+    
+    #[test]
+    fn rotation_delta_quad_0_negative_rot(){
+    /* Positive angle would move bird away from the cluster */
+        for i in 0..90
+        {
+            let bird_angle = i as f32;
+            let rotation_angle = -1.0;
+
+            test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        }
+    }
+
+    #[test]
+    fn rotation_delta_quad_1_negative_rot(){
+    /* Positive angle would move bird away from the cluster */
+        for i in 91..180
+        {
+            let bird_angle = i as f32;
+            let rotation_angle = -1.0;
+
+            test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        }
+    }
+    
+    #[test]
+    fn rotation_delta_quad_2_negative_rot(){
+    /* Positive angle would move bird away from the cluster */
+        for i in 181..269
+        {
+            let bird_angle = i as f32;
+            let rotation_angle = -1.0;
+
+            test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+        }
+    }
+    
+    #[test]
+    fn rotation_delta_quad_3_negative_rot(){
+    /* Positive angle would move bird away from the cluster */
+        for i in 270..359
+        {
+            let bird_angle = i as f32;
+            let rotation_angle = -1.0;
+
+            test_rotation_delta(pt2(0.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(0.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,0.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+            test_rotation_delta(pt2(-1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(0.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(1.0,-1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(1.0));
+            test_rotation_delta(pt2(-1.0,1.0), deg_to_rad(bird_angle), deg_to_rad(rotation_angle), deg_to_rad(-1.0));
+        }
+    }
 
     #[test]
     fn rotate_minus_90()
