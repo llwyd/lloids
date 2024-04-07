@@ -1,5 +1,7 @@
 use nannou::prelude::*;
 
+pub use crate::settings::Settings;
+
 #[derive(Copy, Clone, PartialEq, Debug)]
 enum BirdInput{
     Nowt,
@@ -28,6 +30,15 @@ impl KeyPress
         self.changed
     }
 
+    pub fn update_settings(&self, settings: &mut Settings)
+    {
+        match self.input{
+            BirdInput::DebugPress => settings.show_debug ^= true,
+            BirdInput::TrailPress => settings.show_trails ^= true,
+            _ => {},
+        }
+    }
+
     pub fn reset_latch(&mut self){
         self.changed = false;
     }
@@ -36,6 +47,7 @@ impl KeyPress
         let previous_input = self.input;
         match key{
             Key::D => self.input = BirdInput::DebugPress,
+            Key::T => self.input = BirdInput::TrailPress,
             _ => self.input = BirdInput::Nowt,
         }
 
@@ -49,6 +61,7 @@ impl KeyPress
         let previous_input = self.input;
         match key{
             Key::D => self.input = BirdInput::DebugRelease,
+            Key::T => self.input = BirdInput::TrailRelease,
             _ => self.input = BirdInput::Nowt,
         }
 

@@ -5,8 +5,11 @@ mod bird;
 mod calcs;
 mod angle;
 mod keypress;
+mod settings;
 pub use crate::bird::Bird;
-pub use crate::keypress::KeyPress; 
+pub use crate::keypress::KeyPress;
+pub use crate::settings::Settings;
+
 const SCREEN_W_F32:f32 = 1920.0;
 const SCREEN_H_F32:f32 = 1080.0;
 
@@ -24,9 +27,7 @@ const NUM_BIRDS:u32 = 150;
 struct Model {
     bird:Vec<Bird>,
     input:KeyPress,
-    show_radii:bool,
-    show_turnbox:bool,
-    show_trails:bool,
+    settings:Settings,
 }
 
 fn model(app: &App) -> Model {
@@ -42,9 +43,12 @@ fn model(app: &App) -> Model {
     
     let mut model = Model {
         bird: Vec::new(),
-        show_radii: false,
-        show_turnbox: false,
-        show_trails: false,
+        settings: Settings{
+            show_radii: false,
+            show_turnbox: false,
+            show_trails: false,
+            show_debug: false,
+        },
         input: KeyPress::new(),
     };
 
@@ -67,6 +71,11 @@ fn window_event(_app: &App, model: &mut Model, event: WindowEvent)
         KeyPressed(key) => model.input.handle_press(key), 
         KeyReleased(key) => model.input.handle_release(key), 
         _ => {}
+    }
+
+    if model.input.changed(){
+        model.input.update_settings(&mut model.settings);
+        model.input.reset_latch();
     }
 }
 
@@ -144,7 +153,7 @@ fn view(app: &App, model: &Model, frame: Frame){
     //let win = app.window_rect();
     let draw = app.draw();
 
-    if model.show_turnbox
+    if model.settings.show_turnbox
     {
         draw.rect()
             .x_y(0.0, 0.0)
@@ -157,7 +166,7 @@ fn view(app: &App, model: &Model, frame: Frame){
             .rgba8(90, 90, 90, 16);
     }
     
-    if model.show_radii{
+    if model.settings.show_radii{
         for bird in &model.bird{
             bird.draw_region(&draw);
         }
@@ -167,7 +176,7 @@ fn view(app: &App, model: &Model, frame: Frame){
         }
     }
 
-    if model.show_trails{
+    if model.settings.show_trails{
         for bird in &model.bird{
             bird.draw_trail(&draw);
         }
