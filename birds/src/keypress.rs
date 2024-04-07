@@ -9,6 +9,10 @@ enum BirdInput{
     DebugRelease,
     TrailPress,
     TrailRelease,
+    RadiiPress,
+    RadiiRelease,
+    TurnboxPress,
+    TurnboxRelease,
 }
 
 #[derive(Copy, Clone)]
@@ -35,6 +39,8 @@ impl KeyPress
         match self.input{
             BirdInput::DebugPress => settings.show_debug ^= true,
             BirdInput::TrailPress => settings.show_trails ^= true,
+            BirdInput::TurnboxPress => settings.show_turnbox ^= true,
+            BirdInput::RadiiPress => settings.show_radii ^= true,
             _ => {},
         }
     }
@@ -48,13 +54,12 @@ impl KeyPress
         match key{
             Key::D => self.input = BirdInput::DebugPress,
             Key::T => self.input = BirdInput::TrailPress,
+            Key::R => self.input = BirdInput::RadiiPress,
+            Key::B => self.input = BirdInput::TurnboxPress,
             _ => self.input = BirdInput::Nowt,
         }
 
         self.changed = previous_input != self.input;
-        if self.changed{
-            println!("Handle press");
-        }
     }
     
     pub fn handle_release(&mut self, key: Key){
@@ -62,12 +67,11 @@ impl KeyPress
         match key{
             Key::D => self.input = BirdInput::DebugRelease,
             Key::T => self.input = BirdInput::TrailRelease,
+            Key::R => self.input = BirdInput::RadiiRelease,
+            Key::B => self.input = BirdInput::TurnboxRelease,
             _ => self.input = BirdInput::Nowt,
         }
 
         self.changed = previous_input != self.input;
-        if self.changed{
-            println!("Handle release");
-        }
     }
 }
