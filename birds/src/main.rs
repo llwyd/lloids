@@ -4,8 +4,9 @@ use nannou::geom::Range;
 mod bird;
 mod calcs;
 mod angle;
+mod keypress;
 pub use crate::bird::Bird;
-    
+pub use crate::keypress::KeyPress; 
 const SCREEN_W_F32:f32 = 1920.0;
 const SCREEN_H_F32:f32 = 1080.0;
 
@@ -22,6 +23,7 @@ const NUM_BIRDS:u32 = 150;
 
 struct Model {
     bird:Vec<Bird>,
+    input:KeyPress,
     show_radii:bool,
     show_turnbox:bool,
     show_trails:bool,
@@ -43,6 +45,7 @@ fn model(app: &App) -> Model {
         show_radii: false,
         show_turnbox: false,
         show_trails: false,
+        input: KeyPress::new(),
     };
 
     for _i in 0..NUM_BIRDS{
@@ -57,8 +60,14 @@ fn model(app: &App) -> Model {
     model
 }
 
-fn window_event(_app: &App, _model: &mut Model, _event: WindowEvent)
+fn window_event(_app: &App, model: &mut Model, event: WindowEvent)
 {
+    /* Handle keypress */
+    match event{
+        KeyPressed(key) => model.input.handle_press(key), 
+        KeyReleased(key) => model.input.handle_release(key), 
+        _ => {}
+    }
 }
 
 fn event(_app: &App, _model: &mut Model, _event: Event) { }
