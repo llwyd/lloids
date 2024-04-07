@@ -164,10 +164,16 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 fn draw_meta(meta: &Meta, draw: &Draw)
 {
     let iterations = format!("Iterations: {}", meta.iterations());
+    let runtime    = format!("Runtime: {:?}", meta.runtime().as_secs());
     draw.text(&iterations)
         .font_size(20)
         .no_line_wrap()
         .xy(pt2(SCREEN_W_2 - 250.0, -SCREEN_H_2 +40.0));
+    draw.text(&runtime)
+        .font_size(20)
+        .no_line_wrap()
+        .xy(pt2(SCREEN_W_2 - 250.0, -SCREEN_H_2 +70.0));
+    
 }
 
 fn view(app: &App, model: &Model, frame: Frame){

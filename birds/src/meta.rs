@@ -1,7 +1,9 @@
+use std::time::{Instant, Duration};
 
 #[derive(Copy, Clone)]
 pub struct Meta{
     iterations: u64,
+    runtime: Instant,
 }
 
 impl Meta
@@ -9,6 +11,7 @@ impl Meta
     pub fn new() -> Meta{
         Meta{
             iterations: 0,
+            runtime: Instant::now(),
         }
     }
 
@@ -20,5 +23,10 @@ impl Meta
     pub fn iterations(&self) -> u64
     {
         self.iterations
+    }
+
+    pub fn runtime(&self) -> Duration
+    {
+        self.runtime.elapsed()
     }
 }
