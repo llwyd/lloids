@@ -168,12 +168,13 @@ impl Bird{
             {
                 start_idx = 0;
             }
-            (point, WHITE)
+            point
         });
 
         draw.polyline()
-            .weight(0.5)
-            .points_colored(points);
+            .weight(1.5)
+            .rgba8(100,100,100,20)
+            .points(points);
     }
 
     pub fn draw(&self, draw: &Draw)
