@@ -13,6 +13,8 @@ enum BirdInput{
     RadiiRelease,
     TurnboxPress,
     TurnboxRelease,
+    PausePress,
+    PauseRelease,
 }
 
 #[derive(Copy, Clone)]
@@ -41,6 +43,7 @@ impl KeyPress
             BirdInput::TrailPress => settings.show_trails ^= true,
             BirdInput::TurnboxPress => settings.show_turnbox ^= true,
             BirdInput::RadiiPress => settings.show_radii ^= true,
+            BirdInput::PausePress => settings.pause ^= true,
             _ => {},
         }
     }
@@ -56,6 +59,7 @@ impl KeyPress
             Key::T => self.input = BirdInput::TrailPress,
             Key::R => self.input = BirdInput::RadiiPress,
             Key::B => self.input = BirdInput::TurnboxPress,
+            Key::P => self.input = BirdInput::PausePress,
             _ => self.input = BirdInput::Nowt,
         }
 
@@ -69,6 +73,7 @@ impl KeyPress
             Key::T => self.input = BirdInput::TrailRelease,
             Key::R => self.input = BirdInput::RadiiRelease,
             Key::B => self.input = BirdInput::TurnboxRelease,
+            Key::P => self.input = BirdInput::PauseRelease,
             _ => self.input = BirdInput::Nowt,
         }
 

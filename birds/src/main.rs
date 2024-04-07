@@ -48,6 +48,7 @@ fn model(app: &App) -> Model {
             show_turnbox: false,
             show_trails: false,
             show_debug: false,
+            pause: false,
         },
         input: KeyPress::new(),
     };
@@ -144,7 +145,10 @@ fn update(app: &App, model: &mut Model, _update: Update) {
             model.bird[i].set_alignment(0.0); 
         }
 
-        model.bird[i].update(&win, &inner, &inner_hard);
+        if !model.settings.pause
+        {
+            model.bird[i].update(&win, &inner, &inner_hard);
+        }
     }
 
 }
