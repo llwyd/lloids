@@ -6,9 +6,11 @@ mod calcs;
 mod angle;
 mod keypress;
 mod settings;
+mod meta;
 pub use crate::bird::Bird;
 pub use crate::keypress::KeyPress;
 pub use crate::settings::Settings;
+pub use crate::meta::Meta;
 
 const SCREEN_W_F32:f32 = 1920.0;
 const SCREEN_H_F32:f32 = 1080.0;
@@ -28,6 +30,7 @@ struct Model {
     bird:Vec<Bird>,
     input:KeyPress,
     settings:Settings,
+    meta:Meta,
 }
 
 fn model(app: &App) -> Model {
@@ -51,6 +54,7 @@ fn model(app: &App) -> Model {
             pause: false,
         },
         input: KeyPress::new(),
+        meta: Meta::new(),
     };
 
     for _i in 0..NUM_BIRDS{
@@ -151,6 +155,19 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         }
     }
 
+    if !model.settings.pause
+    {
+        model.meta.update();
+    }
+}
+
+fn draw_meta(meta: &Meta, draw: &Draw)
+{
+    let iterations = format!("Iterations: {}", meta.iterations());
+    draw.text(&iterations)
+        .font_size(20)
+        .no_line_wrap()
+        .xy(pt2(SCREEN_W_2 - 250.0, -SCREEN_H_2 +40.0));
 }
 
 fn view(app: &App, model: &Model, frame: Frame){
@@ -184,6 +201,10 @@ fn view(app: &App, model: &Model, frame: Frame){
         for bird in &model.bird{
             bird.draw_trail(&draw);
         }
+    }
+
+    if model.settings.show_debug{
+        draw_meta(&model.meta, &draw);
     }
 
     for bird in &model.bird{
