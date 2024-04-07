@@ -51,7 +51,7 @@ impl Bird{
     const BIRD_SPEED_MAX:f32 = 7.5 * Self::SPEED_GAIN;
 
     /* NOTE: Radians */
-    const SEP_ANGLE:f32 = 0.00625 * 1.8;
+    const SEP_ANGLE:f32 = 0.00625 * 2.4;
     const COH_ANGLE:f32 = 0.00005625 * 3.0;
     const ALIGNMENT_GAIN:f32 = 0.0275;
 
