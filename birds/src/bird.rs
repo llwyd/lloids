@@ -13,6 +13,20 @@ enum State{
 const TRAIL_LEN:usize = 64;
 
 #[derive(Copy, Clone)]
+struct Speed{
+    min:f32,
+    max:f32,
+}
+
+#[derive(Copy, Clone)]
+struct Proximity{
+    speed:Speed,
+    angle:f32, // measured angle
+    delta:f32, // increment
+    changed:bool,
+}
+
+#[derive(Copy, Clone)]
 pub struct Bird{
     xy: Point2,
     angle: f32,
@@ -28,6 +42,7 @@ pub struct Bird{
 
     trail:[Point2; TRAIL_LEN],
     trail_pos:usize,
+    separation:Proximity,
 }
 
 impl Bird{
@@ -80,6 +95,16 @@ impl Bird{
             avg_coh_angle: 0.0,
             trail: [position; TRAIL_LEN],
             trail_pos: 0,
+
+            separation: Proximity{
+                speed:Speed{
+                    min: Self::SEP_SPEED_MIN,
+                    max: Self::SEP_SPEED_MAX,
+                },
+                angle: angle,
+                delta: Self::SEP_ANGLE,
+                changed:false,
+            },
         }
     }
 
