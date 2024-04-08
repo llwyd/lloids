@@ -23,6 +23,7 @@ struct Proximity{
     speed:Speed,
     angle:f32, // measured angle
     delta:f32, // increment
+    alignment:f32, // average alignment
     changed:bool,
 }
 
@@ -30,14 +31,11 @@ struct Proximity{
 pub struct Bird{
     xy: Point2,
     angle: f32,
-    sep_angle: f32,
     align_angle: f32,
     coh_angle: f32,
-    sep_changed: bool,
     coh_changed: bool,
     state:State,
     turn_angle:f32,
-    avg_sep_angle:f32,
     avg_coh_angle:f32,
 
     trail:[Point2; TRAIL_LEN],
@@ -56,8 +54,8 @@ impl Bird{
 
     const SPEED_GAIN:f32 = 1.4;
 
-    const SEP_SPEED_MIN:f32 = 1.25 * Self::SPEED_GAIN;
-    const SEP_SPEED_MAX:f32 = 2.5 * Self::SPEED_GAIN;
+    const DEFAULT_SEP_SPEED_MIN:f32 = 1.25 * Self::SPEED_GAIN;
+    const DEFAULT_SEP_SPEED_MAX:f32 = 2.5 * Self::SPEED_GAIN;
     
     const COH_SPEED_MIN:f32 = 0.5 * Self::SPEED_GAIN;
     const COH_SPEED_MAX:f32 = 1.5 * Self::SPEED_GAIN;
@@ -66,7 +64,7 @@ impl Bird{
     const BIRD_SPEED_MAX:f32 = 7.5 * Self::SPEED_GAIN;
 
     /* NOTE: Radians */
-    const SEP_ANGLE:f32 = 0.00625 * 2.4;
+    const DEFAULT_SEP_DELTA:f32 = 0.00625 * 2.4;
     const COH_ANGLE:f32 = 0.00005625 * 3.0;
     const ALIGNMENT_GAIN:f32 = 0.0275;
 
@@ -84,25 +82,23 @@ impl Bird{
         Bird{
             xy: position,
             angle: angle,
-            sep_angle: angle,
             align_angle: Self::ALIGNMENT_INITIAL,
             coh_angle: angle,
-            sep_changed: false,
             coh_changed: false,
             state: State::Idle,
             turn_angle: 0.0,
-            avg_sep_angle: 0.0,
             avg_coh_angle: 0.0,
             trail: [position; TRAIL_LEN],
             trail_pos: 0,
 
             separation: Proximity{
                 speed:Speed{
-                    min: Self::SEP_SPEED_MIN,
-                    max: Self::SEP_SPEED_MAX,
+                    min: Self::DEFAULT_SEP_SPEED_MIN,
+                    max: Self::DEFAULT_SEP_SPEED_MAX,
                 },
                 angle: angle,
-                delta: Self::SEP_ANGLE,
+                alignment: 0.0,
+                delta: Self::DEFAULT_SEP_DELTA,
                 changed:false,
             },
         }
@@ -117,13 +113,13 @@ impl Bird{
     }
     
     pub fn set_separation(&mut self, new_rotation:f32, new_angle:f32){
-        self.sep_angle = new_rotation;
-        self.avg_sep_angle = new_angle;
-        self.sep_changed = true;
+        self.separation.angle = new_rotation;
+        self.separation.alignment = new_angle;
+        self.separation.changed = true;
     }
     
     pub fn get_separation(&self) -> f32{
-        self.sep_angle
+        self.separation.angle
     }
     
     pub fn get_alignment(&self) -> f32{
@@ -215,7 +211,7 @@ impl Bird{
     {
         assert!(self.angle >= 0.0);
 
-        let mut sep_angle = self.sep_angle;
+        let mut sep_angle = self.separation.angle;
         let mut coh_angle = self.coh_angle;
         let mut align_gain = Self::ALIGNMENT_GAIN;
 
@@ -232,9 +228,9 @@ impl Bird{
         }
 
         /* Separation */
-        if self.sep_changed{
-            self.apply_separation(sep_angle, Self::SEP_ANGLE, Self::SEP_SPEED_MIN , Self::SEP_SPEED_MAX, true);
-            self.sep_changed = false;
+        if self.separation.changed{
+            self.apply_separation(sep_angle, Self::DEFAULT_SEP_DELTA, Self::DEFAULT_SEP_SPEED_MIN , Self::DEFAULT_SEP_SPEED_MAX, true);
+            self.separation.changed = false;
         }
         
         /* Cohesion */
@@ -497,11 +493,11 @@ impl Bird{
             self.move_bird_to_angle(mov_inc / 2.0, angle);
         }
         /* 2. Calculate how much bird should rotate away from the reference_bird */
-        let angle_offset = 0.0 - self.avg_sep_angle;
+        let angle_offset = 0.0 - self.separation.alignment;
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
-        let norm_angle = angle::wrap( self.angle - self.avg_sep_angle );
+        let norm_angle = angle::wrap( self.angle - self.separation.alignment );
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
         let delta:f32 = self.rotation_delta(rotated_position, norm_angle, rot_angle);
