@@ -235,14 +235,14 @@ impl Bird{
 
         /* Separation */
         if self.separation.changed{
-            //self.apply_separation(sep_angle, self.separation.delta, self.separation.speed.min, self.separation.speed.max, true);
+            assert!(self.separation.delta.is_positive());
             self.apply_proximity(self.separation);
             self.separation.changed = false;
         }
         
         /* Cohesion */
         if self.cohesion.changed{
-            //self.apply_cohesion(coh_angle, self.cohesion.delta, self.cohesion.speed.min, self.cohesion.speed.max, true);
+            assert!(self.cohesion.delta.is_negative());
             self.apply_proximity(self.cohesion);
             self.cohesion.changed = false;
         }
