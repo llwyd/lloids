@@ -685,15 +685,27 @@ mod tests {
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), bird_angle);
         
-        let lower_speed = 1.0;
-        let upper_speed = 1.0;
+        let speed = 1.0;
         let rotation_angle = deg_to_rad(1.0);
 
+        let separation = Proximity{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            angle: sep_angle,
+            alignment: 0.0,
+            delta: rotation_angle,
+            changed: false,
+        };
 
-        bird.apply_separation(sep_angle, rotation_angle, lower_speed, upper_speed, false);
+        //bird.apply_separation(sep_angle, rotation_angle, lower_speed, upper_speed, false);
 
-        let position_step1 = pt2(init_position.x + (upper_speed * 0.5 * sep_angle.cos()), init_position.y + (upper_speed * 0.5 * sep_angle.sin()));
-        let expected_position = pt2(position_step1.x + (upper_speed * 0.5 * exp_angle.cos()), position_step1.y + (upper_speed * 0.5 * exp_angle.sin()));
+        bird.apply_proximity(separation);
+
+        let position_step1 = pt2(init_position.x + (speed * 0.5 * sep_angle.cos()), init_position.y + (speed * 0.5 * sep_angle.sin()));
+        let expected_position = pt2(position_step1.x + (speed * 0.5 * exp_angle.cos()), position_step1.y + (speed * 0.5 * exp_angle.sin()));
         println!("{:?}, {:?}", init_position, expected_position);
         assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().x, expected_position.x, FLOAT_PRECISION));
@@ -711,15 +723,25 @@ mod tests {
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), bird_angle);
         
-        let lower_speed = 1.0;
-        let upper_speed = 1.0;
+        let speed = 1.0;
         let rotation_angle = deg_to_rad(1.0);
 
+        let cohesion = Proximity{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            angle: sep_angle,
+            alignment: 0.0,
+            delta: -rotation_angle,
+            changed: false,
+        };
 
-        bird.apply_cohesion(sep_angle, rotation_angle, lower_speed, upper_speed, false);
+        bird.apply_proximity(cohesion);
 
-        let position_step1 = pt2(init_position.x + (upper_speed * 0.5 * sep_angle.cos()), init_position.y + (upper_speed * 0.5 * sep_angle.sin()));
-        let expected_position = pt2(position_step1.x + (upper_speed * 0.5 * exp_angle.cos()), position_step1.y + (upper_speed * 0.5 * exp_angle.sin()));
+        let position_step1 = pt2(init_position.x + (speed * 0.5 * sep_angle.cos()), init_position.y + (speed * 0.5 * sep_angle.sin()));
+        let expected_position = pt2(position_step1.x + (speed * 0.5 * exp_angle.cos()), position_step1.y + (speed * 0.5 * exp_angle.sin()));
         println!("{:?}, {:?}", init_position, expected_position);
         assert!(compare_floats(bird.angle(), exp_angle, FLOAT_PRECISION));
         assert!(compare_floats(bird.position().x, expected_position.x, FLOAT_PRECISION));
