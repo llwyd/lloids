@@ -8,6 +8,7 @@ mod keypress;
 mod settings;
 mod meta;
 pub use crate::bird::Bird;
+pub use crate::bird::Proximity;
 pub use crate::keypress::KeyPress;
 pub use crate::settings::Settings;
 pub use crate::meta::Meta;
@@ -25,6 +26,8 @@ const SCREEN_TURN_OFFSET:f32 = 250.0;
 const SCREEN_TURN_OFFSET_HARD:f32 = 80.0;
 
 const NUM_BIRDS:u32 = 150;
+
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 struct Model {
     bird:Vec<Bird>,
@@ -164,15 +167,23 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 fn draw_meta(meta: &Meta, draw: &Draw)
 {
     let iterations = format!("Iterations: {}", meta.iterations());
-    let runtime    = format!("Runtime: {:?}", meta.runtime().as_secs());
+    let runtime    = format!("Runtime: {}s", meta.runtime().as_secs());
+    let version    = format!("v{}", VERSION);
     draw.text(&iterations)
         .font_size(20)
         .no_line_wrap()
-        .xy(pt2(SCREEN_W_2 - 250.0, -SCREEN_H_2 +40.0));
+        .left_justify()
+        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -20.0));
     draw.text(&runtime)
         .font_size(20)
         .no_line_wrap()
-        .xy(pt2(SCREEN_W_2 - 250.0, -SCREEN_H_2 +70.0));
+        .left_justify()
+        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -40.0));
+    draw.text(&version)
+        .font_size(20)
+        .no_line_wrap()
+        .right_justify()
+        .xy(pt2(SCREEN_W_2 - 115.0, -SCREEN_H_2 +20.0));
     
 }
 
