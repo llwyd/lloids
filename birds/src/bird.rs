@@ -595,10 +595,69 @@ mod tests {
         let delta = (x - y).abs();
         delta <= precision
     }
+    
+    fn default_bird_config() -> BirdConfig{
+
+        let speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        let separation_settings = ProximitySettings{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            delta: rotation_angle,
+        };
+        
+        let cohesion_settings = ProximitySettings{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            delta: -rotation_angle,
+        };
+
+        let config = BirdConfig{
+            separation: separation_settings,
+            cohesion: cohesion_settings,
+            alignment_gain: 0.0,
+        };
+
+        config
+    }
 
     fn test_separation(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
-        let mut bird = Bird::new(init_position, bird_angle);
+        let speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        let separation_settings = ProximitySettings{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            delta: rotation_angle,
+        };
+        
+        let cohesion_settings = ProximitySettings{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            delta: -rotation_angle,
+        };
+
+        let config = BirdConfig{
+            separation: separation_settings,
+            cohesion: cohesion_settings,
+            alignment_gain: 0.0,
+        };
+        
+        let mut bird = Bird::new(init_position, bird_angle, config);
 
         assert_eq!(bird.position().x, init_position.x);
         assert_eq!(bird.position().y, init_position.y);
@@ -606,19 +665,11 @@ mod tests {
         assert_eq!(bird.get_separation(), bird_angle);
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), bird_angle);
-        
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
 
         let separation = Proximity{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
+            settings: separation_settings,
             angle: sep_angle,
             alignment: 0.0,
-            delta: rotation_angle,
             changed: false,
         };
 
@@ -636,7 +687,33 @@ mod tests {
     
     fn test_cohesion(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
-        let mut bird = Bird::new(init_position, bird_angle);
+        let speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        let separation_settings = ProximitySettings{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            delta: rotation_angle,
+        };
+        
+        let cohesion_settings = ProximitySettings{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            delta: -rotation_angle,
+        };
+
+        let config = BirdConfig{
+            separation: separation_settings,
+            cohesion: cohesion_settings,
+            alignment_gain: 0.0,
+        };
+        let mut bird = Bird::new(init_position, bird_angle, config);
 
         assert_eq!(bird.position().x, init_position.x);
         assert_eq!(bird.position().y, init_position.y);
@@ -644,19 +721,11 @@ mod tests {
         assert_eq!(bird.get_separation(), bird_angle);
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), bird_angle);
-        
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
 
         let cohesion = Proximity{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
+            settings: cohesion_settings,
             angle: sep_angle,
             alignment: 0.0,
-            delta: -rotation_angle,
             changed: false,
         };
 
@@ -672,7 +741,33 @@ mod tests {
     
     fn test_rotation_delta(init_position:Point2, bird_angle:f32, rotation_angle:f32, exp_angle:f32)
     {
-        let bird = Bird::new(init_position, bird_angle);
+        let speed = 1.0;
+
+        let separation_settings = ProximitySettings{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            delta: rotation_angle,
+        };
+        
+        let cohesion_settings = ProximitySettings{
+            speed: Speed{
+                min: speed,
+                max: speed,
+                randomise: false,
+            },
+            delta: -rotation_angle,
+        };
+
+        let config = BirdConfig{
+            separation: separation_settings,
+            cohesion: cohesion_settings,
+            alignment_gain: 0.0,
+        };
+        
+        let bird = Bird::new(init_position, bird_angle, config);
 
         assert_eq!(bird.position().x, init_position.x);
         assert_eq!(bird.position().y, init_position.y);
@@ -690,7 +785,8 @@ mod tests {
         let x = 0.0;
         let y = 0.0;
         let angle = 0.0;
-        let bird = Bird::new(pt2(x, y), angle);
+        let config = default_bird_config();
+        let bird = Bird::new(pt2(x, y), angle, config);
 
         assert_eq!(bird.position().x, x);
         assert_eq!(bird.position().y, y);
@@ -705,7 +801,8 @@ mod tests {
         let x = 12.34;
         let y = 56.78;
         let angle = 91.011;
-        let bird = Bird::new(pt2(x, y), angle);
+        let config = default_bird_config();
+        let bird = Bird::new(pt2(x, y), angle, config);
 
         assert_eq!(bird.position().x, x);
         assert_eq!(bird.position().y, y);
@@ -1119,7 +1216,8 @@ mod tests {
         let x = 0.0;
         let y = 1.0;
         let angle = 0.0;
-        let bird = Bird::new(pt2(x, y), angle);
+        let config = default_bird_config();
+        let bird = Bird::new(pt2(x, y), angle, config);
         
         let pos = pt2(x, y);
         let new = bird.rotate(pos, deg_to_rad(-90.0));
@@ -1134,7 +1232,8 @@ mod tests {
         let x = 0.0;
         let y = 1.0;
         let angle = 0.0;
-        let bird = Bird::new(pt2(x, y), angle);
+        let config = default_bird_config();
+        let bird = Bird::new(pt2(x, y), angle, config);
         
         let pos = pt2(x, y);
         let new = bird.rotate(pos, deg_to_rad(90.0));
