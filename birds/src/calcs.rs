@@ -1,9 +1,6 @@
 pub use crate::bird::Bird;
 use nannou::prelude::*;
 use crate::angle;
-use crate::bird::Speed;
-use crate::bird::ProximitySettings;
-use crate::bird::BirdConfig;
 
 pub fn is_bird_nearby(bird: &Bird, other_bird: &Bird, bird_radius: f32) -> bool{
     let dx_2:f32 = (other_bird.position().x - bird.position().x).pow(2);
@@ -106,6 +103,9 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32,f32)
 #[cfg(test)]
 mod tests {
     use super::*;    
+    use crate::bird::Speed;
+    use crate::bird::ProximitySettings;
+    use crate::bird::BirdConfig;
     const FLOAT_PRECISION:f32 = 0.00001;
    
     fn cmp_floats(x:f32, y:f32, precision:f32)->bool{
