@@ -7,11 +7,14 @@ mod angle;
 mod keypress;
 mod settings;
 mod meta;
+mod speed;
+
 pub use crate::bird::Bird;
 pub use crate::bird::BirdConfig;
 pub use crate::bird::Proximity;
 pub use crate::bird::ProximitySettings;
-pub use crate::bird::Speed;
+pub use crate::speed::Speed;
+//pub use crate::bird::Speed;
 pub use crate::keypress::KeyPress;
 pub use crate::settings::Settings;
 pub use crate::meta::Meta;
@@ -75,19 +78,11 @@ fn model(app: &App) -> Model {
         },
         bird_config:BirdConfig{
             separation:ProximitySettings{
-                speed:Speed{
-                    min: DEFAULT_SEP_SPEED_MIN,
-                    max: DEFAULT_SEP_SPEED_MAX,
-                    randomise: true,
-                },
+                speed:Speed::new(DEFAULT_SEP_SPEED_MIN,DEFAULT_SEP_SPEED_MAX, true),
                 delta: DEFAULT_SEP_DELTA,
             },
             cohesion:ProximitySettings{
-                speed:Speed{
-                    min: DEFAULT_COH_SPEED_MIN,
-                    max: DEFAULT_COH_SPEED_MAX,
-                    randomise: true,
-                },
+                speed:Speed::new(DEFAULT_COH_SPEED_MIN,DEFAULT_COH_SPEED_MAX, true),
                 delta: -DEFAULT_COH_DELTA,
             },
             alignment_gain: DEFAULT_ALIGNMENT_GAIN,

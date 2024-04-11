@@ -1,6 +1,7 @@
 use nannou::prelude::*;
 use crate::angle;
-    
+use crate::speed::Speed;
+
 #[derive(Copy,Clone,Debug,PartialEq)]
 enum State{
     Idle,
@@ -12,12 +13,14 @@ enum State{
 
 const TRAIL_LEN:usize = 64;
 
+/*
 #[derive(Copy, Clone)]
 pub struct Speed{
     pub min:f32,
     pub max:f32,
     pub randomise:bool,
 }
+*/
 
 #[derive(Copy, Clone)]
 pub struct ProximitySettings{
@@ -483,12 +486,12 @@ impl Bird{
         /* Randomise movement */
         let mov_inc:f32;
         
-        if prox.settings.speed.randomise{
-            mov_inc = random_range(prox.settings.speed.min, prox.settings.speed.max);
+        if prox.settings.speed.randomise(){
+            mov_inc = random_range(prox.settings.speed.min(), prox.settings.speed.max());
         }
         else
         {
-            mov_inc = prox.settings.speed.max;
+            mov_inc = prox.settings.speed.max();
         }
         let old_xy = self.xy;
         
