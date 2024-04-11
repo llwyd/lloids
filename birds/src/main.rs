@@ -8,7 +8,10 @@ mod keypress;
 mod settings;
 mod meta;
 pub use crate::bird::Bird;
+pub use crate::bird::BirdConfig;
 pub use crate::bird::Proximity;
+pub use crate::bird::ProximitySettings;
+pub use crate::bird::Speed;
 pub use crate::keypress::KeyPress;
 pub use crate::settings::Settings;
 pub use crate::meta::Meta;
@@ -25,7 +28,20 @@ const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 const SCREEN_TURN_OFFSET:f32 = 250.0;
 const SCREEN_TURN_OFFSET_HARD:f32 = 80.0;
 
+
+/* Bird default settings */
 const NUM_BIRDS:u32 = 150;
+
+const SPEED_GAIN:f32 = 1.4;
+const DEFAULT_SEP_SPEED_MIN:f32 = 1.25 * SPEED_GAIN;
+const DEFAULT_SEP_SPEED_MAX:f32 = 2.5 * SPEED_GAIN;
+
+const DEFAULT_COH_SPEED_MIN:f32 = 0.5 * SPEED_GAIN;
+const DEFAULT_COH_SPEED_MAX:f32 = 1.5 * SPEED_GAIN;
+    
+const DEFAULT_SEP_DELTA:f32 = 0.00625 * 2.4;
+const DEFAULT_COH_DELTA:f32 = 0.00005625 * 3.0;
+const DEFAULT_ALIGNMENT_GAIN:f32 = 0.0275;
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
@@ -33,6 +49,7 @@ struct Model {
     bird:Vec<Bird>,
     input:KeyPress,
     settings:Settings,
+    bird_config:BirdConfig,
     meta:Meta,
 }
 
@@ -56,6 +73,25 @@ fn model(app: &App) -> Model {
             show_debug: false,
             pause: false,
         },
+        bird_config:BirdConfig{
+            separation:ProximitySettings{
+                speed:Speed{
+                    min: DEFAULT_SEP_SPEED_MIN,
+                    max: DEFAULT_SEP_SPEED_MAX,
+                    randomise: true,
+                },
+                delta: DEFAULT_SEP_DELTA,
+            },
+            cohesion:ProximitySettings{
+                speed:Speed{
+                    min: DEFAULT_COH_SPEED_MIN,
+                    max: DEFAULT_COH_SPEED_MAX,
+                    randomise: true,
+                },
+                delta: -DEFAULT_COH_DELTA,
+            },
+            alignment_gain: DEFAULT_ALIGNMENT_GAIN,
+        },
         input: KeyPress::new(),
         meta: Meta::new(),
     };
@@ -65,8 +101,7 @@ fn model(app: &App) -> Model {
         let y = random_range(-SCREEN_H_2 + SCREEN_TURN_OFFSET, SCREEN_H_2 - SCREEN_TURN_OFFSET); 
         let angle = random_range(0.0, 359.0);
 
-        model.bird.push(Bird::new(pt2(x, y), deg_to_rad(angle))); 
-//        model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        model.bird.push(Bird::new(pt2(x, y), deg_to_rad(angle),model.bird_config)); 
     }
 
     model

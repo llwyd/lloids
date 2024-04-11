@@ -13,28 +13,25 @@ enum State{
 const TRAIL_LEN:usize = 64;
 
 #[derive(Copy, Clone)]
-struct Speed{
-    min:f32,
-    max:f32,
-    randomise:bool,
+pub struct Speed{
+    pub min:f32,
+    pub max:f32,
+    pub randomise:bool,
 }
 
 #[derive(Copy, Clone)]
 pub struct ProximitySettings{
-    speed:Speed,
-    delta:f32,
+    pub speed:Speed,
+    pub delta:f32,
 }
 
-/*
 #[derive(Copy, Clone)]
 pub struct BirdConfig{
-    separation_speed:Speed,
-    cohesion_speed:Speed,
-    separation_delta:f32,
-    cohesion_delta:f32,
-    alignment_gain:f32,
+    pub separation:ProximitySettings,
+    pub cohesion:ProximitySettings,
+    pub alignment_gain:f32,
 }
-*/
+
 
 #[derive(Copy, Clone)]
 pub struct Proximity{
@@ -57,6 +54,7 @@ pub struct Bird{
     
     separation:Proximity,
     cohesion:Proximity,
+    alignment_gain:f32,
 }
 
 impl Bird{
@@ -94,7 +92,7 @@ impl Bird{
     const NON_ZERO_ADJUST:f32 = 0.001;
     const DISTANCE_DECAY:f32 = 0.1;
 
-    pub fn new(position:Point2, angle:f32) -> Bird{
+    pub fn new(position:Point2, angle:f32, config: BirdConfig) -> Bird{
         Bird{
             xy: position,
             angle: angle,
@@ -105,32 +103,19 @@ impl Bird{
             trail_pos: 0,
 
             separation: Proximity{
-                settings:ProximitySettings{
-                    speed:Speed{
-                        min: Self::DEFAULT_SEP_SPEED_MIN,
-                        max: Self::DEFAULT_SEP_SPEED_MAX,
-                        randomise: true,
-                    },
-                    delta: Self::DEFAULT_SEP_DELTA,
-                },
+                settings: config.separation,
                 angle: angle,
                 alignment: 0.0,
                 changed:false,
             },
             
             cohesion: Proximity{
-                settings:ProximitySettings{
-                    speed:Speed{
-                        min: Self::DEFAULT_COH_SPEED_MIN,
-                        max: Self::DEFAULT_COH_SPEED_MAX,
-                        randomise: true,
-                    },
-                    delta: -Self::DEFAULT_COH_DELTA,
-                },
+                settings:config.cohesion,
                 angle: angle,
                 alignment: 0.0,
                 changed:false,
             },
+            alignment_gain: config.alignment_gain,
         }
     }
 
@@ -241,7 +226,7 @@ impl Bird{
     {
         assert!(self.angle >= 0.0);
 
-        let mut align_gain = Self::ALIGNMENT_GAIN;
+        let mut align_gain = self.alignment_gain;
         let near_edge = self.is_near_edge(inner);
 
         if near_edge 
