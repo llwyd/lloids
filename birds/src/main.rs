@@ -199,10 +199,15 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     }
 }
 
-fn draw_meta(meta: &Meta, draw: &Draw)
+fn draw_meta(config: &BirdConfig, meta: &Meta, draw: &Draw)
 {
     let iterations = format!("Iterations: {}", meta.iterations());
     let runtime    = format!("Runtime: {}s", meta.runtime().as_secs());
+    
+    let sep_delta = format!("Separation Delta: {} rads", config.separation.delta);
+    let coh_delta = format!("Cohesion Delta: {} rads", config.cohesion.delta);
+    let align_gain = format!("Alignment Gain: {}", config.alignment_gain);
+    
     let version    = format!("v{}", VERSION);
     draw.text(&iterations)
         .font_size(20)
@@ -214,6 +219,25 @@ fn draw_meta(meta: &Meta, draw: &Draw)
         .no_line_wrap()
         .left_justify()
         .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -40.0));
+    
+    draw.text(&sep_delta)
+        .font_size(20)
+        .no_line_wrap()
+        .left_justify()
+        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -80.0));
+    draw.text(&coh_delta)
+        .font_size(20)
+        .no_line_wrap()
+        .left_justify()
+        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -100.0));
+    draw.text(&align_gain)
+        .font_size(20)
+        .no_line_wrap()
+        .left_justify()
+        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -120.0));
+
+
+
     draw.text(&version)
         .font_size(20)
         .no_line_wrap()
@@ -256,7 +280,7 @@ fn view(app: &App, model: &Model, frame: Frame){
     }
 
     if model.settings.show_debug{
-        draw_meta(&model.meta, &draw);
+        draw_meta(&model.bird_config, &model.meta, &draw);
     }
 
     for bird in &model.bird{
