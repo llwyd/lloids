@@ -68,19 +68,8 @@ impl Bird{
 
     const SPEED_GAIN:f32 = 1.4;
 
-    const DEFAULT_SEP_SPEED_MIN:f32 = 1.25 * Self::SPEED_GAIN;
-    const DEFAULT_SEP_SPEED_MAX:f32 = 2.5 * Self::SPEED_GAIN;
-    
-    const DEFAULT_COH_SPEED_MIN:f32 = 0.5 * Self::SPEED_GAIN;
-    const DEFAULT_COH_SPEED_MAX:f32 = 1.5 * Self::SPEED_GAIN;
-
     const BIRD_SPEED_MIN:f32 = 1.0 * Self::SPEED_GAIN;
     const BIRD_SPEED_MAX:f32 = 7.5 * Self::SPEED_GAIN;
-
-    /* NOTE: Radians */
-    const DEFAULT_SEP_DELTA:f32 = 0.00625 * 2.4;
-    const DEFAULT_COH_DELTA:f32 = 0.00005625 * 3.0;
-    const ALIGNMENT_GAIN:f32 = 0.0275;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
 
