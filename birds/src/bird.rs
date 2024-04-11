@@ -20,10 +20,26 @@ struct Speed{
 }
 
 #[derive(Copy, Clone)]
-pub struct Proximity{
+pub struct ProximitySettings{
     speed:Speed,
+    delta:f32,
+}
+
+/*
+#[derive(Copy, Clone)]
+pub struct BirdConfig{
+    separation_speed:Speed,
+    cohesion_speed:Speed,
+    separation_delta:f32,
+    cohesion_delta:f32,
+    alignment_gain:f32,
+}
+*/
+
+#[derive(Copy, Clone)]
+pub struct Proximity{
+    settings:ProximitySettings,
     angle:f32, // measured angle
-    delta:f32, // increment
     alignment:f32, // average alignment
     changed:bool,
 }
@@ -89,26 +105,30 @@ impl Bird{
             trail_pos: 0,
 
             separation: Proximity{
-                speed:Speed{
-                    min: Self::DEFAULT_SEP_SPEED_MIN,
-                    max: Self::DEFAULT_SEP_SPEED_MAX,
-                    randomise: true,
+                settings:ProximitySettings{
+                    speed:Speed{
+                        min: Self::DEFAULT_SEP_SPEED_MIN,
+                        max: Self::DEFAULT_SEP_SPEED_MAX,
+                        randomise: true,
+                    },
+                    delta: Self::DEFAULT_SEP_DELTA,
                 },
                 angle: angle,
                 alignment: 0.0,
-                delta: Self::DEFAULT_SEP_DELTA,
                 changed:false,
             },
             
             cohesion: Proximity{
-                speed:Speed{
-                    min: Self::DEFAULT_COH_SPEED_MIN,
-                    max: Self::DEFAULT_COH_SPEED_MAX,
-                    randomise: true,
+                settings:ProximitySettings{
+                    speed:Speed{
+                        min: Self::DEFAULT_COH_SPEED_MIN,
+                        max: Self::DEFAULT_COH_SPEED_MAX,
+                        randomise: true,
+                    },
+                    delta: -Self::DEFAULT_COH_DELTA,
                 },
                 angle: angle,
                 alignment: 0.0,
-                delta: -Self::DEFAULT_COH_DELTA,
                 changed:false,
             },
         }
@@ -235,14 +255,14 @@ impl Bird{
 
         /* Separation */
         if self.separation.changed{
-            assert!(self.separation.delta.is_positive());
+            assert!(self.separation.settings.delta.is_positive());
             self.apply_proximity(self.separation);
             self.separation.changed = false;
         }
         
         /* Cohesion */
         if self.cohesion.changed{
-            assert!(self.cohesion.delta.is_negative());
+            assert!(self.cohesion.settings.delta.is_negative());
             self.apply_proximity(self.cohesion);
             self.cohesion.changed = false;
         }
@@ -489,12 +509,12 @@ impl Bird{
         /* Randomise movement */
         let mov_inc:f32;
         
-        if prox.speed.randomise{
-            mov_inc = random_range(prox.speed.min, prox.speed.max);
+        if prox.settings.speed.randomise{
+            mov_inc = random_range(prox.settings.speed.min, prox.settings.speed.max);
         }
         else
         {
-            mov_inc = prox.speed.max;
+            mov_inc = prox.settings.speed.max;
         }
         let old_xy = self.xy;
         
@@ -511,7 +531,7 @@ impl Bird{
         let norm_angle = angle::wrap( self.angle - prox.alignment );
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
-        let delta:f32 = self.rotation_delta(rotated_position, norm_angle, prox.delta);
+        let delta:f32 = self.rotation_delta(rotated_position, norm_angle, prox.settings.delta);
 
         self.angle += delta;
         self.angle = angle::wrap(self.angle);
