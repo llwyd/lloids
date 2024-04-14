@@ -1,6 +1,5 @@
 use nannou::prelude::*;
 use crate::angle;
-//use crate::speed::Speed;
 use crate::proximity::ProximitySettings;
 
 #[derive(Copy,Clone,Debug,PartialEq)]
@@ -13,16 +12,6 @@ enum State{
 }
 
 const TRAIL_LEN:usize = 64;
-
-/*
-#[derive(Copy, Clone)]
-pub struct Speed{
-    pub min:f32,
-    pub max:f32,
-    pub randomise:bool,
-}
-*/
-
 
 #[derive(Copy, Clone)]
 pub struct BirdConfig{
@@ -587,6 +576,8 @@ impl Bird{
 #[cfg(test)]
 mod tests {
     use super::*;    
+    use crate::speed::Speed;
+    use crate::proximity::ProximitySettings;
     const FLOAT_PRECISION:f32 = 0.00001;
     
     fn compare_floats(x:f32, y:f32, precision:f32)->bool{

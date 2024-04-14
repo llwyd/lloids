@@ -103,8 +103,8 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32,f32)
 #[cfg(test)]
 mod tests {
     use super::*;    
-    use crate::bird::Speed;
-    use crate::bird::ProximitySettings;
+    use crate::speed::Speed;
+    use crate::proximity::ProximitySettings;
     use crate::bird::BirdConfig;
     const FLOAT_PRECISION:f32 = 0.00001;
    
