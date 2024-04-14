@@ -8,12 +8,15 @@ mod keypress;
 mod settings;
 mod meta;
 mod speed;
+mod proximity;
 
 pub use crate::bird::Bird;
 pub use crate::bird::BirdConfig;
 pub use crate::bird::Proximity;
-pub use crate::bird::ProximitySettings;
+//pub use crate::bird::ProximitySettings;
 pub use crate::speed::Speed;
+pub use crate::proximity::ProximitySettings;
+
 //pub use crate::bird::Speed;
 pub use crate::keypress::KeyPress;
 pub use crate::settings::Settings;
@@ -77,14 +80,8 @@ fn model(app: &App) -> Model {
             pause: false,
         },
         bird_config:BirdConfig{
-            separation:ProximitySettings{
-                speed:Speed::new(DEFAULT_SEP_SPEED_MIN,DEFAULT_SEP_SPEED_MAX, true),
-                delta: DEFAULT_SEP_DELTA,
-            },
-            cohesion:ProximitySettings{
-                speed:Speed::new(DEFAULT_COH_SPEED_MIN,DEFAULT_COH_SPEED_MAX, true),
-                delta: -DEFAULT_COH_DELTA,
-            },
+            separation:ProximitySettings::new(Speed::new(DEFAULT_SEP_SPEED_MIN,DEFAULT_SEP_SPEED_MAX, true), DEFAULT_SEP_DELTA),
+            cohesion:ProximitySettings::new(Speed::new(DEFAULT_COH_SPEED_MIN,DEFAULT_COH_SPEED_MAX, true), -DEFAULT_COH_DELTA),  
             alignment_gain: DEFAULT_ALIGNMENT_GAIN,
         },
         input: KeyPress::new(),
@@ -199,8 +196,8 @@ fn draw_meta(config: &BirdConfig, meta: &Meta, draw: &Draw)
     let iterations = format!("Iterations: {}", meta.iterations());
     let runtime    = format!("Runtime: {}s", meta.runtime().as_secs());
     
-    let sep_delta = format!("Separation Delta: {} rads", config.separation.delta);
-    let coh_delta = format!("Cohesion Delta: {} rads", config.cohesion.delta);
+    let sep_delta = format!("Separation Delta: {} rads", config.separation.delta());
+    let coh_delta = format!("Cohesion Delta: {} rads", config.cohesion.delta());
     let align_gain = format!("Alignment Gain: {}", config.alignment_gain);
     
     let version    = format!("v{}", VERSION);

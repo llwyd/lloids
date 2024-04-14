@@ -1,6 +1,7 @@
 use nannou::prelude::*;
 use crate::angle;
-use crate::speed::Speed;
+//use crate::speed::Speed;
+use crate::proximity::ProximitySettings;
 
 #[derive(Copy,Clone,Debug,PartialEq)]
 enum State{
@@ -22,11 +23,6 @@ pub struct Speed{
 }
 */
 
-#[derive(Copy, Clone)]
-pub struct ProximitySettings{
-    pub speed:Speed,
-    pub delta:f32,
-}
 
 #[derive(Copy, Clone)]
 pub struct BirdConfig{
@@ -232,14 +228,14 @@ impl Bird{
 
         /* Separation */
         if self.separation.changed{
-            assert!(self.separation.settings.delta.is_positive());
+            assert!(self.separation.settings.delta().is_positive());
             self.apply_proximity(self.separation);
             self.separation.changed = false;
         }
         
         /* Cohesion */
         if self.cohesion.changed{
-            assert!(self.cohesion.settings.delta.is_negative());
+            assert!(self.cohesion.settings.delta().is_negative());
             self.apply_proximity(self.cohesion);
             self.cohesion.changed = false;
         }
@@ -486,12 +482,12 @@ impl Bird{
         /* Randomise movement */
         let mov_inc:f32;
         
-        if prox.settings.speed.randomise(){
-            mov_inc = random_range(prox.settings.speed.min(), prox.settings.speed.max());
+        if prox.settings.speed().randomise(){
+            mov_inc = random_range(prox.settings.speed().min(), prox.settings.speed().max());
         }
         else
         {
-            mov_inc = prox.settings.speed.max();
+            mov_inc = prox.settings.speed().max();
         }
         let old_xy = self.xy;
         
@@ -508,7 +504,7 @@ impl Bird{
         let norm_angle = angle::wrap( self.angle - prox.alignment );
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
-        let delta:f32 = self.rotation_delta(rotated_position, norm_angle, prox.settings.delta);
+        let delta:f32 = self.rotation_delta(rotated_position, norm_angle, prox.settings.delta());
 
         self.angle += delta;
         self.angle = angle::wrap(self.angle);
