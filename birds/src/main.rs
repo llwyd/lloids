@@ -194,45 +194,37 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     }
 }
 
+fn draw_text(draw:&Draw, font_size:u32, xy:Point2, text:String){
+    draw.text(&text)
+        .font_size(font_size)
+        .no_line_wrap()
+        .left_justify()
+        .xy(xy);
+}
+
 fn draw_meta(config: &BirdConfig, meta: &Meta, draw: &Draw)
 {
-    let iterations = format!("Iterations: {}", meta.iterations());
-    let runtime    = format!("Runtime: {}s", meta.runtime().as_secs());
+    let mut position = pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 - 20.0);
+    draw_text(draw, 20, position, format!("Iterations: {}", meta.iterations()));
+    position.y -= 20.0;
+    draw_text(draw, 20, position, format!("Runtime: {}s", meta.runtime().as_secs()));
+    position.y -= 40.0;
     
-    let sep_delta = format!("Separation Delta: {} rads", config.separation.delta());
-    let coh_delta = format!("Cohesion Delta: {} rads", config.cohesion.delta());
-    let align_gain = format!("Alignment Gain: {}", config.alignment_gain);
+    draw_text(draw, 20, position, format!("Separation Delta: {} rads", config.separation.delta()));
+    position.y -= 20.0;
+    draw_text(draw, 20, position, format!("Cohesion Delta: {} rads", config.cohesion.delta()));
+    position.y -= 20.0;
+    draw_text(draw, 20, position, format!("Alignment Gain: {}", config.alignment_gain));
+    position.y -= 40.0; 
     
+    draw_text(draw, 20, position, format!("Speed(min): {}", config.speed.min()));
+    position.y -= 20.0;
+    draw_text(draw, 20, position, format!("Speed(max): {}", config.speed.max()));
+    position.y -= 20.0;
+   
+    
+
     let version    = format!("v{}", VERSION);
-    draw.text(&iterations)
-        .font_size(20)
-        .no_line_wrap()
-        .left_justify()
-        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -20.0));
-    draw.text(&runtime)
-        .font_size(20)
-        .no_line_wrap()
-        .left_justify()
-        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -40.0));
-    
-    draw.text(&sep_delta)
-        .font_size(20)
-        .no_line_wrap()
-        .left_justify()
-        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -80.0));
-    draw.text(&coh_delta)
-        .font_size(20)
-        .no_line_wrap()
-        .left_justify()
-        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -100.0));
-    draw.text(&align_gain)
-        .font_size(20)
-        .no_line_wrap()
-        .left_justify()
-        .xy(pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 -120.0));
-
-
-
     draw.text(&version)
         .font_size(20)
         .no_line_wrap()
