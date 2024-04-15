@@ -12,10 +12,9 @@ mod proximity;
 
 pub use crate::bird::Bird;
 pub use crate::bird::BirdConfig;
-pub use crate::bird::Proximity;
-//pub use crate::bird::ProximitySettings;
 pub use crate::speed::Speed;
 pub use crate::proximity::ProximitySettings;
+pub use crate::proximity::Proximity;
 
 //pub use crate::bird::Speed;
 pub use crate::keypress::KeyPress;

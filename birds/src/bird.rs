@@ -1,5 +1,6 @@
 use nannou::prelude::*;
 use crate::angle;
+use crate::proximity::Proximity;
 use crate::proximity::ProximitySettings;
 
 #[derive(Copy,Clone,Debug,PartialEq)]
@@ -18,15 +19,6 @@ pub struct BirdConfig{
     pub separation:ProximitySettings,
     pub cohesion:ProximitySettings,
     pub alignment_gain:f32,
-}
-
-
-#[derive(Copy, Clone)]
-pub struct Proximity{
-    settings:ProximitySettings,
-    angle:f32, // measured angle
-    alignment:f32, // average alignment
-    changed:bool,
 }
 
 #[derive(Copy, Clone)]
@@ -78,20 +70,8 @@ impl Bird{
             turn_angle: 0.0,
             trail: [position; TRAIL_LEN],
             trail_pos: 0,
-
-            separation: Proximity{
-                settings: config.separation,
-                angle: angle,
-                alignment: 0.0,
-                changed:false,
-            },
-            
-            cohesion: Proximity{
-                settings:config.cohesion,
-                angle: angle,
-                alignment: 0.0,
-                changed:false,
-            },
+            separation: Proximity::new(config.separation, angle, 0.0), 
+            cohesion: Proximity::new(config.cohesion,angle, 0.0),
             alignment_gain: config.alignment_gain,
         }
     }
@@ -105,13 +85,11 @@ impl Bird{
     }
     
     pub fn set_separation(&mut self, new_rotation:f32, new_angle:f32){
-        self.separation.angle = new_rotation;
-        self.separation.alignment = new_angle;
-        self.separation.changed = true;
+        self.separation.update(new_rotation, new_angle);
     }
     
     pub fn get_separation(&self) -> f32{
-        self.separation.angle
+        self.separation.angle()
     }
     
     pub fn get_alignment(&self) -> f32{
@@ -119,7 +97,7 @@ impl Bird{
     }
     
     pub fn get_cohesion(&self) -> f32{
-        self.cohesion.angle
+        self.cohesion.angle()
     }
     
     pub fn set_alignment(&mut self, new_rotation:f32){
@@ -127,9 +105,7 @@ impl Bird{
     }
     
     pub fn set_cohesion(&mut self, new_rotation:f32, new_angle:f32){
-        self.cohesion.angle = new_rotation;
-        self.cohesion.alignment = new_angle;
-        self.cohesion.changed = true;
+        self.cohesion.update(new_rotation, new_angle);
     }
 
     pub fn radius(&self) -> f32{
@@ -210,23 +186,23 @@ impl Bird{
         {
             let dist = self.distance_outside(inner); 
             let reduct = (dist * -Self::DISTANCE_DECAY).exp();
-            self.separation.angle *= reduct;
-            self.cohesion.angle *= reduct;
+            self.separation.attenuate_angle(reduct);
+            self.cohesion.attenuate_angle(reduct);
             align_gain *= reduct;
         }
 
         /* Separation */
-        if self.separation.changed{
-            assert!(self.separation.settings.delta().is_positive());
+        if self.separation.changed(){
+            assert!(self.separation.settings().delta().is_positive());
             self.apply_proximity(self.separation);
-            self.separation.changed = false;
+            self.separation.reset();
         }
         
         /* Cohesion */
-        if self.cohesion.changed{
-            assert!(self.cohesion.settings.delta().is_negative());
+        if self.cohesion.changed(){
+            assert!(self.cohesion.settings().delta().is_negative());
             self.apply_proximity(self.cohesion);
-            self.cohesion.changed = false;
+            self.cohesion.reset();
         }
         
         /* Adjust Alignment */
@@ -466,34 +442,34 @@ impl Bird{
 
     pub fn apply_proximity(&mut self, prox:Proximity)
     {
-        assert!(prox.angle >= -std::f32::consts::PI);
-        assert!(prox.angle <= std::f32::consts::PI);
+        assert!(prox.angle() >= -std::f32::consts::PI);
+        assert!(prox.angle() <= std::f32::consts::PI);
         /* Randomise movement */
         let mov_inc:f32;
         
-        if prox.settings.speed().randomise(){
-            mov_inc = random_range(prox.settings.speed().min(), prox.settings.speed().max());
+        if prox.settings().speed().randomise(){
+            mov_inc = random_range(prox.settings().speed().min(), prox.settings().speed().max());
         }
         else
         {
-            mov_inc = prox.settings.speed().max();
+            mov_inc = prox.settings().speed().max();
         }
         let old_xy = self.xy;
         
         /* 1. Move bird in direction of proximity angle */
         if self.state == State::Idle
         {
-            self.move_bird_to_angle(mov_inc / 2.0, prox.angle);
+            self.move_bird_to_angle(mov_inc / 2.0, prox.angle());
         }
         /* 2. Calculate how much bird should rotate away from the reference_bird */
-        let angle_offset = 0.0 - prox.alignment;
+        let angle_offset = 0.0 - prox.alignment();
         
         /* 3. rotate the original point */
         let rotated_position = self.rotate(old_xy, angle_offset);
-        let norm_angle = angle::wrap( self.angle - prox.alignment );
+        let norm_angle = angle::wrap( self.angle - prox.alignment() );
 
         /* 4. Determine whether to add or subtract an angle to turn away as appropriate */
-        let delta:f32 = self.rotation_delta(rotated_position, norm_angle, prox.settings.delta());
+        let delta:f32 = self.rotation_delta(rotated_position, norm_angle, prox.settings().delta());
 
         self.angle += delta;
         self.angle = angle::wrap(self.angle);
@@ -578,6 +554,7 @@ mod tests {
     use super::*;    
     use crate::speed::Speed;
     use crate::proximity::ProximitySettings;
+    use crate::proximity::Proximity;
     const FLOAT_PRECISION:f32 = 0.00001;
     
     fn compare_floats(x:f32, y:f32, precision:f32)->bool{
@@ -611,12 +588,7 @@ mod tests {
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), bird_angle);
 
-        let separation = Proximity{
-            settings: config.separation,
-            angle: sep_angle,
-            alignment: 0.0,
-            changed: false,
-        };
+        let separation = Proximity::new(config.separation,sep_angle,0.0);
 
         bird.apply_proximity(separation);
 
@@ -641,12 +613,7 @@ mod tests {
         assert_eq!(bird.get_alignment(), 0.0);
         assert_eq!(bird.get_cohesion(), bird_angle);
 
-        let cohesion = Proximity{
-            settings: config.cohesion,
-            angle: sep_angle,
-            alignment: 0.0,
-            changed: false,
-        };
+        let cohesion = Proximity::new(config.cohesion,sep_angle,0.0);
 
         bird.apply_proximity(cohesion);
 
