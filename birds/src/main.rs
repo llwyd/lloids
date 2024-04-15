@@ -7,7 +7,16 @@ mod angle;
 mod keypress;
 mod settings;
 mod meta;
+mod speed;
+mod proximity;
+
 pub use crate::bird::Bird;
+pub use crate::bird::BirdConfig;
+pub use crate::speed::Speed;
+pub use crate::proximity::ProximitySettings;
+pub use crate::proximity::Proximity;
+
+//pub use crate::bird::Speed;
 pub use crate::keypress::KeyPress;
 pub use crate::settings::Settings;
 pub use crate::meta::Meta;
@@ -24,12 +33,31 @@ const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
 const SCREEN_TURN_OFFSET:f32 = 250.0;
 const SCREEN_TURN_OFFSET_HARD:f32 = 80.0;
 
+
+/* Bird default settings */
 const NUM_BIRDS:u32 = 150;
+
+const SPEED_GAIN:f32 = 1.4;
+const DEFAULT_BIRD_SPEED_MIN:f32 = 1.0 * SPEED_GAIN;
+const DEFAULT_BIRD_SPEED_MAX:f32 = 7.5 * SPEED_GAIN;
+
+const DEFAULT_SEP_SPEED_MIN:f32 = 1.25 * SPEED_GAIN;
+const DEFAULT_SEP_SPEED_MAX:f32 = 2.5 * SPEED_GAIN;
+
+const DEFAULT_COH_SPEED_MIN:f32 = 0.5 * SPEED_GAIN;
+const DEFAULT_COH_SPEED_MAX:f32 = 1.5 * SPEED_GAIN;
+    
+const DEFAULT_SEP_DELTA:f32 = 0.00625 * 2.4;
+const DEFAULT_COH_DELTA:f32 = 0.00005625 * 3.0;
+const DEFAULT_ALIGNMENT_GAIN:f32 = 0.0275;
+
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 struct Model {
     bird:Vec<Bird>,
     input:KeyPress,
     settings:Settings,
+    bird_config:BirdConfig,
     meta:Meta,
 }
 
@@ -53,6 +81,12 @@ fn model(app: &App) -> Model {
             show_debug: false,
             pause: false,
         },
+        bird_config:BirdConfig{
+            separation:ProximitySettings::new(Speed::new(DEFAULT_SEP_SPEED_MIN,DEFAULT_SEP_SPEED_MAX, true), DEFAULT_SEP_DELTA),
+            cohesion:ProximitySettings::new(Speed::new(DEFAULT_COH_SPEED_MIN,DEFAULT_COH_SPEED_MAX, true), -DEFAULT_COH_DELTA),  
+            alignment_gain: DEFAULT_ALIGNMENT_GAIN,
+            speed: Speed::new(DEFAULT_BIRD_SPEED_MIN, DEFAULT_BIRD_SPEED_MAX, true),
+        },
         input: KeyPress::new(),
         meta: Meta::new(),
     };
@@ -62,8 +96,7 @@ fn model(app: &App) -> Model {
         let y = random_range(-SCREEN_H_2 + SCREEN_TURN_OFFSET, SCREEN_H_2 - SCREEN_TURN_OFFSET); 
         let angle = random_range(0.0, 359.0);
 
-        model.bird.push(Bird::new(pt2(x, y), deg_to_rad(angle))); 
-//        model.bird.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        model.bird.push(Bird::new(pt2(x, y), deg_to_rad(angle),model.bird_config)); 
     }
 
     model
@@ -161,18 +194,42 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     }
 }
 
-fn draw_meta(meta: &Meta, draw: &Draw)
+fn draw_text(draw:&Draw, font_size:u32, xy:Point2, text:String){
+    draw.text(&text)
+        .font_size(font_size)
+        .no_line_wrap()
+        .left_justify()
+        .xy(xy);
+}
+
+fn draw_meta(config: &BirdConfig, meta: &Meta, draw: &Draw)
 {
-    let iterations = format!("Iterations: {}", meta.iterations());
-    let runtime    = format!("Runtime: {:?}", meta.runtime().as_secs());
-    draw.text(&iterations)
+    let mut position = pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 - 20.0);
+    draw_text(draw, 20, position, format!("Iterations: {}", meta.iterations()));
+    position.y -= 20.0;
+    draw_text(draw, 20, position, format!("Runtime: {}s", meta.runtime().as_secs()));
+    position.y -= 40.0;
+    
+    draw_text(draw, 20, position, format!("Separation Delta: {} rads", config.separation.delta()));
+    position.y -= 20.0;
+    draw_text(draw, 20, position, format!("Cohesion Delta: {} rads", config.cohesion.delta()));
+    position.y -= 20.0;
+    draw_text(draw, 20, position, format!("Alignment Gain: {}", config.alignment_gain));
+    position.y -= 40.0; 
+    
+    draw_text(draw, 20, position, format!("Speed(min): {}", config.speed.min()));
+    position.y -= 20.0;
+    draw_text(draw, 20, position, format!("Speed(max): {}", config.speed.max()));
+    position.y -= 20.0;
+   
+    
+
+    let version    = format!("v{}", VERSION);
+    draw.text(&version)
         .font_size(20)
         .no_line_wrap()
-        .xy(pt2(SCREEN_W_2 - 250.0, -SCREEN_H_2 +40.0));
-    draw.text(&runtime)
-        .font_size(20)
-        .no_line_wrap()
-        .xy(pt2(SCREEN_W_2 - 250.0, -SCREEN_H_2 +70.0));
+        .right_justify()
+        .xy(pt2(SCREEN_W_2 - 115.0, -SCREEN_H_2 +20.0));
     
 }
 
@@ -210,7 +267,7 @@ fn view(app: &App, model: &Model, frame: Frame){
     }
 
     if model.settings.show_debug{
-        draw_meta(&model.meta, &draw);
+        draw_meta(&model.bird_config, &model.meta, &draw);
     }
 
     for bird in &model.bird{

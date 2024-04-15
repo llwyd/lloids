@@ -103,6 +103,9 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32,f32)
 #[cfg(test)]
 mod tests {
     use super::*;    
+    use crate::speed::Speed;
+    use crate::proximity::ProximitySettings;
+    use crate::bird::BirdConfig;
     const FLOAT_PRECISION:f32 = 0.00001;
    
     fn cmp_floats(x:f32, y:f32, precision:f32)->bool{
@@ -111,10 +114,25 @@ mod tests {
         delta <= precision
     }
 
+    fn default_bird_config() -> BirdConfig{
+        let speed = 1.0;
+        let rotation_angle = deg_to_rad(1.0);
+
+        let config = BirdConfig{
+            separation: ProximitySettings::new(Speed::new(speed, speed, false), rotation_angle),
+            cohesion: ProximitySettings::new(Speed::new(speed, speed, false), -rotation_angle),
+            alignment_gain: 0.0,
+            speed: Speed::new(speed, speed, false),
+        };
+
+        config
+    }
+
     #[test]
-    fn inside_circle(){
-        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)); 
-        let bird_1 = Bird::new(pt2(0.0, 10.0), deg_to_rad(0.0)); 
+    fn inside_circle(){        
+        let config = default_bird_config();
+        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0),config); 
+        let bird_1 = Bird::new(pt2(0.0, 10.0), deg_to_rad(0.0), config); 
 
         let radius = 15.0;
         let inside = is_bird_nearby(&bird_0, &bird_1,radius);
@@ -123,8 +141,9 @@ mod tests {
     
     #[test]
     fn inside_circle_exactly(){
-        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)); 
-        let bird_1 = Bird::new(pt2(0.0, 15.0), deg_to_rad(0.0)); 
+        let config = default_bird_config();
+        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config); 
+        let bird_1 = Bird::new(pt2(0.0, 15.0), deg_to_rad(0.0), config); 
 
         let radius = 15.0;
         let inside = is_bird_nearby(&bird_0, &bird_1,radius);
@@ -133,8 +152,9 @@ mod tests {
     
     #[test]
     fn not_inside_circle(){
-        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0)); 
-        let bird_1 = Bird::new(pt2(0.0, 15.000001), deg_to_rad(0.0)); 
+        let config = default_bird_config();
+        let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config); 
+        let bird_1 = Bird::new(pt2(0.0, 15.000001), deg_to_rad(0.0), config); 
 
         let radius = 15.0;
         let inside = is_bird_nearby(&bird_0, &bird_1,radius);
@@ -143,10 +163,11 @@ mod tests {
     
     #[test]
     fn separation_angle_x_pos(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = separation(&mut bird, &bird_vec);
         assert_eq!(angle.0, deg_to_rad(0.0));
@@ -154,10 +175,11 @@ mod tests {
     
     #[test]
     fn separation_angle_x_neg(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = separation(&mut bird, &bird_vec);
         assert_eq!(angle.0, deg_to_rad(180.0));
@@ -165,10 +187,11 @@ mod tests {
     
     #[test]
     fn separation_angle_y_pos(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0),config )); 
 
         let angle = separation(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(90.0), FLOAT_PRECISION));
@@ -176,10 +199,11 @@ mod tests {
     
     #[test]
     fn separation_angle_y_neg(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = separation(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(-90.0), FLOAT_PRECISION));
@@ -187,10 +211,11 @@ mod tests {
     
     #[test]
     fn separation_angle_ne(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = separation(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(45.0), FLOAT_PRECISION));
@@ -198,20 +223,22 @@ mod tests {
     
     #[test]
     fn separation_angle_nw(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = separation(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(135.0), FLOAT_PRECISION));
     }
     #[test]
     fn separation_angle_se(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = separation(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(-45.0), FLOAT_PRECISION));
@@ -219,10 +246,11 @@ mod tests {
 
     #[test]
     fn separation_angle_sw(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = separation(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(-135.0), FLOAT_PRECISION));
@@ -230,10 +258,11 @@ mod tests {
     
     #[test]
     fn cohesion_angle_x_pos(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert_eq!(angle.0, std::f32::consts::PI);
@@ -241,10 +270,11 @@ mod tests {
     
     #[test]
     fn cohesion_angle_x_neg(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert_eq!(angle.0, deg_to_rad(0.0));
@@ -252,10 +282,11 @@ mod tests {
     
     #[test]
     fn cohesion_angle_y_pos(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(-90.0), FLOAT_PRECISION));
@@ -263,10 +294,11 @@ mod tests {
     
     #[test]
     fn cohesion_angle_y_neg(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(90.0), FLOAT_PRECISION));
@@ -274,10 +306,11 @@ mod tests {
     
     #[test]
     fn cohesion_angle_ne(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0),config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(-135.0), FLOAT_PRECISION));
@@ -285,20 +318,22 @@ mod tests {
     
     #[test]
     fn cohesion_angle_nw(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(-45.0), FLOAT_PRECISION));
     }
     #[test]
     fn cohesion_angle_se(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(135.0), FLOAT_PRECISION));
@@ -306,10 +341,11 @@ mod tests {
 
     #[test]
     fn cohesion_angle_sw(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        let mut bird = Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0));
-        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0))); 
+        let mut bird = Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0), config);
+        bird_vec.push(Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config)); 
 
         let angle = cohesion(&mut bird, &bird_vec);
         assert!(cmp_floats(angle.0, deg_to_rad(45.0), FLOAT_PRECISION));
@@ -317,9 +353,10 @@ mod tests {
     
     #[test]
     fn calc_average_single_pos_x(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 0.0), deg_to_rad(0.0),config)); 
 
         let average_position = average_position(&bird_vec);
         assert!(cmp_floats(average_position.x, 1.0, FLOAT_PRECISION));
@@ -328,9 +365,10 @@ mod tests {
     
     #[test]
     fn calc_average_single_neg_x(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(-1.0, 0.0), deg_to_rad(0.0),config)); 
 
         let average_position = average_position(&bird_vec);
         assert!(cmp_floats(average_position.x, -1.0, FLOAT_PRECISION));
@@ -339,9 +377,10 @@ mod tests {
     
     #[test]
     fn calc_average_single_pos_y(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(0.0, 1.0), deg_to_rad(0.0),config)); 
 
         let average_position = average_position(&bird_vec);
         assert!(cmp_floats(average_position.x, 0.0, FLOAT_PRECISION));
@@ -350,9 +389,10 @@ mod tests {
     
     #[test]
     fn calc_average_single_neg_y(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0), config)); 
 
         let average_position = average_position(&bird_vec);
         assert!(cmp_floats(average_position.x, 0.0, FLOAT_PRECISION));
@@ -361,10 +401,11 @@ mod tests {
     
     #[test]
     fn calc_average_2_pos(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0), config)); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0), config)); 
 
         let average_position = average_position(&bird_vec);
         assert!(cmp_floats(average_position.x, 1.0, FLOAT_PRECISION));
@@ -373,12 +414,13 @@ mod tests {
     
     #[test]
     fn calc_average_4_corners(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0))); 
-        bird_vec.push(Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0))); 
-        bird_vec.push(Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0))); 
-        bird_vec.push(Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0), config)); 
+        bird_vec.push(Bird::new(pt2(1.0, -1.0), deg_to_rad(0.0), config)); 
+        bird_vec.push(Bird::new(pt2(-1.0, 1.0), deg_to_rad(0.0), config)); 
+        bird_vec.push(Bird::new(pt2(-1.0, -1.0), deg_to_rad(0.0), config)); 
 
         let average_position = average_position(&bird_vec);
         assert!(cmp_floats(average_position.x, 0.0, FLOAT_PRECISION));
@@ -410,11 +452,12 @@ mod tests {
     
     #[test]
     fn calc_average_angle_zeros(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0), config)); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0), config)); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0), config)); 
 
         let average_angle = average_angle(&bird_vec);
         assert!(cmp_floats(average_angle, 0.0, FLOAT_PRECISION));
@@ -422,11 +465,12 @@ mod tests {
     
     #[test]
     fn calc_average_angle_45(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0))); 
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0))); 
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0),config)); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0),config)); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0),config)); 
 
         let average_angle = average_angle(&bird_vec);
         assert!(cmp_floats(average_angle, deg_to_rad(45.0), FLOAT_PRECISION));
@@ -434,11 +478,12 @@ mod tests {
     
     #[test]
     fn calc_average_angle_90_90_270(){
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(90.0))); 
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(90.0))); 
-        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(270.0))); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(90.0),config)); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(90.0),config)); 
+        bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(270.0),config)); 
 
         let average_angle = average_angle(&bird_vec);
         println!("{:?}", average_angle);
