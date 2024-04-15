@@ -15,6 +15,7 @@ enum State{
 
 const TRAIL_LEN:usize = 64;
 
+/* struct used to initialise the bird */
 #[derive(Copy, Clone)]
 pub struct BirdConfig{
     pub separation:ProximitySettings,
@@ -48,8 +49,6 @@ impl Bird{
 
     const BIRD_REGION_RADIUS:f32 = 225.0; 
     const BIRD_SEPARATION_RADIUS:f32 = 30.0;
-
-    const SPEED_GAIN:f32 = 1.4;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
 
@@ -573,6 +572,7 @@ mod tests {
             separation: ProximitySettings::new(Speed::new(speed, speed, false), rotation_angle),
             cohesion: ProximitySettings::new(Speed::new(speed, speed, false), -rotation_angle),
             alignment_gain: 0.0,
+            speed: Speed::new(speed, speed, false),
         }
     }
 
@@ -633,6 +633,7 @@ mod tests {
             separation: ProximitySettings::new(Speed::new(speed,speed,false),rotation_angle),
             cohesion: ProximitySettings::new(Speed::new(speed,speed,false),-rotation_angle),
             alignment_gain: 0.0,
+            speed: Speed::new(speed, speed, false),
         };
         
         let bird = Bird::new(init_position, bird_angle, config);

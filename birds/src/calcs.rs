@@ -122,6 +122,7 @@ mod tests {
             separation: ProximitySettings::new(Speed::new(speed, speed, false), rotation_angle),
             cohesion: ProximitySettings::new(Speed::new(speed, speed, false), -rotation_angle),
             alignment_gain: 0.0,
+            speed: Speed::new(speed, speed, false),
         };
 
         config
