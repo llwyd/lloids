@@ -119,27 +119,9 @@ mod tests {
         let speed = 1.0;
         let rotation_angle = deg_to_rad(1.0);
 
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
         let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
+            separation: ProximitySettings::new(Speed::new(speed, speed, false), rotation_angle),
+            cohesion: ProximitySettings::new(Speed::new(speed, speed, false), -rotation_angle),
             alignment_gain: 0.0,
         };
 
@@ -147,34 +129,8 @@ mod tests {
     }
 
     #[test]
-    fn inside_circle(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
-        
+    fn inside_circle(){        
+        let config = default_bird_config();
         let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0),config); 
         let bird_1 = Bird::new(pt2(0.0, 10.0), deg_to_rad(0.0), config); 
 
@@ -185,32 +141,7 @@ mod tests {
     
     #[test]
     fn inside_circle_exactly(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
+        let config = default_bird_config();
         let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config); 
         let bird_1 = Bird::new(pt2(0.0, 15.0), deg_to_rad(0.0), config); 
 
@@ -221,32 +152,7 @@ mod tests {
     
     #[test]
     fn not_inside_circle(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
+        let config = default_bird_config();
         let bird_0 = Bird::new(pt2(0.0, 0.0), deg_to_rad(0.0), config); 
         let bird_1 = Bird::new(pt2(0.0, 15.000001), deg_to_rad(0.0), config); 
 
@@ -483,32 +389,7 @@ mod tests {
     
     #[test]
     fn calc_average_single_neg_y(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
         bird_vec.push(Bird::new(pt2(0.0, -1.0), deg_to_rad(0.0), config)); 
@@ -520,32 +401,7 @@ mod tests {
     
     #[test]
     fn calc_average_2_pos(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
         bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0), config)); 
@@ -558,32 +414,7 @@ mod tests {
     
     #[test]
     fn calc_average_4_corners(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
         bird_vec.push(Bird::new(pt2(1.0, 1.0), deg_to_rad(0.0), config)); 
@@ -621,32 +452,7 @@ mod tests {
     
     #[test]
     fn calc_average_angle_zeros(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
         bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(0.0), config)); 
@@ -659,32 +465,7 @@ mod tests {
     
     #[test]
     fn calc_average_angle_45(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
         bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(45.0),config)); 
@@ -697,32 +478,7 @@ mod tests {
     
     #[test]
     fn calc_average_angle_90_90_270(){
-        let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
+        let config = default_bird_config();
         let mut bird_vec:Vec<Bird> = Vec::new();
         
         bird_vec.push(Bird::new(pt2(1.0, 2.0), deg_to_rad(90.0),config)); 
