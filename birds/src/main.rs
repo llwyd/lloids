@@ -38,6 +38,9 @@ const SCREEN_TURN_OFFSET_HARD:f32 = 80.0;
 const NUM_BIRDS:u32 = 150;
 
 const SPEED_GAIN:f32 = 1.4;
+const DEFAULT_BIRD_SPEED_MIN:f32 = 1.0 * SPEED_GAIN;
+const DEFAULT_BIRD_SPEED_MAX:f32 = 7.5 * SPEED_GAIN;
+
 const DEFAULT_SEP_SPEED_MIN:f32 = 1.25 * SPEED_GAIN;
 const DEFAULT_SEP_SPEED_MAX:f32 = 2.5 * SPEED_GAIN;
 
@@ -82,6 +85,7 @@ fn model(app: &App) -> Model {
             separation:ProximitySettings::new(Speed::new(DEFAULT_SEP_SPEED_MIN,DEFAULT_SEP_SPEED_MAX, true), DEFAULT_SEP_DELTA),
             cohesion:ProximitySettings::new(Speed::new(DEFAULT_COH_SPEED_MIN,DEFAULT_COH_SPEED_MAX, true), -DEFAULT_COH_DELTA),  
             alignment_gain: DEFAULT_ALIGNMENT_GAIN,
+            speed: Speed::new(DEFAULT_BIRD_SPEED_MIN, DEFAULT_BIRD_SPEED_MAX, true),
         },
         input: KeyPress::new(),
         meta: Meta::new(),

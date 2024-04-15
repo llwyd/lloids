@@ -2,6 +2,7 @@ use nannou::prelude::*;
 use crate::angle;
 use crate::proximity::Proximity;
 use crate::proximity::ProximitySettings;
+pub use crate::speed::Speed;
 
 #[derive(Copy,Clone,Debug,PartialEq)]
 enum State{
@@ -19,6 +20,7 @@ pub struct BirdConfig{
     pub separation:ProximitySettings,
     pub cohesion:ProximitySettings,
     pub alignment_gain:f32,
+    pub speed:Speed,
 }
 
 #[derive(Copy, Clone)]
@@ -27,6 +29,7 @@ pub struct Bird{
     angle: f32,
     align_angle: f32,
     state:State,
+    speed:Speed,
     turn_angle:f32,
 
     trail:[Point2; TRAIL_LEN],
@@ -47,9 +50,6 @@ impl Bird{
     const BIRD_SEPARATION_RADIUS:f32 = 30.0;
 
     const SPEED_GAIN:f32 = 1.4;
-
-    const BIRD_SPEED_MIN:f32 = 1.0 * Self::SPEED_GAIN;
-    const BIRD_SPEED_MAX:f32 = 7.5 * Self::SPEED_GAIN;
 
     const ALIGNMENT_INITIAL:f32 = 0.0;
 
@@ -73,6 +73,7 @@ impl Bird{
             separation: Proximity::new(config.separation, angle, 0.0), 
             cohesion: Proximity::new(config.cohesion,angle, 0.0),
             alignment_gain: config.alignment_gain,
+            speed: config.speed,
         }
     }
 
@@ -213,7 +214,7 @@ impl Bird{
         assert!(self.angle != std::f32::NEG_INFINITY);
         assert!(self.angle >= 0.0);
 
-        self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
+        self.move_rnd(self.speed.min(), self.speed.max());
 
         self.state_machine(win, inner, inner_hard);
         self.screen_wrap(win);
@@ -318,7 +319,7 @@ impl Bird{
                 
                 self.angle += self.turn_angle;
                 self.angle = angle::wrap(self.angle);
-                self.move_rnd(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
+                self.move_rnd(self.speed.min() * 0.5, self.speed.max()* 0.5); 
 
                 if !self.h_is_near_edge(inner)
                 {
@@ -338,7 +339,7 @@ impl Bird{
                 
                 self.angle += self.turn_angle;
                 self.angle = angle::wrap(self.angle);
-                self.move_rnd(Self::BIRD_SPEED_MIN * 0.5, Self::BIRD_SPEED_MAX * 0.5); 
+                self.move_rnd(self.speed.min() * 0.5, self.speed.max() * 0.5); 
 
                 if !self.v_is_near_edge(inner)
                 {
@@ -357,7 +358,7 @@ impl Bird{
             {
                 self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(Self::HARD_ANGLE_SATURATION));
                 self.angle = angle::wrap(self.angle);
-                self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
+                self.move_rnd(self.speed.min(), self.speed.max()); 
 
                 if !self.h_is_near_edge(inner_hard)
                 {
@@ -368,7 +369,7 @@ impl Bird{
             {
                 self.angle += self.saturate_angle(self.turn_angle * Self::HARD_ANGLE_MULTIPLIER, deg_to_rad(Self::HARD_ANGLE_SATURATION));
                 self.angle = angle::wrap(self.angle);
-                self.move_rnd(Self::BIRD_SPEED_MIN, Self::BIRD_SPEED_MAX); 
+                self.move_rnd(self.speed.min(), self.speed.max());
 
                 if !self.v_is_near_edge(inner_hard)
                 {
