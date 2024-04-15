@@ -601,33 +601,6 @@ mod tests {
     fn test_separation(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
         let speed = 1.0;
-        //let rotation_angle = deg_to_rad(1.0);
-
-        /*
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
-        */
         let config = default_bird_config(); 
         let mut bird = Bird::new(init_position, bird_angle, config);
 
@@ -658,33 +631,6 @@ mod tests {
     fn test_cohesion(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
         let speed = 1.0;
-        /*
-        let rotation_angle = deg_to_rad(1.0);
-
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
-            alignment_gain: 0.0,
-        };
-        */
         let config = default_bird_config(); 
         let mut bird = Bird::new(init_position, bird_angle, config);
 
@@ -715,25 +661,6 @@ mod tests {
     fn test_rotation_delta(init_position:Point2, bird_angle:f32, rotation_angle:f32, exp_angle:f32)
     {
         let speed = 1.0;
-/*
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-*/
         let config = BirdConfig{
             separation: ProximitySettings::new(Speed::new(speed,speed,false),rotation_angle),
             cohesion: ProximitySettings::new(Speed::new(speed,speed,false),-rotation_angle),
