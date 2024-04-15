@@ -115,7 +115,6 @@ mod tests {
     }
 
     fn default_bird_config() -> BirdConfig{
-
         let speed = 1.0;
         let rotation_angle = deg_to_rad(1.0);
 

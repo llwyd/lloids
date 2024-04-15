@@ -591,38 +591,19 @@ mod tests {
         let speed = 1.0;
         let rotation_angle = deg_to_rad(1.0);
 
-        let separation_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: rotation_angle,
-        };
-        
-        let cohesion_settings = ProximitySettings{
-            speed: Speed{
-                min: speed,
-                max: speed,
-                randomise: false,
-            },
-            delta: -rotation_angle,
-        };
-
-        let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
+        BirdConfig{
+            separation: ProximitySettings::new(Speed::new(speed, speed, false), rotation_angle),
+            cohesion: ProximitySettings::new(Speed::new(speed, speed, false), -rotation_angle),
             alignment_gain: 0.0,
-        };
-
-        config
+        }
     }
 
     fn test_separation(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
         let speed = 1.0;
-        let rotation_angle = deg_to_rad(1.0);
+        //let rotation_angle = deg_to_rad(1.0);
 
+        /*
         let separation_settings = ProximitySettings{
             speed: Speed{
                 min: speed,
@@ -646,7 +627,8 @@ mod tests {
             cohesion: cohesion_settings,
             alignment_gain: 0.0,
         };
-        
+        */
+        let config = default_bird_config(); 
         let mut bird = Bird::new(init_position, bird_angle, config);
 
         assert_eq!(bird.position().x, init_position.x);
@@ -657,13 +639,11 @@ mod tests {
         assert_eq!(bird.get_cohesion(), bird_angle);
 
         let separation = Proximity{
-            settings: separation_settings,
+            settings: config.separation,
             angle: sep_angle,
             alignment: 0.0,
             changed: false,
         };
-
-        //bird.apply_separation(sep_angle, rotation_angle, lower_speed, upper_speed, false);
 
         bird.apply_proximity(separation);
 
@@ -678,6 +658,7 @@ mod tests {
     fn test_cohesion(init_position:Point2, bird_angle:f32, sep_angle:f32, exp_angle:f32)
     {
         let speed = 1.0;
+        /*
         let rotation_angle = deg_to_rad(1.0);
 
         let separation_settings = ProximitySettings{
@@ -703,6 +684,8 @@ mod tests {
             cohesion: cohesion_settings,
             alignment_gain: 0.0,
         };
+        */
+        let config = default_bird_config(); 
         let mut bird = Bird::new(init_position, bird_angle, config);
 
         assert_eq!(bird.position().x, init_position.x);
@@ -713,7 +696,7 @@ mod tests {
         assert_eq!(bird.get_cohesion(), bird_angle);
 
         let cohesion = Proximity{
-            settings: cohesion_settings,
+            settings: config.cohesion,
             angle: sep_angle,
             alignment: 0.0,
             changed: false,
@@ -732,7 +715,7 @@ mod tests {
     fn test_rotation_delta(init_position:Point2, bird_angle:f32, rotation_angle:f32, exp_angle:f32)
     {
         let speed = 1.0;
-
+/*
         let separation_settings = ProximitySettings{
             speed: Speed{
                 min: speed,
@@ -750,10 +733,10 @@ mod tests {
             },
             delta: -rotation_angle,
         };
-
+*/
         let config = BirdConfig{
-            separation: separation_settings,
-            cohesion: cohesion_settings,
+            separation: ProximitySettings::new(Speed::new(speed,speed,false),rotation_angle),
+            cohesion: ProximitySettings::new(Speed::new(speed,speed,false),-rotation_angle),
             alignment_gain: 0.0,
         };
         
