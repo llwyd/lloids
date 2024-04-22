@@ -2,7 +2,8 @@ use nannou::prelude::*;
 use crate::angle;
 use crate::proximity::Proximity;
 use crate::proximity::ProximitySettings;
-pub use crate::speed::Speed;
+use crate::gain::Gain;
+use crate::speed::Speed;
 
 #[derive(Copy,Clone,Debug,PartialEq)]
 enum State{
@@ -20,7 +21,7 @@ const TRAIL_LEN:usize = 64;
 pub struct BirdConfig{
     pub separation:ProximitySettings,
     pub cohesion:ProximitySettings,
-    pub alignment_gain:f32,
+    pub alignment_gain:Gain,
     pub speed:Speed,
 }
 
@@ -38,7 +39,7 @@ pub struct Bird{
     
     separation:Proximity,
     cohesion:Proximity,
-    alignment_gain:f32,
+    alignment_gain:Gain,
 }
 
 impl Bird{
@@ -71,13 +72,20 @@ impl Bird{
             trail_pos: 0,
             separation: Proximity::new(config.separation, angle, 0.0), 
             cohesion: Proximity::new(config.cohesion,angle, 0.0),
-            alignment_gain: config.alignment_gain,
+            alignment_gain: Gain::new(config.alignment_gain.gain()),
             speed: config.speed,
         }
     }
 
     pub fn angle(&self) -> f32{
         self.angle
+    }
+
+    pub fn refresh_settings(&mut self, config: &mut BirdConfig){
+        self.separation.refresh_settings(&config.separation);
+        self.cohesion.refresh_settings(&config.cohesion);
+        self.alignment_gain.set(config.alignment_gain.gain());
+        self.speed = config.speed;
     }
 
     pub fn set_rotation(&mut self, new_rotation:f32){
@@ -179,7 +187,7 @@ impl Bird{
     {
         assert!(self.angle >= 0.0);
 
-        let mut align_gain = self.alignment_gain;
+        let mut align_gain = self.alignment_gain.gain();
         let near_edge = self.is_near_edge(inner);
 
         if near_edge 
@@ -553,6 +561,7 @@ impl Bird{
 mod tests {
     use super::*;    
     use crate::speed::Speed;
+    use crate::gain::Gain;
     use crate::proximity::ProximitySettings;
     use crate::proximity::Proximity;
     const FLOAT_PRECISION:f32 = 0.00001;
@@ -571,7 +580,7 @@ mod tests {
         BirdConfig{
             separation: ProximitySettings::new(Speed::new(speed, speed, false), rotation_angle),
             cohesion: ProximitySettings::new(Speed::new(speed, speed, false), -rotation_angle),
-            alignment_gain: 0.0,
+            alignment_gain: Gain::new(0.0),
             speed: Speed::new(speed, speed, false),
         }
     }
@@ -632,7 +641,7 @@ mod tests {
         let config = BirdConfig{
             separation: ProximitySettings::new(Speed::new(speed,speed,false),rotation_angle),
             cohesion: ProximitySettings::new(Speed::new(speed,speed,false),-rotation_angle),
-            alignment_gain: 0.0,
+            alignment_gain: Gain::new(0.0),
             speed: Speed::new(speed, speed, false),
         };
         

@@ -7,3 +7,4 @@ pub struct Settings{
     pub show_debug: bool,
     pub pause: bool,
 }
+

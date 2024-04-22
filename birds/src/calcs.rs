@@ -104,6 +104,7 @@ pub fn cohesion(bird: &mut Bird, other_birds: &Vec <Bird>)->(f32,f32)
 mod tests {
     use super::*;    
     use crate::speed::Speed;
+    use crate::gain::Gain;
     use crate::proximity::ProximitySettings;
     use crate::bird::BirdConfig;
     const FLOAT_PRECISION:f32 = 0.00001;
@@ -121,7 +122,7 @@ mod tests {
         let config = BirdConfig{
             separation: ProximitySettings::new(Speed::new(speed, speed, false), rotation_angle),
             cohesion: ProximitySettings::new(Speed::new(speed, speed, false), -rotation_angle),
-            alignment_gain: 0.0,
+            alignment_gain: Gain::new(0.0),
             speed: Speed::new(speed, speed, false),
         };
 

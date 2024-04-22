@@ -9,10 +9,12 @@ mod settings;
 mod meta;
 mod speed;
 mod proximity;
+mod gain;
 
 pub use crate::bird::Bird;
 pub use crate::bird::BirdConfig;
 pub use crate::speed::Speed;
+pub use crate::gain::Gain;
 pub use crate::proximity::ProximitySettings;
 pub use crate::proximity::Proximity;
 
@@ -84,7 +86,7 @@ fn model(app: &App) -> Model {
         bird_config:BirdConfig{
             separation:ProximitySettings::new(Speed::new(DEFAULT_SEP_SPEED_MIN,DEFAULT_SEP_SPEED_MAX, true), DEFAULT_SEP_DELTA),
             cohesion:ProximitySettings::new(Speed::new(DEFAULT_COH_SPEED_MIN,DEFAULT_COH_SPEED_MAX, true), -DEFAULT_COH_DELTA),  
-            alignment_gain: DEFAULT_ALIGNMENT_GAIN,
+            alignment_gain: Gain::new(DEFAULT_ALIGNMENT_GAIN),
             speed: Speed::new(DEFAULT_BIRD_SPEED_MIN, DEFAULT_BIRD_SPEED_MAX, true),
         },
         input: KeyPress::new(),
@@ -112,7 +114,11 @@ fn window_event(_app: &App, model: &mut Model, event: WindowEvent)
     }
 
     if model.input.changed(){
-        model.input.update_settings(&mut model.settings);
+        model.input.update_settings(&mut model.settings, &mut model.bird_config);
+        
+        for bird in &mut model.bird{
+            bird.refresh_settings(&mut model.bird_config);
+        }
         model.input.reset_latch();
     }
 }
@@ -194,34 +200,45 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     }
 }
 
-fn draw_text(draw:&Draw, font_size:u32, xy:Point2, text:String){
-    draw.text(&text)
-        .font_size(font_size)
-        .no_line_wrap()
-        .left_justify()
-        .xy(xy);
+fn draw_text(draw:&Draw, font_size:u32, xy:Point2, text:String, highlighted: bool){
+    if highlighted{
+        draw.text(&text)
+            .font_size(font_size)
+            .no_line_wrap()
+            .left_justify()
+            .color(RED)
+            .xy(xy);
+    }
+    else
+    {
+        draw.text(&text)
+            .font_size(font_size)
+            .no_line_wrap()
+            .left_justify()
+            .color(WHITE)
+            .xy(xy);
+    }
 }
 
-fn draw_meta(config: &BirdConfig, meta: &Meta, draw: &Draw)
+fn draw_meta(model: &Model, config: &BirdConfig, meta: &Meta, draw: &Draw)
 {
     let mut position = pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 - 20.0);
-    draw_text(draw, 20, position, format!("Iterations: {}", meta.iterations()));
+    draw_text(draw, 20, position, format!("Iterations: {}", meta.iterations()),false);
     position.y -= 20.0;
-    draw_text(draw, 20, position, format!("Runtime: {}s", meta.runtime().as_secs()));
+    draw_text(draw, 20, position, format!("Runtime: {}s", meta.runtime().as_secs()),false);
     position.y -= 40.0;
     
-    draw_text(draw, 20, position, format!("Separation Delta: {} rads", config.separation.delta()));
+    draw_text(draw, 20, position, format!("Separation Delta: {} rads", config.separation.delta()), model.input.separation_selected());
     position.y -= 20.0;
-    draw_text(draw, 20, position, format!("Cohesion Delta: {} rads", config.cohesion.delta()));
+    draw_text(draw, 20, position, format!("Cohesion Delta: {} rads", config.cohesion.delta()), model.input.cohesion_selected());
     position.y -= 20.0;
-    draw_text(draw, 20, position, format!("Alignment Gain: {}", config.alignment_gain));
+    draw_text(draw, 20, position, format!("Alignment Gain: {}", config.alignment_gain.gain()), model.input.alignment_selected());
     position.y -= 40.0; 
     
-    draw_text(draw, 20, position, format!("Speed(min): {}", config.speed.min()));
+    draw_text(draw, 20, position, format!("Speed(min): {}", config.speed.min()), model.input.speedmin_selected());
     position.y -= 20.0;
-    draw_text(draw, 20, position, format!("Speed(max): {}", config.speed.max()));
+    draw_text(draw, 20, position, format!("Speed(max): {}", config.speed.max()), model.input.speedmax_selected());
     position.y -= 20.0;
-   
     
 
     let version    = format!("v{}", VERSION);
@@ -267,7 +284,7 @@ fn view(app: &App, model: &Model, frame: Frame){
     }
 
     if model.settings.show_debug{
-        draw_meta(&model.bird_config, &model.meta, &draw);
+        draw_meta(&model, &model.bird_config, &model.meta, &draw);
     }
 
     for bird in &model.bird{

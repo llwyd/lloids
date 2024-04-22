@@ -1,16 +1,17 @@
 use crate::speed::Speed;
+use crate::gain::Gain;
 
 #[derive(Copy, Clone)]
 pub struct ProximitySettings{
     speed:Speed,
-    delta:f32,
+    delta:Gain,
 }
 
 impl ProximitySettings{
     pub fn new(speed:Speed, delta: f32) -> ProximitySettings{
         ProximitySettings{
             speed:speed,
-            delta:delta,
+            delta: Gain::new(delta),
         }
     }
 
@@ -19,7 +20,15 @@ impl ProximitySettings{
     }
 
     pub fn delta(&self) -> f32{
-        self.delta
+        self.delta.gain()
+    }
+
+    pub fn inc_delta(&mut self){
+        self.delta.increment();
+    }
+    
+    pub fn dec_delta(&mut self){
+        self.delta.decrement();
     }
 }
 
@@ -39,6 +48,11 @@ impl Proximity{
             alignment:alignment,
             changed:false,
         }
+    }
+
+    pub fn refresh_settings(&mut self, settings:&ProximitySettings)
+    {
+        self.settings = *settings;
     }
 
     pub fn settings(&self) -> ProximitySettings{
