@@ -218,9 +218,10 @@ fn draw_text(draw:&Draw, font_size:u32, xy:Point2, text:String, highlighted: boo
     }
 }
 
-fn draw_meta(model: &Model, config: &BirdConfig, meta: &Meta, draw: &Draw)
+fn draw_meta(app: &App, model: &Model, config: &BirdConfig, meta: &Meta, draw: &Draw)
 {
-    let mut position = pt2(-SCREEN_W_2 + 125.0, SCREEN_H_2 - 20.0);
+    let win = app.window_rect();
+    let mut position = pt2(win.left() + 125.0, win.top() - 20.0);
     draw_text(draw, 20, position, format!("Iterations: {}", meta.iterations()),false);
     position.y -= 20.0;
     draw_text(draw, 20, position, format!("Runtime: {}s", meta.runtime().as_secs()),false);
@@ -244,7 +245,7 @@ fn draw_meta(model: &Model, config: &BirdConfig, meta: &Meta, draw: &Draw)
         .font_size(20)
         .no_line_wrap()
         .right_justify()
-        .xy(pt2(SCREEN_W_2 - 115.0, -SCREEN_H_2 +20.0));
+        .xy(pt2(win.right() - 115.0, win.bottom() +20.0));
     
 }
 
@@ -282,7 +283,7 @@ fn view(app: &App, model: &Model, frame: Frame){
     }
 
     if model.settings.show_debug{
-        draw_meta(&model, &model.bird_config, &model.meta, &draw);
+        draw_meta(&app, &model, &model.bird_config, &model.meta, &draw);
     }
 
     for bird in &model.bird{
