@@ -10,6 +10,7 @@ An implementation of a bird murmuration in Rust using Craig Reynold's _Boids_ al
 
 - t: Toggle trails
 - d: Toggle debug menu
+    - press **TAB** to cycle through options and press the UP/DOWN arrow keys to adjust
 - b: Toggle turn box 
 - r: Toggle bird radii
 - p: Pause
