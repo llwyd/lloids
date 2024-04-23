@@ -20,11 +20,33 @@ impl Gain{
     }
 
     pub fn increment(&mut self){
+        let pre_inc_gain = self.gain;
+        
         self.gain += Self::INC;
+
+        if pre_inc_gain.is_sign_negative()
+        {
+            /* Clip */
+            if self.gain >= 0.0
+            {
+                self.gain = 0.0 - std::f32::EPSILON;
+            }
+        }
     }
 
     pub fn decrement(&mut self){
+        let pre_dec_gain = self.gain;
+        
         self.gain -= Self::INC;
+
+        if pre_dec_gain.is_sign_positive()
+        {
+            /* Clip */
+            if self.gain <= 0.0
+            {
+                self.gain = 0.0 + std::f32::EPSILON;
+            }
+        }
     }
 }
 

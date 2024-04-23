@@ -29,9 +29,6 @@ const SCREEN_H_F32:f32 = 1080.0;
 const SCREEN_W_2:f32 = SCREEN_W_F32 / 2.0;
 const SCREEN_H_2:f32 = SCREEN_H_F32 / 2.0;
 
-const SCREEN_W_U32:u32 = SCREEN_W_F32 as u32;
-const SCREEN_H_U32:u32 = SCREEN_H_F32 as u32;
-
 const SCREEN_TURN_OFFSET:f32 = 250.0;
 const SCREEN_TURN_OFFSET_HARD:f32 = 80.0;
 
@@ -65,11 +62,12 @@ struct Model {
 
 fn model(app: &App) -> Model {
     app.new_window()
-        .size(SCREEN_W_U32, SCREEN_H_U32)
-        .min_size(SCREEN_W_U32, SCREEN_H_U32)
-        .max_size(SCREEN_W_U32, SCREEN_H_U32)
-        //.decorations(false)
+        //.size(SCREEN_W_U32, SCREEN_H_U32)
+        //.min_size(SCREEN_W_U32, SCREEN_H_U32)
+        //.max_size(SCREEN_W_U32, SCREEN_H_U32)
+        .decorations(false)
         .resizable(false)
+        .fullscreen()
         .event(window_event)
         .build()
         .unwrap();
@@ -134,14 +132,14 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let win = app.window_rect();
 
     let inner = Rect{
-        x: Range{start: -SCREEN_W_2 + SCREEN_TURN_OFFSET, end: SCREEN_W_2 - SCREEN_TURN_OFFSET},
-        y: Range{start: -SCREEN_H_2 + SCREEN_TURN_OFFSET, end: SCREEN_H_2 - SCREEN_TURN_OFFSET},
+        x: Range{start: win.left() + SCREEN_TURN_OFFSET, end: win.right() - SCREEN_TURN_OFFSET},
+        y: Range{start: win.bottom() + SCREEN_TURN_OFFSET, end: win.top() - SCREEN_TURN_OFFSET},
     };
 
     
     let inner_hard = Rect{
-        x: Range{start: -SCREEN_W_2 + SCREEN_TURN_OFFSET_HARD, end: SCREEN_W_2 - SCREEN_TURN_OFFSET_HARD},
-        y: Range{start: -SCREEN_H_2 + SCREEN_TURN_OFFSET_HARD, end: SCREEN_H_2 - SCREEN_TURN_OFFSET_HARD},
+        x: Range{start: win.left() + SCREEN_TURN_OFFSET_HARD, end: win.right() - SCREEN_TURN_OFFSET_HARD},
+        y: Range{start: win.bottom() + SCREEN_TURN_OFFSET_HARD, end: win.top() - SCREEN_TURN_OFFSET_HARD},
     };
 
     let num_bird = model.bird.len();
@@ -253,17 +251,17 @@ fn draw_meta(model: &Model, config: &BirdConfig, meta: &Meta, draw: &Draw)
 fn view(app: &App, model: &Model, frame: Frame){
     //let win = app.window_rect();
     let draw = app.draw();
-
+    let win = app.window_rect();
     if model.settings.show_turnbox
     {
         draw.rect()
             .x_y(0.0, 0.0)
-            .w_h(SCREEN_W_F32 - (SCREEN_TURN_OFFSET_HARD * 2.0), SCREEN_H_F32 - (SCREEN_TURN_OFFSET_HARD * 2.0))
+            .w_h((2.0*win.right()) - (SCREEN_TURN_OFFSET_HARD * 2.0), (2.0*win.top()) - (SCREEN_TURN_OFFSET_HARD * 2.0))
             .rgba8(120, 120, 120, 16);
         
         draw.rect()
             .x_y(0.0, 0.0)
-            .w_h(SCREEN_W_F32 - (SCREEN_TURN_OFFSET * 2.0), SCREEN_H_F32 - (SCREEN_TURN_OFFSET * 2.0))
+            .w_h((2.0 * win.right()) - (SCREEN_TURN_OFFSET * 2.0), (2.0 * win.top() ) - (SCREEN_TURN_OFFSET * 2.0))
             .rgba8(90, 90, 90, 16);
     }
     
