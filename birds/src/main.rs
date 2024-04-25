@@ -247,6 +247,13 @@ fn draw_meta(app: &App, model: &Model, config: &BirdConfig, meta: &Meta, draw: &
         .right_justify()
         .xy(pt2(win.right() - 115.0, win.bottom() +20.0));
     
+    
+    let website    = format!("llwyd.io");
+    draw.text(&website)
+        .font_size(20)
+        .no_line_wrap()
+        .right_justify()
+        .xy(pt2(win.right() - 125.0, win.top() -20.0));
 }
 
 fn view(app: &App, model: &Model, frame: Frame){
