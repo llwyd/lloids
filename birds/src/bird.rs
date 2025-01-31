@@ -23,6 +23,7 @@ pub struct BirdConfig{
     pub cohesion:ProximitySettings,
     pub alignment_gain:Gain,
     pub speed:Speed,
+    pub draw_ratio:f32,
 }
 
 #[derive(Copy, Clone)]
@@ -40,6 +41,8 @@ pub struct Bird{
     separation:Proximity,
     cohesion:Proximity,
     alignment_gain:Gain,
+
+    draw_ratio:f32,
 }
 
 impl Bird{
@@ -74,6 +77,7 @@ impl Bird{
             cohesion: Proximity::new(config.cohesion,angle, 0.0),
             alignment_gain: Gain::new(config.alignment_gain.gain()),
             speed: config.speed,
+            draw_ratio: config.draw_ratio,
         }
     }
 
@@ -117,11 +121,11 @@ impl Bird{
     }
 
     pub fn radius(&self) -> f32{
-        Self::BIRD_REGION_RADIUS
+        Self::BIRD_REGION_RADIUS / self.draw_ratio
     }
     
     pub fn separation_radius(&self) -> f32{
-        Self::BIRD_SEPARATION_RADIUS
+        Self::BIRD_SEPARATION_RADIUS / self.draw_ratio
     }
     
     pub fn position(&self) -> Point2{
@@ -137,8 +141,8 @@ impl Bird{
         draw.ellipse()
             .color(GREY)
             .x_y(self.xy.x, self.xy.y)
-            .w(Self::BIRD_REGION_RADIUS * 2.0)
-            .h(Self::BIRD_REGION_RADIUS * 2.0);
+            .w((Self::BIRD_REGION_RADIUS / self.draw_ratio) * 2.0)
+            .h((Self::BIRD_REGION_RADIUS / self.draw_ratio) * 2.0);
     }
     
     pub fn draw_sep_region(&self, draw: &Draw)
@@ -146,8 +150,8 @@ impl Bird{
         draw.ellipse()
             .color(CYAN)
             .x_y(self.xy.x, self.xy.y)
-            .w(Self::BIRD_SEPARATION_RADIUS * 2.0)
-            .h(Self::BIRD_SEPARATION_RADIUS * 2.0);
+            .w((Self::BIRD_SEPARATION_RADIUS / self.draw_ratio) * 2.0)
+            .h((Self::BIRD_SEPARATION_RADIUS / self.draw_ratio) * 2.0);
     }
 
     pub fn draw_trail(&self, draw: &Draw)
@@ -176,8 +180,11 @@ impl Bird{
 
     pub fn draw(&self, draw: &Draw)
     {
+        let h = Self::BIRD_HEIGHT / self.draw_ratio;
+        let w = Self::BIRD_WIDTH_2 / self.draw_ratio;
+
         draw.tri()
-            .points(pt2(Self::BIRD_HEIGHT / 2.0, 0.0),pt2(-Self::BIRD_HEIGHT / 2.0, -Self::BIRD_WIDTH_2),pt2(-Self::BIRD_HEIGHT / 2.0,Self::BIRD_WIDTH_2))
+            .points(pt2(h / 2.0, 0.0),pt2(-h / 2.0, -w),pt2(-h / 2.0,w))
             .x_y(self.xy.x, self.xy.y)
             .rotate(self.angle)
             .color(WHITE);
@@ -521,18 +528,18 @@ impl Bird{
     }
 
     fn screen_wrap(&mut self, win: &Rect<f32>){
-        if self.xy.x >= win.right() + Self::EDGE_BLEED as f32{
-            self.xy.x -= win.wh().x + Self::EDGE_BLEED;
+        if self.xy.x >= win.right() + (Self::EDGE_BLEED / self.draw_ratio) as f32{
+            self.xy.x -= win.wh().x + (Self::EDGE_BLEED / self.draw_ratio);
         }
-        else if self.xy.x <= win.left() -Self::EDGE_BLEED as f32{
-            self.xy.x += win.wh().x + Self::EDGE_BLEED;
+        else if self.xy.x <= win.left() -(Self::EDGE_BLEED / self.draw_ratio) as f32{
+            self.xy.x += win.wh().x + (Self::EDGE_BLEED / self.draw_ratio);
         }
         
-        if self.xy.y >= win.top() + Self::EDGE_BLEED as f32{
-            self.xy.y -= win.wh().y + Self::EDGE_BLEED;
+        if self.xy.y >= win.top() + (Self::EDGE_BLEED / self.draw_ratio) as f32{
+            self.xy.y -= win.wh().y + (Self::EDGE_BLEED / self.draw_ratio);
         }
-        else if self.xy.y <= win.bottom() - Self::EDGE_BLEED as f32{
-            self.xy.y += win.wh().y + Self::EDGE_BLEED;
+        else if self.xy.y <= win.bottom() - (Self::EDGE_BLEED / self.draw_ratio) as f32{
+            self.xy.y += win.wh().y + (Self::EDGE_BLEED / self.draw_ratio);
         } 
     }
 

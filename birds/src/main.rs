@@ -23,28 +23,33 @@ pub use crate::keypress::KeyPress;
 pub use crate::settings::Settings;
 pub use crate::meta::Meta;
 
-const SCREEN_W_F32:f32 = 1920.0;
-const SCREEN_H_F32:f32 = 1080.0;
+const DEFAULT_SCREEN_W_F32:f32 = 1920.0;
+const DEFAULT_SCREEN_H_F32:f32 = 1080.0;
+
+const SCREEN_W_F32:f32 = 480.0;
+const SCREEN_H_F32:f32 = 800.0;
+
+const SCREEN_RATIO:f32 = DEFAULT_SCREEN_W_F32 / SCREEN_W_F32;
 
 const SCREEN_W_2:f32 = SCREEN_W_F32 / 2.0;
 const SCREEN_H_2:f32 = SCREEN_H_F32 / 2.0;
 
-const SCREEN_TURN_OFFSET:f32 = 250.0;
-const SCREEN_TURN_OFFSET_HARD:f32 = 80.0;
+const SCREEN_TURN_OFFSET:f32 = 250.0 / SCREEN_RATIO;
+const SCREEN_TURN_OFFSET_HARD:f32 = 80.0 / SCREEN_RATIO;
 
 
 /* Bird default settings */
 const NUM_BIRDS:u32 = 150;
 
 const SPEED_GAIN:f32 = 1.4;
-const DEFAULT_BIRD_SPEED_MIN:f32 = 1.0 * SPEED_GAIN;
-const DEFAULT_BIRD_SPEED_MAX:f32 = 7.5 * SPEED_GAIN;
+const DEFAULT_BIRD_SPEED_MIN:f32 = (1.0 * SPEED_GAIN) / SCREEN_RATIO;
+const DEFAULT_BIRD_SPEED_MAX:f32 = (7.5 * SPEED_GAIN) / SCREEN_RATIO;
 
-const DEFAULT_SEP_SPEED_MIN:f32 = 1.25 * SPEED_GAIN;
-const DEFAULT_SEP_SPEED_MAX:f32 = 2.5 * SPEED_GAIN;
+const DEFAULT_SEP_SPEED_MIN:f32 = (1.25 * SPEED_GAIN) / SCREEN_RATIO;
+const DEFAULT_SEP_SPEED_MAX:f32 = (2.5 * SPEED_GAIN) / SCREEN_RATIO;
 
-const DEFAULT_COH_SPEED_MIN:f32 = 0.5 * SPEED_GAIN;
-const DEFAULT_COH_SPEED_MAX:f32 = 1.5 * SPEED_GAIN;
+const DEFAULT_COH_SPEED_MIN:f32 = (0.5 * SPEED_GAIN) / SCREEN_RATIO;
+const DEFAULT_COH_SPEED_MAX:f32 = (1.5 * SPEED_GAIN) / SCREEN_RATIO;
     
 const DEFAULT_SEP_DELTA:f32 = 0.00625 * 2.4;
 const DEFAULT_COH_DELTA:f32 = 0.00005625 * 3.0;
@@ -62,12 +67,12 @@ struct Model {
 
 fn model(app: &App) -> Model {
     app.new_window()
-        //.size(SCREEN_W_U32, SCREEN_H_U32)
+        .size(SCREEN_W_F32 as u32, SCREEN_H_F32 as u32)
         //.min_size(SCREEN_W_U32, SCREEN_H_U32)
         //.max_size(SCREEN_W_U32, SCREEN_H_U32)
         .decorations(false)
         .resizable(false)
-        .fullscreen()
+        //.fullscreen()
         .event(window_event)
         .build()
         .unwrap();
@@ -86,6 +91,7 @@ fn model(app: &App) -> Model {
             cohesion:ProximitySettings::new(Speed::new(DEFAULT_COH_SPEED_MIN,DEFAULT_COH_SPEED_MAX, true), -DEFAULT_COH_DELTA),  
             alignment_gain: Gain::new(DEFAULT_ALIGNMENT_GAIN),
             speed: Speed::new(DEFAULT_BIRD_SPEED_MIN, DEFAULT_BIRD_SPEED_MAX, true),
+            draw_ratio: SCREEN_RATIO,
         },
         input: KeyPress::new(),
         meta: Meta::new(),
